@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aiman → Valencia 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0F0E;
+  --surface: #161918;
+  --surface-raised: #1E2220;
+  --surface-hover: #252927;
+  --accent: #C8F060;
+  --accent-dim: rgba(200,240,96,0.15);
+  --accent-border: rgba(200,240,96,0.3);
+  --text: #F0EDE6;
+  --text-sec: #7A8078;
+  --text-muted: #3D4340;
+  --danger: #E8614A;
+  --warning: #F0A030;
+  --success: #4AE89B;
+  --border: rgba(255,255,255,0.07);
+  --border-raised: rgba(255,255,255,0.11);
+  --z2: #4AE89B;
+  --z3: #F0A030;
+  --z4: #E8614A;
+  --phase1: #4AE89B;
+  --phase2: #F0A030;
+  --phase3: #378ADD;
+  --phase4: #C8F060;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;display:flex;flex-direction:column;min-height:100vh;overflow-x:hidden;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.08em;color:var(--accent);font-weight:500;}
+.logo span{color:var(--text-sec);}
+.countdown-wrap{display:flex;align-items:center;gap:1.5rem;}
+.countdown{display:flex;gap:12px;align-items:baseline;}
+.cd-block{text-align:center;}
+.cd-num{font-family:'DM Mono',monospace;font-size:22px;font-weight:500;color:var(--text);line-height:1;}
+.cd-label{font-size:10px;color:var(--text-sec);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
+.cd-sep{font-family:'DM Mono',monospace;font-size:20px;color:var(--text-muted);margin-bottom:4px;}
+.header-goal{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-sec);letter-spacing:0.05em;}
+.header-goal strong{color:var(--accent);}
+
+/* LAYOUT */
+.app{display:flex;flex:1;}
+
+/* SIDEBAR */
+aside{width:220px;min-width:220px;background:var(--surface);border-right:1px solid var(--border);padding:1.25rem 0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto;}
+.sidebar-section{padding:0 1rem 1.25rem;}
+.sidebar-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);font-weight:500;margin-bottom:0.5rem;padding:0 0.5rem;}
+.phase-nav-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;cursor:pointer;margin-bottom:2px;transition:background 0.15s;}
+.phase-nav-item:hover{background:var(--surface-hover);}
+.phase-nav-item.active{background:var(--accent-dim);}
+.phase-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.phase-nav-name{font-size:12px;color:var(--text-sec);flex:1;}
+.phase-nav-item.active .phase-nav-name{color:var(--text);}
+.phase-nav-weeks{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);}
+.sidebar-divider{height:1px;background:var(--border);margin:0.75rem 1rem;}
+.sidebar-stat{padding:6px 10px;display:flex;justify-content:space-between;align-items:center;}
+.sidebar-stat-label{font-size:12px;color:var(--text-sec);}
+.sidebar-stat-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);}
+.sidebar-stat-val.accent{color:var(--accent);}
+.zone-ref{padding:0 1rem;}
+.zone-item{display:flex;align-items:center;gap:7px;padding:4px 6px;margin-bottom:2px;}
+.zone-pip{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.zone-text{font-size:11px;color:var(--text-sec);}
+.zone-text strong{color:var(--text);font-weight:500;}
+
+/* MAIN */
+main{flex:1;padding:2rem;overflow-y:auto;max-width:960px;}
+
+/* PROGRESS BAR */
+.overall-progress{margin-bottom:2rem;}
+.progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.progress-title{font-size:13px;color:var(--text-sec);letter-spacing:0.04em;}
+.progress-pct{font-family:'DM Mono',monospace;font-size:13px;color:var(--accent);}
+.progress-track{height:4px;background:var(--surface-raised);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width 0.5s ease;}
+.progress-markers{display:flex;justify-content:space-between;margin-top:6px;}
+.progress-marker{font-size:10px;color:var(--text-muted);}
+
+/* PHASE SECTION */
+.phase-section{margin-bottom:3rem;}
+.phase-header{display:flex;align-items:center;gap:12px;margin-bottom:1.25rem;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.phase-indicator{width:3px;height:32px;border-radius:2px;}
+.phase-title-wrap{}
+.phase-eyebrow{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+.phase-title{font-size:18px;font-weight:600;color:var(--text);}
+.phase-meta{margin-left:auto;text-align:right;}
+.phase-km{font-family:'DM Mono',monospace;font-size:13px;color:var(--text-sec);}
+.phase-weeks-range{font-size:11px;color:var(--text-muted);}
+
+/* WEEK CARD */
+.week-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color 0.2s;}
+.week-card:hover{border-color:var(--border-raised);}
+.week-card.completed{border-color:rgba(74,232,155,0.2);}
+.week-card.current{border-color:rgba(200,240,96,0.35);box-shadow:0 0 0 1px rgba(200,240,96,0.1);}
+.week-header{padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
+.week-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);width:52px;flex-shrink:0;}
+.week-title{font-size:13px;font-weight:500;color:var(--text);flex:1;}
+.week-date{font-size:11px;color:var(--text-muted);flex-shrink:0;}
+.week-km-target{font-family:'DM Mono',monospace;font-size:12px;color:var(--text-sec);flex-shrink:0;margin-right:4px;}
+.week-status{display:flex;gap:4px;flex-shrink:0;}
+.run-dot{width:8px;height:8px;border-radius:50%;background:var(--text-muted);transition:background 0.2s;}
+.run-dot.done{background:var(--accent);}
+.week-chevron{font-size:16px;color:var(--text-muted);margin-left:4px;transition:transform 0.2s;}
+.week-card.open .week-chevron{transform:rotate(180deg);}
+.week-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border);}
+.week-card.open .week-body{display:block;}
+.week-summary-row{display:flex;gap:2rem;padding:12px 0;margin-bottom:8px;}
+.ws-stat{display:flex;flex-direction:column;}
+.ws-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:2px;}
+.ws-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--text);}
+.ws-val.accent{color:var(--accent);}
+.runs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+@media(max-width:700px){.runs-grid{grid-template-columns:1fr;}}
+
+/* RUN CARD */
+.run-card{background:var(--surface-raised);border:1px solid var(--border);border-radius:8px;padding:12px;position:relative;cursor:pointer;transition:border-color 0.15s,background 0.15s;}
+.run-card:hover{border-color:var(--border-raised);background:var(--surface-hover);}
+.run-card.logged{border-color:rgba(74,232,155,0.25);background:rgba(74,232,155,0.04);}
+.run-card.rest-day{opacity:0.5;cursor:default;pointer-events:none;}
+.run-type-badge{display:inline-block;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:20px;margin-bottom:8px;font-weight:500;}
+.badge-easy{background:rgba(74,232,155,0.15);color:#4AE89B;}
+.badge-tempo{background:rgba(240,160,48,0.15);color:#F0A030;}
+.badge-long{background:rgba(55,138,221,0.15);color:#7AB8F0;}
+.badge-race{background:rgba(232,97,74,0.15);color:#E8614A;}
+.badge-test{background:rgba(200,240,96,0.15);color:#C8F060;}
+.badge-rest{background:rgba(255,255,255,0.06);color:var(--text-muted);}
+.run-day{font-size:11px;color:var(--text-muted);margin-bottom:4px;}
+.run-targets{display:flex;gap:1rem;margin-bottom:8px;}
+.run-target{display:flex;flex-direction:column;}
+.rt-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);}
+.rt-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);}
+.run-desc{font-size:11px;color:var(--text-sec);line-height:1.5;margin-bottom:10px;}
+.run-actual{background:rgba(200,240,96,0.08);border:1px solid rgba(200,240,96,0.2);border-radius:6px;padding:8px 10px;margin-top:8px;}
+.run-actual-title{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;opacity:0.8;}
+.run-actual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+.ra-item{display:flex;flex-direction:column;}
+.ra-label{font-size:9px;color:var(--text-muted);}
+.ra-val{font-family:'DM Mono',monospace;font-size:12px;color:var(--text);}
+.run-notes-preview{font-size:11px;color:var(--text-sec);margin-top:6px;font-style:italic;}
+.log-btn{display:block;width:100%;text-align:center;padding:7px;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--text-sec);font-size:11px;cursor:pointer;margin-top:10px;transition:all 0.15s;font-family:'Inter',sans-serif;}
+.log-btn:hover{background:var(--accent-dim);border-color:var(--accent-border);color:var(--accent);}
+.log-btn.logged{border-color:rgba(74,232,155,0.3);color:#4AE89B;background:rgba(74,232,155,0.06);}
+.week-notes-area{margin-top:12px;padding-top:12px;border-top:1px solid var(--border);}
+.week-notes-label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.week-notes-input{width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:12px;font-family:'Inter',sans-serif;resize:vertical;min-height:60px;outline:none;}
+.week-notes-input:focus{border-color:var(--accent-border);}
+.week-claude-btn{margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:transparent;border:1px solid var(--border);border-radius:5px;color:var(--text-sec);font-size:11px;cursor:pointer;transition:all 0.15s;font-family:'Inter',sans-serif;}
+.week-claude-btn:hover{border-color:var(--accent-border);color:var(--accent);}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border-raised);border-radius:12px;padding:1.5rem;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;}
+.modal-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.modal-sub{font-size:12px;color:var(--text-sec);margin-bottom:1.25rem;}
+.modal-target-row{display:flex;gap:1rem;background:var(--surface-raised);border-radius:6px;padding:10px 12px;margin-bottom:1.25rem;}
+.mtr-item{display:flex;flex-direction:column;}
+.mtr-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);}
+.mtr-val{font-family:'DM Mono',monospace;font-size:14px;color:var(--text);}
+.form-group{margin-bottom:1rem;}
+.form-label{font-size:11px;color:var(--text-sec);margin-bottom:5px;display:block;letter-spacing:0.03em;}
+.form-input{width:100%;background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;transition:border-color 0.15s;}
+.form-input:focus{border-color:var(--accent-border);}
+.form-input::placeholder{color:var(--text-muted);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.form-textarea{resize:vertical;min-height:72px;font-family:'Inter',sans-serif;font-size:12px;}
+.rpe-buttons{display:flex;gap:6px;}
+.rpe-btn{flex:1;padding:7px 4px;background:var(--surface-raised);border:1px solid var(--border);border-radius:5px;color:var(--text-sec);font-family:'DM Mono',monospace;font-size:12px;cursor:pointer;text-align:center;transition:all 0.15s;}
+.rpe-btn:hover{border-color:var(--border-raised);color:var(--text);}
+.rpe-btn.selected{background:var(--accent-dim);border-color:var(--accent-border);color:var(--accent);}
+.modal-actions{display:flex;gap:8px;margin-top:1.25rem;}
+.btn-primary{flex:1;padding:10px;background:var(--accent);color:#0D0F0E;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity 0.15s;}
+.btn-primary:hover{opacity:0.9;}
+.btn-secondary{padding:10px 16px;background:transparent;border:1px solid var(--border);color:var(--text-sec);border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;transition:all 0.15s;}
+.btn-secondary:hover{border-color:var(--border-raised);color:var(--text);}
+.btn-danger{padding:10px 14px;background:transparent;border:1px solid rgba(232,97,74,0.3);color:var(--danger);border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
+.btn-danger:hover{background:rgba(232,97,74,0.1);}
+
+/* MINI GRAPH */
+.week-graph{height:24px;display:flex;align-items:flex-end;gap:2px;margin:8px 0;}
+.wg-bar{flex:1;border-radius:1px;min-height:2px;transition:height 0.3s;}
+
+/* RECOVERY badge */
+.recovery-badge{display:inline-block;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:20px;background:rgba(55,138,221,0.15);color:#7AB8F0;margin-left:8px;}
+
+/* SCROLL */
+aside::-webkit-scrollbar{width:4px;}
+aside::-webkit-scrollbar-track{background:transparent;}
+aside::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+/* RACE WEEK */
+.race-week-banner{background:linear-gradient(135deg,rgba(200,240,96,0.08),rgba(200,240,96,0.02));border:1px solid rgba(200,240,96,0.3);border-radius:10px;padding:1rem 1.25rem;margin-bottom:10px;display:flex;align-items:center;gap:1rem;}
+.rwb-icon{font-size:28px;}
+.rwb-title{font-size:14px;font-weight:600;color:var(--accent);}
+.rwb-sub{font-size:12px;color:var(--text-sec);}
+
+/* GUIDES */
+.guide-section{margin-bottom:3rem;scroll-margin-top:72px;}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:760px){.guide-grid{grid-template-columns:1fr;}}
+.guide-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;}
+.guide-card.wide{grid-column:1 / -1;}
+.guide-card h4{font-size:12px;color:var(--accent);margin-bottom:8px;letter-spacing:0.04em;text-transform:uppercase;font-weight:600;}
+.guide-card ul{list-style:none;margin:0;padding:0;}
+.guide-card li{font-size:12.5px;color:var(--text-sec);padding:6px 0 6px 15px;position:relative;line-height:1.5;border-bottom:1px solid var(--border);}
+.guide-card li:last-child{border-bottom:none;}
+.guide-card li:before{content:'';position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--accent);opacity:0.6;}
+.guide-card li strong{color:var(--text);font-weight:500;}
+.guide-note{font-size:11px;color:var(--text-muted);font-style:italic;margin-top:10px;line-height:1.5;}
+.pace-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-family:'DM Mono',monospace;font-size:12.5px;}
+.pace-row:last-child{border-bottom:none;}
+.pace-row span:first-child{color:var(--text-sec);}
+.pace-row span:last-child{color:var(--text);}
+/* SHOES */
+.shoe-item{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);}
+.shoe-item:last-child{border-bottom:none;}
+.shoe-info{flex:1;min-width:0;}
+.shoe-name{font-size:13px;color:var(--text);font-weight:500;}
+.shoe-name.retired{color:var(--text-muted);text-decoration:line-through;}
+.shoe-km{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-sec);margin:3px 0 5px;}
+.shoe-bar{height:4px;background:var(--surface-raised);border-radius:2px;overflow:hidden;}
+.shoe-bar-fill{height:100%;border-radius:2px;transition:width 0.4s;}
+.shoe-actions{display:flex;gap:4px;flex-shrink:0;}
+.shoe-btn{font-size:10px;padding:4px 8px;background:transparent;border:1px solid var(--border);border-radius:4px;color:var(--text-sec);cursor:pointer;font-family:'Inter',sans-serif;}
+.shoe-btn:hover{border-color:var(--border-raised);color:var(--text);}
+.add-shoe-btn{margin-top:14px;padding:9px 14px;background:transparent;border:1px dashed var(--border-raised);border-radius:6px;color:var(--text-sec);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;width:100%;}
+.add-shoe-btn:hover{border-color:var(--accent-border);color:var(--accent);}
+select.form-input{cursor:pointer;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">AIMAN <span>→</span> VALENCIA 2026</div>
+  <div class="countdown-wrap">
+    <div class="header-goal">obiettivo <strong>5:15</strong> · cutoff <strong>5:30</strong> da battere · passo gara <strong>7:28</strong>/km · FC max <strong>202</strong></div>
+    <div class="countdown">
+      <div class="cd-block"><div class="cd-num mono" id="cd-days">--</div><div class="cd-label">giorni</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><div class="cd-num mono" id="cd-hours">--</div><div class="cd-label">ore</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><div class="cd-num mono" id="cd-mins">--</div><div class="cd-label">min</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">Fasi</div>
+    <div class="phase-nav-item active" onclick="scrollToPhase(1)" id="nav-phase-1">
+      <div class="phase-dot" style="background:var(--phase1)"></div>
+      <div class="phase-nav-name">Base aerobica</div>
+      <div class="phase-nav-weeks">S1–8</div>
+    </div>
+    <div class="phase-nav-item" onclick="scrollToPhase(2)" id="nav-phase-2">
+      <div class="phase-dot" style="background:var(--phase2)"></div>
+      <div class="phase-nav-name">Sviluppo</div>
+      <div class="phase-nav-weeks">S9–16</div>
+    </div>
+    <div class="phase-nav-item" onclick="scrollToPhase(3)" id="nav-phase-3">
+      <div class="phase-dot" style="background:var(--phase3)"></div>
+      <div class="phase-nav-name">Picco</div>
+      <div class="phase-nav-weeks">S17–22</div>
+    </div>
+    <div class="phase-nav-item" onclick="scrollToPhase(4)" id="nav-phase-4">
+      <div class="phase-dot" style="background:var(--phase4)"></div>
+      <div class="phase-nav-name">Taper</div>
+      <div class="phase-nav-weeks">S23–26</div>
+    </div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Progresso</div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Corse completate</span><span class="sidebar-stat-val accent" id="sb-done">0/103</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Km totali</span><span class="sidebar-stat-val" id="sb-km">0 km</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Sett. corrente</span><span class="sidebar-stat-val" id="sb-week">—</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Fase corrente</span><span class="sidebar-stat-val" id="sb-phase">Base</span></div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="zone-ref">
+    <div class="sidebar-label">Zone FC (max 202 · ripos. 63)</div>
+    <div class="zone-item"><div class="zone-pip" style="background:#4AE89B"></div><div class="zone-text"><strong>Z2</strong> &lt;150 · facile/conversaz.</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#F0A030"></div><div class="zone-text"><strong>Z3</strong> 151–166 · moderato</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#E8614A"></div><div class="zone-text"><strong>Z4</strong> 167–184 · soglia/gara</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#C8A0E8"></div><div class="zone-text"><strong>Z5</strong> &gt;184 · massimale</div></div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Settimana tipo</div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Lun</span><span class="sidebar-stat-val">Push + facile</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Mar</span><span class="sidebar-stat-val accent">Qualità</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Mer</span><span class="sidebar-stat-val">Pull</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Gio</span><span class="sidebar-stat-val">Gambe (ridotte)</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Ven</span><span class="sidebar-stat-val">Facile 45–60'</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Sab</span><span class="sidebar-stat-val">Riposo</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label">Dom</span><span class="sidebar-stat-val accent">Lungo</span></div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">Guide</div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-stretching')"><div class="phase-dot" style="background:#7AB8F0"></div><div class="phase-nav-name">Stretching &amp; mobilità</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-nutrition')"><div class="phase-dot" style="background:#4AE89B"></div><div class="phase-nav-name">Alimentazione</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-fueling')"><div class="phase-dot" style="background:#F0A030"></div><div class="phase-nav-name">Nutrizione in corsa</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-shoes')"><div class="phase-dot" style="background:#E8614A"></div><div class="phase-nav-name">Scarpe / km</div></div>
+  </div>
+</aside>
+
+<main id="main-content">
+  <div class="overall-progress">
+    <div class="progress-header">
+      <span class="progress-title">Progressione piano 26 settimane</span>
+      <span class="progress-pct" id="overall-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="overall-bar" style="width:0%"></div></div>
+    <div class="progress-markers">
+      <span class="progress-marker">Inizio</span>
+      <span class="progress-marker">Base →</span>
+      <span class="progress-marker">Sviluppo →</span>
+      <span class="progress-marker">Picco →</span>
+      <span class="progress-marker">Valencia</span>
+    </div>
+  </div>
+  <div id="plan-container"></div>
+
+  <!-- ===== GUIDA: STRETCHING & MOBILITÀ ===== -->
+  <div class="guide-section" id="guide-stretching">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:#7AB8F0"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">Guida</div>
+        <div class="phase-title">Stretching &amp; mobilità</div>
+      </div>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Riscaldamento dinamico — prima di qualità e lungo (5–8')</h4>
+        <ul>
+          <li><strong>Slanci gamba</strong> avanti/indietro e laterali, 10 per lato</li>
+          <li><strong>Affondi camminati</strong> con rotazione del busto, 8 per lato</li>
+          <li><strong>Skip</strong> basso + calciata, 20 m ciascuno</li>
+          <li><strong>Cerchi caviglia</strong> e aperture anca, 10 per lato</li>
+          <li>Poi 2–3' di corsa molto lenta prima dei blocchi veloci</li>
+        </ul>
+        <div class="guide-note">Mai stretching statico "a freddo" prima di correre: riduce la potenza e non previene infortuni. Il dinamico sì.</div>
+      </div>
+      <div class="guide-card">
+        <h4>Defaticamento — dopo OGNI corsa (10', 30" per posizione)</h4>
+        <ul>
+          <li><strong>Polpacci</strong> (gastrocnemio a gamba tesa + soleo a gamba piegata)</li>
+          <li><strong>Flessori dell'anca</strong> (affondo basso) — prioritari per te</li>
+          <li><strong>Femorali</strong> e <strong>quadricipiti</strong></li>
+          <li><strong>Glutei / piriforme</strong> (figura 4)</li>
+          <li><strong>Banda IT</strong> e fascia laterale</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Mobilità quotidiana — anche nei giorni di riposo (5–10')</h4>
+        <ul>
+          <li>Anca <strong>90/90</strong> e rotazioni</li>
+          <li><strong>Dorsiflessione caviglia</strong> al muro (chiave per la corsa)</li>
+          <li>Mobilità <strong>toracica</strong> (rotazioni) + gatto-mucca</li>
+          <li>Falla anche nei giorni off: tiene le articolazioni pronte</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Foam roller — dopo il lungo e dopo Gambe (15')</h4>
+        <ul>
+          <li>Quadricipiti, <strong>banda IT</strong>, polpacci</li>
+          <li>Glutei e schiena bassa</li>
+          <li>Lento, fermati 20–30" sui punti dolenti</li>
+        </ul>
+        <div class="guide-note">Nota lifter: squat e stacchi accorciano flessori dell'anca e polpacci. Dedicagli attenzione extra: sono le zone da cui partono la maggior parte degli infortuni da corsa.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GUIDA: ALIMENTAZIONE ===== -->
+  <div class="guide-section" id="guide-nutrition">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:#4AE89B"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">Guida</div>
+        <div class="phase-title">Alimentazione (quotidiana)</div>
+      </div>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Proteine — 1.6–2.0 g/kg → ~135–170 g/giorno</h4>
+        <ul>
+          <li>Fai pesi: stai sulla parte <strong>alta</strong> del range</li>
+          <li>Distribuisci <strong>30–40 g per pasto</strong> (4 pasti)</li>
+          <li>Fonti: uova, carne/pesce, latticini, legumi, whey</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Carboidrati — periodizzati sul carico</h4>
+        <ul>
+          <li>Giorni <strong>qualità/lungo</strong> (Mar, Dom): 5–7 g/kg</li>
+          <li>Giorni <strong>facili/riposo</strong>: 3–4 g/kg</li>
+          <li>Sono il carburante della corsa: <strong>non tagliarli</strong> nei giorni chiave</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Recupero — entro 30–60' da lungo/qualità</h4>
+        <ul>
+          <li><strong>60–80 g carbo + 25–30 g proteine</strong></li>
+          <li>Es.: yogurt greco + frutta + miele + granola; o latte cioccolato + banana</li>
+          <li>Reidrata: acqua + un pizzico di sale dopo le uscite sudate</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Idratazione &amp; peso — da ~84 verso 80 kg</h4>
+        <ul>
+          <li>~<strong>35 ml/kg</strong> ≈ 3 L/giorno, di più nei giorni di corsa</li>
+          <li>Cala a <strong>0.3–0.4 kg/sett</strong>: ~4 kg = ~10–13 settimane (Fasi 1–2)</li>
+          <li>Obiettivo <strong>~80 kg entro S14–16</strong> (test mezza), poi MANTIENI</li>
+          <li>Picco/taper (da S17): <strong>mangia abbastanza</strong>, niente deficit</li>
+          <li>In deficit tieni <strong>proteine 1.8–2.0 g/kg</strong> per salvare il muscolo</li>
+        </ul>
+        <div class="guide-note">Da 87–88 a &lt;84: ottimo, continua piano. I 4 kg verso 80 (~5%) possono valere qualche minuto in maratona — margine prezioso sul cutoff. Guarda il trend settimanale, non la bilancia giornaliera (carbo e acqua oscillano).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== GUIDA: NUTRIZIONE IN CORSA ===== -->
+  <div class="guide-section" id="guide-fueling">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:#F0A030"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">Guida</div>
+        <div class="phase-title">Nutrizione in corsa</div>
+      </div>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <h4>Prima della corsa</h4>
+        <ul>
+          <li>Corse <strong>&lt;60'</strong>: a digiuno o spuntino leggero, va bene</li>
+          <li>Lungo/qualità: <strong>1–2h prima, 40–60 g carbo</strong> (banana, toast+miele, fette biscottate)</li>
+          <li>Caffè ok se lo digerisci</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Durante (corse &gt;75–90')</h4>
+        <ul>
+          <li><strong>30–60 g carbo/ora</strong> = 1 gel ogni 30–40'</li>
+          <li><strong>Inizia presto</strong> (entro km 8–10), non quando sei già vuoto</li>
+          <li>Sempre con un sorso d'acqua per assorbirlo</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Idratazione &amp; intestino</h4>
+        <ul>
+          <li>Bevi <strong>a sete</strong>; nei lunghi/caldo aggiungi <strong>elettroliti</strong> (sodio)</li>
+          <li><strong>Allena l'intestino</strong>: prova gel e quantità nei lunghi (il piano lo prevede)</li>
+          <li>Trova la marca che digerisci. <strong>Mai nulla di nuovo il giorno gara</strong></li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4>Giorno gara — Valencia</h4>
+        <ul>
+          <li>Carico carbo nei <strong>2–3 giorni prima</strong> (carbo alti, meno fibre/grassi)</li>
+          <li>Colazione <strong>2.5–3h prima</strong>: 100–150 g carbo (pane+marmellata, banana, caffè)</li>
+          <li>Gel <strong>ogni 30–35' da km 10</strong> (≈5–6 gel totali) + acqua/sport drink ai ristori</li>
+        </ul>
+      </div>
+      <div class="guide-card wide">
+        <h4>Tabella passo — target 5:15 (7:28/km) · cutoff 5:30</h4>
+        <div class="pace-row"><span>10 km</span><span>~1:15</span></div>
+        <div class="pace-row"><span>Mezza (21.1 km)</span><span>~2:38</span></div>
+        <div class="pace-row"><span>30 km</span><span>~3:44</span></div>
+        <div class="pace-row"><span>Arrivo (42.2 km) — target</span><span>~5:15</span></div>
+        <div class="pace-row"><span>Arrivo — limite da NON superare</span><span>5:30</span></div>
+        <div class="guide-note">Parti a 7:40–7:45/km i primi 10 km (gambe "fredde" + folla), poi assesta a 7:28. Se a metà sei oltre ~2:40, recupera con calma: meglio finire che spaccarsi a metà.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCARPE / CHILOMETRAGGIO ===== -->
+  <div class="guide-section" id="guide-shoes">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:#E8614A"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">Attrezzatura</div>
+        <div class="phase-title">Scarpe / chilometraggio</div>
+      </div>
+    </div>
+    <div class="guide-card wide">
+      <h4>Le tue scarpe — km live (si aggiornano dalle corse registrate)</h4>
+      <div id="shoes-list"></div>
+      <button class="add-shoe-btn" onclick="addShoe()">+ Aggiungi scarpa</button>
+      <div class="guide-note">Seleziona la scarpa quando registri una corsa: i km si sommano qui in automatico. A 84 kg, ritira verso i ~650 km (barra rossa) o prima se senti la suola "piatta". Imposta i km già fatti con "Modifica".</div>
+    </div>
+  </div>
+</main>
+</div>
+
+<!-- LOG MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Registra corsa</div>
+    <div class="modal-sub" id="modal-sub"></div>
+    <div class="modal-target-row" id="modal-targets"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Distanza percorsa (km)</label>
+        <input class="form-input" id="inp-dist" type="number" step="0.1" placeholder="es. 8.2">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Passo medio (mm:ss)</label>
+        <input class="form-input" id="inp-pace" type="text" placeholder="es. 8:45">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">FC media (bpm)</label>
+        <input class="form-input" id="inp-hr-avg" type="number" placeholder="es. 138">
+      </div>
+      <div class="form-group">
+        <label class="form-label">FC massima (bpm)</label>
+        <input class="form-input" id="inp-hr-max" type="number" placeholder="es. 155">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Scarpe usate</label>
+      <select class="form-input" id="inp-shoe"></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">RPE — sforzo percepito</label>
+      <div class="rpe-buttons" id="rpe-buttons">
+        <div class="rpe-btn" onclick="selectRpe(1)">1</div>
+        <div class="rpe-btn" onclick="selectRpe(2)">2</div>
+        <div class="rpe-btn" onclick="selectRpe(3)">3</div>
+        <div class="rpe-btn" onclick="selectRpe(4)">4</div>
+        <div class="rpe-btn" onclick="selectRpe(5)">5</div>
+        <div class="rpe-btn" onclick="selectRpe(6)">6</div>
+        <div class="rpe-btn" onclick="selectRpe(7)">7</div>
+        <div class="rpe-btn" onclick="selectRpe(8)">8</div>
+        <div class="rpe-btn" onclick="selectRpe(9)">9</div>
+        <div class="rpe-btn" onclick="selectRpe(10)">10</div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Note libere</label>
+      <textarea class="form-input form-textarea" id="inp-notes" placeholder="Come ti sei sentito? Dolori? Meteo? Qualsiasi cosa..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveRun()">Salva corsa</button>
+      <button class="btn-danger" id="btn-delete" onclick="deleteRun()" style="display:none">Elimina</button>
+      <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATA =====
+const RACE_DATE = new Date('2026-12-06T08:30:00'); // Valencia: domenica 6 dic 2026 (verifica data ufficiale)
+const PLAN_START = new Date('2026-06-09'); // S1, martedì 9 giu 2026
+
+const PHASES = [
+  { id:1, name:'Base aerobica', eyebrow:'Fase 1', color:'#4AE89B', weeks:'1–8', kmRange:'27→38 km/sett', desc:'Fondamenta aerobiche. Tutto Z2. Niente fretta.' },
+  { id:2, name:'Sviluppo + qualità', eyebrow:'Fase 2', color:'#F0A030', weeks:'9–16', kmRange:'41→52 km/sett', desc:'Introduce lavoro a ritmo gara. Mezza maratona test sett. 16.' },
+  { id:3, name:'Picco', eyebrow:'Fase 3', color:'#7AB8F0', weeks:'17–22', kmRange:'53→58 km/sett', desc:'Volume massimo. Lungo fino a 30 km. Riduci gambe in palestra.' },
+  { id:4, name:'Taper', eyebrow:'Fase 4', color:'#C8F060', weeks:'23–26', kmRange:'47→24 km/sett', desc:'Scarico verso Valencia. Mantieni qualità, abbassa volume.' },
+];
+
+// 4 corse/sett — Lun (facile+Push) · Mar (qualità) · Ven (facile 45' tapis, social) · Dom (lungo). Mer Pull, Gio Gambe (ridotte), Sab riposo.
+// type: easy|tempo|long|race|test|rest
+// zone: string label
+const WEEKS = [
+  // FASE 1 — BASE (in questa fase il Martedì è ancora facile: niente qualità finché non c'è base)
+  {p:1, label:'S1', title:'Prima settimana (piano 3 giorni)', isRecovery:false, totalKm:25, runs:[
+    {day:'Martedì',type:'easy',km:6,pace:'8:45–9:30',zone:'Z2',desc:'Prima uscita del piano. Vai più piano di quanto pensi: HR < 150. (Settimana svolta col vecchio schema a 3 giorni — dalla S2 si passa a 4.)'},
+    {day:'Giovedì',type:'easy',km:6,pace:'8:45–9:30',zone:'Z2',desc:'Corsa facile, stessa impostazione di martedì. Se le gambe sono stanche, cammina un po\'.'},
+    {day:'Sabato',type:'long',km:13,pace:'9:00–9:30',zone:'Z2',desc:'Primo lungo. Bevi ogni 20\', banana 1h prima. Obiettivo: finire, non il passo. Dopo: stretching 10–15\'.'},
+  ]},
+  {p:1, label:'S2', title:'Costruire la base', isRecovery:false, totalKm:29, runs:[
+    {day:'Lunedì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'Facile dopo il Push. HR sotto 150.'},
+    {day:'Martedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Facile. Stessa routine.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: 10\' stretching.'},
+    {day:'Domenica',type:'long',km:13,pace:'9:00–9:20',zone:'Z2',desc:'Lungo 13 km. Dopo: stretching 10–15\'.'},
+  ]},
+  {p:1, label:'S3', title:'Volume in salita', isRecovery:false, totalKm:31, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'6 km facili. Gestisci il passo dall\'inizio.'},
+    {day:'Martedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'Lungo 14 km. Acqua + 1 gel verso km 10–11. Dopo: stretching.'},
+  ]},
+  {p:1, label:'S4', title:'Consolidamento', isRecovery:false, totalKm:31, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Mantieni il volume. Focus sulla regolarità.'},
+    {day:'Martedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'Lungo 14 km. Ultimi 2 km leggermente più spediti (Z3 basso) se le gambe rispondono.'},
+  ]},
+  {p:1, label:'S5', title:'Primo lungo vero', isRecovery:false, totalKm:34, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'7 km Z2.'},
+    {day:'Martedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Facile 6 km.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'16 km! 2 gel (primo a km 8). Le gambe da km 13 in poi si sentono — è normale. Dopo: stretching.'},
+  ]},
+  {p:1, label:'S6', title:'Conferma del volume', isRecovery:false, totalKm:35, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'7 km Z2. Ultimi 2 km: 4 allunghi (20\" veloci ma rilassati + 60\" cammino) per l\'economia di corsa.'},
+    {day:'Martedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'Ripeti 16 km. Obiettivo: sentirli più facili della scorsa settimana.'},
+  ]},
+  {p:1, label:'S7', title:'Settimana di recupero', isRecovery:true, totalKm:24, runs:[
+    {day:'Lunedì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'Recupero. Piano. Il corpo si adatta durante il riposo, non durante il lavoro. RIDUCI anche le gambe in palestra.'},
+    {day:'Martedì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'Facile, gambe leggere.'},
+    {day:'Venerdì',type:'easy',km:4,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis molto rilassati. Dopo: stretching abbondante 15\'.'},
+    {day:'Domenica',type:'long',km:10,pace:'9:00–9:30',zone:'Z2',desc:'Lungo ridotto 10 km, super rilassato. Niente pressione.'},
+  ]},
+  {p:1, label:'S8', title:'Fine fase base — test Z2', isRecovery:false, totalKm:38, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'8:30–9:00',zone:'Z2',desc:'Passo leggermente più spedito ma HR < 150. Quanto acceleri rispetto a S1 a parità di FC? È il tuo progresso aerobico.'},
+    {day:'Martedì',type:'easy',km:7,pace:'8:30–9:00',zone:'Z2',desc:'Facile. Ultimi 2 km: 4 allunghi.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:18,pace:'9:00–9:20',zone:'Z2',desc:'18 km! Primo lungo importante. 2 gel, acqua, ~2h20–2h40 in piedi. Mangia bene la sera prima. Dopo: stretching.'},
+  ]},
+  // FASE 2 — SVILUPPO (Martedì diventa la corsa di QUALITÀ)
+  {p:2, label:'S9', title:'Primo lavoro moderato', isRecovery:false, totalKm:41, runs:[
+    {day:'Lunedì',type:'easy',km:8,pace:'8:45–9:15',zone:'Z2',desc:'Facile dopo il Push — gambe pronte per la qualità di domani.'},
+    {day:'Martedì',type:'tempo',km:10,pace:'7:45 blocchi',zone:'Z2+Z3',desc:'QUALITÀ: 2 km risc., 3×10\' a 7:45–8:00 (Z3 basso) con 2\' cammino, 2 km defat. Prima dei blocchi: 5\' mobilità.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — recupero attivo tra Gambe (Gio) e lungo (Dom). Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:18,pace:'9:00–9:20',zone:'Z2',desc:'Lungo 18 km Z2 standard. Dopo: stretching.'},
+  ]},
+  {p:2, label:'S10', title:'Sviluppo moderato', isRecovery:false, totalKm:43, runs:[
+    {day:'Lunedì',type:'easy',km:8,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'tempo',km:11,pace:'7:30–7:45',zone:'Z3',desc:'QUALITÀ: 2 km risc., 4×8\' a 7:30–7:45 (Z3) con 90\" cammino, 2 km defat.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:19,pace:'9:00–9:15',zone:'Z2',desc:'Lungo 19 km. 2 gel. Dopo: stretching.'},
+  ]},
+  {p:2, label:'S11', title:'Allungamento volume', isRecovery:false, totalKm:47, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'9 km facili. Gestisci il passo dall\'inizio.'},
+    {day:'Martedì',type:'tempo',km:12,pace:'7:20–7:40',zone:'Z3',desc:'QUALITÀ: 2 risc., 4×10\' a Z3 con 2\' recupero, 2 defat.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:20,pace:'8:45–9:15',zone:'Z2',desc:'20 km! 3 gel (km 8, 13, 17). Dopo: stretching.'},
+  ]},
+  {p:2, label:'S12', title:'Consolidamento sviluppo', isRecovery:false, totalKm:49, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile 9 km. Ultimi 2 km: 5–6 allunghi da 20\".'},
+    {day:'Martedì',type:'tempo',km:12,pace:'7:20–7:35',zone:'Z3',desc:'QUALITÀ: ripeti struttura S11. Il passo Z3 deve sembrare più naturale.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:22,pace:'8:45–9:15',zone:'Z2',desc:'22 km, lungo pre-mezza. Nutrizione come in gara: gel ogni 35–40\' da km 8. Dopo: stretching.'},
+  ]},
+  {p:2, label:'S13', title:'Introduzione ritmo gara', isRecovery:false, totalKm:49, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile — gambe fresche per il ritmo gara di domani.'},
+    {day:'Martedì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 4 defat. Z2. Prima uscita vera a ritmo gara!'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — recupero. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:21,pace:'8:45–9:15',zone:'Z2',desc:'21 km Z2, a passo lento. Distanza di mezza, ma controllata. Dopo: stretching.'},
+  ]},
+  {p:2, label:'S14', title:'Volume massimo fase 2', isRecovery:false, totalKm:52, runs:[
+    {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: stessa struttura S13 — 3 risc. + 6 km ritmo gara + 4 defat.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:23,pace:'8:45–9:10',zone:'Z2',desc:'23 km, il lungo più lungo finora. Parti lento, finisci lento. Non fare l\'eroe. Dopo: stretching.'},
+  ]},
+  {p:2, label:'S15', title:'Scarico pre-test', isRecovery:true, totalKm:33, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Recupero. Gambe fresche per la mezza di domenica prossima. RIDUCI le gambe in palestra.'},
+    {day:'Martedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Leggero. 4–5 km se ti senti stanco. Non strafare.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis rilassati. Dopo: stretching.'},
+    {day:'Domenica',type:'easy',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km tranquilli, ultima uscita media prima del test. Gambe leggere per settimana prossima.'},
+  ]},
+  {p:2, label:'S16', title:'TEST — Mezza maratona', isRecovery:false, totalKm:35, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'9:00+',zone:'Z2',desc:'Leggerissimo, 6 km di attivazione. Niente Gambe pesanti questa settimana.'},
+    {day:'Martedì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'4 km facilissimi + mobilità/stretching. Riposa le gambe.'},
+    {day:'Venerdì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'Shakeout 3–4 km + 3 allunghi brevi. Solo per sciogliere. Riposo totale sabato.'},
+    {day:'Domenica',type:'test',km:21.1,pace:'obiettivo 7:05–7:15',zone:'Z3–Z4',desc:'MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Gel ogni 35\'. Annota passo, FC, sensazioni a km 15+.'},
+  ]},
+  // FASE 3 — PICCO
+  {p:3, label:'S17', title:'Ingresso nel picco', isRecovery:false, totalKm:53, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile Z2, gambe che si rimettono dalla mezza. Da qui RIDUCI le gambe in palestra (~40%).'},
+    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 4 defat. Allunga il blocco.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:24,pace:'8:30–9:00',zone:'Z2',desc:'24 km! 4 gel. Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.'},
+  ]},
+  {p:3, label:'S18', title:'Volume picco crescente', isRecovery:false, totalKm:56, runs:[
+    {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S17. Tieni il ritmo per tutti gli 8 km senza cedere.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:26,pace:'8:30–9:00',zone:'Z2',desc:'26 km, oltre la mezza — passo psicologico. Nutrizione ogni 35\'. Dopo: stretching.'},
+  ]},
+  {p:3, label:'S19', title:'Picco intenso', isRecovery:false, totalKm:56, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 9 km a ritmo gara, 3 defat.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'28 km — il lungo più lungo della tua vita. Preparazione nutrizionale il giorno prima fondamentale. Dopo: stretching.'},
+  ]},
+  {p:3, label:'S20', title:'Conferma picco', isRecovery:false, totalKm:57, runs:[
+    {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S19. Il ritmo gara deve sembrare "normale".'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'Ripeti 28 km. Se la scorsa è andata bene, ultimi 3 km a ritmo gara. Dopo: stretching.'},
+  ]},
+  {p:3, label:'S21', title:'Settimana di picco massimo', isRecovery:false, totalKm:58, runs:[
+    {day:'Lunedì',type:'easy',km:8,pace:'8:30–9:00',zone:'Z2',desc:'Facile, 8 km — settimana di volume massimo. Tieni le gambe in palestra al minimo.'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: 14 km con 9 km a ritmo gara. Picco qualitativo.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — riposo attivo prima del lungo da 30. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00',zone:'Z2',desc:'30 km — il lungo massimo! ~4h10–4h20 in piedi. 4–5 gel + acqua. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.'},
+  ]},
+  {p:3, label:'S22', title:'Recupero post-picco', isRecovery:true, totalKm:37, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Recupero obbligatorio. Il corpo assorbe il picco adesso. Gambe in palestra al minimo.'},
+    {day:'Martedì',type:'easy',km:9,pace:'9:00–9:20',zone:'Z2',desc:'9 km facili. Niente fretta, niente qualità questa settimana.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:20',zone:'Z2',desc:'45\' tapis rilassati, social. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'Lungo ridotto 16 km. Gambe che si rigenerano. Il taper inizia la prossima settimana.'},
+  ]},
+  // FASE 4 — TAPER
+  {p:4, label:'S23', title:'Taper — primo scarico', isRecovery:false, totalKm:47, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:12,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 4 km a ritmo gara, 5 defat. Volume calato, qualità mantenuta.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:20,pace:'8:45–9:10',zone:'Z2',desc:'20 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.'},
+  ]},
+  {p:4, label:'S24', title:'Taper progressivo', isRecovery:false, totalKm:36, runs:[
+    {day:'Lunedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'Facile 7 km.'},
+    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 3 km a ritmo gara, 5 defat. Mantieni la sensazione del passo gara.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2 leggero, social. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.'},
+  ]},
+  {p:4, label:'S25', title:'Pre-gara — gambe fresche', isRecovery:false, totalKm:24, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'6 km leggerissimi. Niente Gambe pesanti in palestra da qui alla gara.'},
+    {day:'Martedì',type:'race',km:7,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA breve: 2 risc., 2 km a ritmo gara (solo per sentirlo), 3 defat. Niente stress.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis rilassati + 4 allunghi. Dopo: stretching.'},
+    {day:'Domenica',type:'easy',km:9,pace:'9:00–9:30',zone:'Z2',desc:'9 km tranquilli, ultima uscita lunga prima di Valencia. Goditi la sensazione di essere pronto.'},
+  ]},
+  {p:4, label:'S26', title:'Race week — Valencia!', isRecovery:false, totalKm:0, runs:[
+    {day:'Lunedì',type:'easy',km:5,pace:'9:00+',zone:'Z2',desc:'5 km di attivazione. Solo per muoverti. Niente palestra gambe.'},
+    {day:'Martedì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'4 km + 4×100m strides al ritmo gara (recupero camminato). Mantieni la reattività muscolare.'},
+    {day:'Venerdì',type:'easy',km:3,pace:'9:00+',zone:'Z2',desc:'Shakeout 3 km molto facili (o riposo se viaggi). Mobilità + stretching leggero. Gambe fresche per domenica.'},
+    {day:'Domenica',type:'race',km:42.2,pace:'7:28 obiettivo',zone:'Z3–Z4',desc:'MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Gel ogni 30–35\' da km 10. Ce la fai.'},
+  ]},
+];
+
+// ===== STATE =====
+let state = {};
+let selectedRpe = null;
+let currentModal = null;
+
+function loadState() {
+  try { state = JSON.parse(localStorage.getItem('valencia_2026') || '{}'); } catch(e) { state = {}; }
+}
+function saveState() {
+  localStorage.setItem('valencia_2026', JSON.stringify(state));
+}
+function runKey(weekIdx, runIdx) { return `w${weekIdx}_r${runIdx}`; }
+function weekNoteKey(weekIdx) { return `wn${weekIdx}`; }
+
+// ===== COUNTDOWN =====
+function updateCountdown() {
+  const now = new Date();
+  const diff = RACE_DATE - now;
+  if (diff <= 0) { document.getElementById('cd-days').textContent='0'; return; }
+  const days = Math.floor(diff/(1000*60*60*24));
+  const hours = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const mins = Math.floor((diff%(1000*60*60))/(1000*60));
+  document.getElementById('cd-days').textContent = String(days).padStart(3,'0');
+  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
+}
+
+// ===== CURRENT WEEK CALC =====
+function getCurrentWeekIdx() {
+  const now = new Date();
+  const diff = Math.floor((now - PLAN_START) / (1000*60*60*24*7));
+  return Math.max(0, Math.min(diff, WEEKS.length-1));
+}
+
+// ===== RENDER =====
+function getBadgeClass(type) {
+  return {easy:'badge-easy',tempo:'badge-tempo',long:'badge-long',race:'badge-race',test:'badge-test',rest:'badge-rest'}[type]||'badge-rest';
+}
+function getBadgeLabel(type) {
+  return {easy:'Facile Z2',tempo:'Qualità Z3',long:'Lungo',race:'Ritmo gara',test:'TEST GARA',rest:'Riposo'}[type]||type;
+}
+
+function renderRunCard(weekIdx, runIdx, run) {
+  const key = runKey(weekIdx, runIdx);
+  const logged = state[key];
+  return `<div class="run-card ${logged?'logged':''}" id="rcard-${key}">
+    <div class="run-type-badge ${getBadgeClass(run.type)}">${getBadgeLabel(run.type)}</div>
+    <div class="run-day">${run.day}</div>
+    <div class="run-targets">
+      <div class="run-target"><div class="rt-label">Obiettivo</div><div class="rt-val mono">${run.km} km</div></div>
+      <div class="run-target"><div class="rt-label">Passo</div><div class="rt-val mono">${run.pace}</div></div>
+      <div class="run-target"><div class="rt-label">Zona</div><div class="rt-val mono">${run.zone}</div></div>
+    </div>
+    <div class="run-desc">${run.desc}</div>
+    ${logged ? `<div class="run-actual">
+      <div class="run-actual-title">✓ Completata</div>
+      <div class="run-actual-grid">
+        <div class="ra-item"><div class="ra-label">Distanza</div><div class="ra-val">${logged.dist||'—'} km</div></div>
+        <div class="ra-item"><div class="ra-label">Passo</div><div class="ra-val">${logged.pace||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label">FC avg</div><div class="ra-val">${logged.hrAvg||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label">FC max</div><div class="ra-val">${logged.hrMax||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label">RPE</div><div class="ra-val">${logged.rpe||'—'}/10</div></div>
+        <div class="ra-item"><div class="ra-label">Scarpe</div><div class="ra-val">${logged.shoe?shoeName(logged.shoe):'—'}</div></div>
+      </div>
+      ${logged.notes ? `<div class="run-notes-preview">"${logged.notes.substring(0,80)}${logged.notes.length>80?'…':''}"</div>` : ''}
+    </div>` : ''}
+    <button class="log-btn ${logged?'logged':''}" onclick="openModal(${weekIdx},${runIdx})">${logged?'Modifica registrazione':'+ Registra corsa'}</button>
+  </div>`;
+}
+
+function renderWeek(weekIdx) {
+  const w = WEEKS[weekIdx];
+  const curWeek = getCurrentWeekIdx();
+  const isCurrent = weekIdx === curWeek;
+  const runsLogged = w.runs.filter((_,ri)=>state[runKey(weekIdx,ri)]).length;
+  const allDone = runsLogged === w.runs.length;
+  const weekDate = new Date(PLAN_START);
+  weekDate.setDate(weekDate.getDate() + weekIdx * 7);
+  const dateStr = weekDate.toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+
+  const dots = w.runs.map((_,ri)=>`<div class="run-dot ${state[runKey(weekIdx,ri)]?'done':''}"></div>`).join('');
+
+  const isRaceWeek = weekIdx === 25;
+  if (isRaceWeek) {
+    // Race week special banner
+  }
+
+  return `<div class="week-card ${allDone?'completed':''} ${isCurrent?'current':''}" id="week-card-${weekIdx}">
+    <div class="week-header" onclick="toggleWeek(${weekIdx})">
+      <div class="week-num mono">${w.label}</div>
+      <div class="week-title">${w.title}${w.isRecovery?'<span class="recovery-badge">recupero</span>':''}</div>
+      <div class="week-date">${dateStr}</div>
+      <div class="week-km-target mono">${w.totalKm>0?w.totalKm+'km':''}</div>
+      <div class="week-status">${dots}</div>
+      <div class="week-chevron">⌄</div>
+    </div>
+    <div class="week-body" id="week-body-${weekIdx}">
+      <div class="week-summary-row">
+        <div class="ws-stat"><div class="ws-label">Target km</div><div class="ws-val mono ${isCurrent?'accent':''}">${w.totalKm>0?w.totalKm:'—'}</div></div>
+        <div class="ws-stat"><div class="ws-label">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
+        <div class="ws-stat"><div class="ws-label">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
+        <div class="ws-stat"><div class="ws-label">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
+        <div class="ws-stat"><div class="ws-label">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
+      </div>
+      ${isRaceWeek ? `<div class="race-week-banner"><div class="rwb-icon">🏁</div><div><div class="rwb-title">Maratona di Valencia — 6 Dicembre 2026</div><div class="rwb-sub">Parti conservativo. Gel ogni 30 min da km 10. Goditi ogni metro. Hai fatto tutto il lavoro.</div></div></div>` : ''}
+      <div class="runs-grid">${w.runs.map((_,ri)=>renderRunCard(weekIdx,ri,w.runs[ri])).join('')}</div>
+      <div class="week-notes-area">
+        <div class="week-notes-label">Note settimana</div>
+        <textarea class="week-notes-input" id="wnote-${weekIdx}" placeholder="Come è andata questa settimana? Dolori, progressi, osservazioni..." onchange="saveWeekNote(${weekIdx})">${state[weekNoteKey(weekIdx)]||''}</textarea>
+        <button class="week-claude-btn" onclick="askClaude(${weekIdx})">↗ Chiedi feedback a Claude</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function calcWeekActualKm(weekIdx) {
+  const w = WEEKS[weekIdx];
+  let total = 0;
+  w.runs.forEach((_,ri) => {
+    const l = state[runKey(weekIdx,ri)];
+    if(l && l.dist) total += parseFloat(l.dist)||0;
+  });
+  return total > 0 ? total.toFixed(1) : '—';
+}
+function calcWeekAvgPace(weekIdx) {
+  const w = WEEKS[weekIdx];
+  let totSec = 0, totKm = 0;
+  w.runs.forEach((_,ri) => {
+    const l = state[runKey(weekIdx,ri)];
+    if(l && l.pace && l.pace.match(/^\d+:\d+$/) && l.dist) {
+      const [m,s] = l.pace.split(':').map(Number);
+      const km = parseFloat(l.dist)||0;
+      totSec += (m*60+s)*km;
+      totKm += km;
+    }
+  });
+  if(!totKm) return '—';
+  const avg = totSec/totKm; // media ponderata per distanza
+  return `${Math.floor(avg/60)}:${String(Math.round(avg%60)).padStart(2,'0')}`;
+}
+function calcWeekAvgHR(weekIdx) {
+  const w = WEEKS[weekIdx];
+  let hrs = [];
+  w.runs.forEach((_,ri) => {
+    const l = state[runKey(weekIdx,ri)];
+    if(l && l.hrAvg) hrs.push(parseFloat(l.hrAvg));
+  });
+  if(!hrs.length) return '—';
+  return Math.round(hrs.reduce((a,b)=>a+b,0)/hrs.length)+' bpm';
+}
+
+function renderPhase(phaseIdx) {
+  const ph = PHASES[phaseIdx];
+  const weekIndices = WEEKS.map((w,i)=>({w,i})).filter(({w})=>w.p===ph.id);
+  return `<div class="phase-section" id="phase-section-${ph.id}">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:${ph.color}"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">${ph.eyebrow}</div>
+        <div class="phase-title">${ph.name}</div>
+      </div>
+      <div class="phase-meta">
+        <div class="phase-km">${ph.kmRange}</div>
+        <div class="phase-weeks-range">Settimane ${ph.weeks}</div>
+      </div>
+    </div>
+    ${weekIndices.map(({i})=>renderWeek(i)).join('')}
+  </div>`;
+}
+
+function renderAll() {
+  const container = document.getElementById('plan-container');
+  container.innerHTML = PHASES.map((_,pi)=>renderPhase(pi)).join('');
+  // Auto-open current week
+  const cur = getCurrentWeekIdx();
+  const card = document.getElementById(`week-card-${cur}`);
+  if(card) {
+    card.classList.add('open');
+    document.getElementById(`week-body-${cur}`).style.display='block';
+  }
+  updateSidebar();
+  updateOverallProgress();
+}
+
+function toggleWeek(idx) {
+  const card = document.getElementById(`week-card-${idx}`);
+  const body = document.getElementById(`week-body-${idx}`);
+  if(card.classList.contains('open')) {
+    card.classList.remove('open');
+    body.style.display='none';
+  } else {
+    card.classList.add('open');
+    body.style.display='block';
+  }
+}
+
+function updateSidebar() {
+  let totalDone = 0, totalRuns = 0, totalKm = 0;
+  WEEKS.forEach((w,wi) => {
+    w.runs.forEach((_,ri) => {
+      totalRuns++;
+      const l = state[runKey(wi,ri)];
+      if(l) { totalDone++; if(l.dist) totalKm += parseFloat(l.dist)||0; }
+    });
+  });
+  document.getElementById('sb-done').textContent = `${totalDone}/${totalRuns}`;
+  document.getElementById('sb-km').textContent = totalKm.toFixed(0)+' km';
+  const cur = getCurrentWeekIdx();
+  document.getElementById('sb-week').textContent = WEEKS[cur]?.label || '—';
+  const curPhase = PHASES.find(p=>p.id===WEEKS[cur]?.p);
+  document.getElementById('sb-phase').textContent = curPhase?.name.split(' ')[0] || '—';
+}
+
+function updateOverallProgress() {
+  let totalDone = 0, totalRuns = 0;
+  WEEKS.forEach((w,wi) => {
+    w.runs.forEach((_,ri) => { totalRuns++; if(state[runKey(wi,ri)]) totalDone++; });
+  });
+  const pct = Math.round(totalDone/totalRuns*100);
+  document.getElementById('overall-pct').textContent = pct+'%';
+  document.getElementById('overall-bar').style.width = pct+'%';
+}
+
+// ===== MODAL =====
+function openModal(weekIdx, runIdx) {
+  const run = WEEKS[weekIdx].runs[runIdx];
+  const key = runKey(weekIdx, runIdx);
+  const existing = state[key];
+  currentModal = {weekIdx, runIdx, key};
+  selectedRpe = existing?.rpe || null;
+
+  document.getElementById('modal-title').textContent = `${run.day} — ${WEEKS[weekIdx].label}`;
+  document.getElementById('modal-sub').textContent = `${getBadgeLabel(run.type)} · ${run.km} km · ${run.zone}`;
+  document.getElementById('modal-targets').innerHTML = `
+    <div class="mtr-item"><div class="mtr-label">Distanza</div><div class="mtr-val">${run.km} km</div></div>
+    <div class="mtr-item"><div class="mtr-label">Passo target</div><div class="mtr-val">${run.pace}</div></div>
+    <div class="mtr-item"><div class="mtr-label">Zona</div><div class="mtr-val">${run.zone}</div></div>
+  `;
+
+  document.getElementById('inp-dist').value = existing?.dist||'';
+  document.getElementById('inp-pace').value = existing?.pace||'';
+  document.getElementById('inp-hr-avg').value = existing?.hrAvg||'';
+  document.getElementById('inp-hr-max').value = existing?.hrMax||'';
+  document.getElementById('inp-notes').value = existing?.notes||'';
+  populateShoeSelect(existing?.shoe||'');
+
+  document.querySelectorAll('.rpe-btn').forEach((btn,i)=>{
+    btn.classList.toggle('selected', (i+1)==selectedRpe);
+  });
+
+  document.getElementById('btn-delete').style.display = existing ? 'block' : 'none';
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentModal = null;
+}
+
+function selectRpe(val) {
+  selectedRpe = val;
+  document.querySelectorAll('.rpe-btn').forEach((btn,i)=>{
+    btn.classList.toggle('selected', (i+1)===val);
+  });
+}
+
+function saveRun() {
+  if(!currentModal) return;
+  const {weekIdx, runIdx, key} = currentModal;
+  const data = {
+    dist: document.getElementById('inp-dist').value,
+    pace: document.getElementById('inp-pace').value,
+    hrAvg: document.getElementById('inp-hr-avg').value,
+    hrMax: document.getElementById('inp-hr-max').value,
+    rpe: selectedRpe,
+    notes: document.getElementById('inp-notes').value,
+    shoe: document.getElementById('inp-shoe').value,
+    loggedAt: new Date().toISOString(),
+  };
+  state[key] = data;
+  saveState();
+  closeModal();
+  refreshWeek(weekIdx);
+  updateSidebar();
+  updateOverallProgress();
+  renderShoes();
+}
+
+function deleteRun() {
+  if(!currentModal) return;
+  const {weekIdx, runIdx, key} = currentModal;
+  delete state[key];
+  saveState();
+  closeModal();
+  refreshWeek(weekIdx);
+  updateSidebar();
+  updateOverallProgress();
+  renderShoes();
+}
+
+// ===== SCARPE / CHILOMETRAGGIO =====
+const SHOE_LIMIT = 650; // km consigliati prima del ritiro (a 84 kg, lato prudente)
+function shoeKm(shoe) {
+  let t = parseFloat(shoe.base)||0;
+  WEEKS.forEach((w,wi) => w.runs.forEach((_,ri) => {
+    const l = state[runKey(wi,ri)];
+    if(l && l.shoe===shoe.id && parseFloat(l.dist)) t += parseFloat(l.dist);
+  }));
+  return t;
+}
+function shoeName(id) {
+  const s = (state.shoes||[]).find(x=>x.id===id);
+  return s ? s.name : '';
+}
+function renderShoes() {
+  const wrap = document.getElementById('shoes-list');
+  if(!wrap) return;
+  const shoes = state.shoes||[];
+  if(!shoes.length) { wrap.innerHTML = '<div class="guide-note">Nessuna scarpa registrata. Aggiungine una per tracciare i km.</div>'; return; }
+  wrap.innerHTML = shoes.map(s => {
+    const km = shoeKm(s);
+    const pct = Math.min(100, Math.round(km/SHOE_LIMIT*100));
+    const col = pct<70 ? 'var(--success)' : pct<90 ? 'var(--warning)' : 'var(--danger)';
+    return `<div class="shoe-item">
+      <div class="shoe-info">
+        <div class="shoe-name ${s.retired?'retired':''}">${s.name}${s.retired?' · ritirata':''}</div>
+        <div class="shoe-km">${km.toFixed(1)} / ${SHOE_LIMIT} km · ${pct}%</div>
+        <div class="shoe-bar"><div class="shoe-bar-fill" style="width:${pct}%;background:${col}"></div></div>
+      </div>
+      <div class="shoe-actions">
+        <button class="shoe-btn" onclick="editShoe('${s.id}')">Modifica</button>
+        <button class="shoe-btn" onclick="toggleRetire('${s.id}')">${s.retired?'Riattiva':'Ritira'}</button>
+        <button class="shoe-btn" onclick="deleteShoe('${s.id}')">Elimina</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function addShoe() {
+  const name = prompt('Nome scarpa (es. Asics Novablast 5):');
+  if(!name) return;
+  const base = parseFloat(prompt('Km già percorsi con questa scarpa (0 se nuova):','0'))||0;
+  if(!state.shoes) state.shoes = [];
+  state.shoes.push({id:'shoe_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name:name.trim(), base:base, retired:false});
+  saveState(); renderShoes();
+}
+function editShoe(id) {
+  const s = (state.shoes||[]).find(x=>x.id===id); if(!s) return;
+  const name = prompt('Nome scarpa:', s.name); if(name===null) return;
+  const base = prompt('Km iniziali già percorsi (prima del tracking):', s.base); if(base===null) return;
+  s.name = name.trim()||s.name; s.base = parseFloat(base)||0;
+  saveState(); renderShoes();
+}
+function toggleRetire(id) {
+  const s = (state.shoes||[]).find(x=>x.id===id);
+  if(s) { s.retired = !s.retired; saveState(); renderShoes(); }
+}
+function deleteShoe(id) {
+  if(!confirm('Eliminare questa scarpa? Le corse registrate restano, ma non saranno più associate.')) return;
+  state.shoes = (state.shoes||[]).filter(x=>x.id!==id);
+  saveState(); renderShoes();
+}
+function populateShoeSelect(selectedId) {
+  const sel = document.getElementById('inp-shoe');
+  if(!sel) return;
+  const shoes = (state.shoes||[]).filter(s=>!s.retired || s.id===selectedId);
+  sel.innerHTML = '<option value="">— nessuna —</option>' + shoes.map(s=>`<option value="${s.id}" ${s.id===selectedId?'selected':''}>${s.name}${s.retired?' (ritirata)':''}</option>`).join('');
+}
+
+function saveWeekNote(weekIdx) {
+  state[weekNoteKey(weekIdx)] = document.getElementById(`wnote-${weekIdx}`).value;
+  saveState();
+}
+
+function refreshWeek(weekIdx) {
+  const w = WEEKS[weekIdx];
+  const runsLogged = w.runs.filter((_,ri)=>state[runKey(weekIdx,ri)]).length;
+  const allDone = runsLogged === w.runs.length;
+  const card = document.getElementById(`week-card-${weekIdx}`);
+  const body = document.getElementById(`week-body-${weekIdx}`);
+  const wasOpen = card.classList.contains('open');
+
+  // Re-render the dots in header
+  const dots = card.querySelectorAll('.run-dot');
+  w.runs.forEach((_,ri)=>{ if(dots[ri]) dots[ri].classList.toggle('done', !!state[runKey(weekIdx,ri)]); });
+  card.classList.toggle('completed', allDone);
+
+  // Re-render run cards only
+  const runsGrid = body.querySelector('.runs-grid');
+  if(runsGrid) runsGrid.innerHTML = w.runs.map((_,ri)=>renderRunCard(weekIdx,ri,w.runs[ri])).join('');
+
+  // Update stats row
+  const stats = body.querySelectorAll('.ws-val.mono');
+  // Just re-render the summary row
+  const summaryRow = body.querySelector('.week-summary-row');
+  if(summaryRow) summaryRow.innerHTML = `
+    <div class="ws-stat"><div class="ws-label">Target km</div><div class="ws-val mono">${w.totalKm>0?w.totalKm:'—'}</div></div>
+    <div class="ws-stat"><div class="ws-label">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
+    <div class="ws-stat"><div class="ws-label">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
+    <div class="ws-stat"><div class="ws-label">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
+    <div class="ws-stat"><div class="ws-label">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
+  `;
+}
+
+// ===== CLAUDE FEEDBACK =====
+function askClaude(weekIdx) {
+  const w = WEEKS[weekIdx];
+  let summary = `Sono Aiman, mi sto allenando per la Maratona di Valencia (6 dic 2026). CUTOFF gara 5:30, quindi obiettivo 5:15 (passo 7:28/km) per avere margine. FC max reale 202 bpm, peso ~84 kg (da 87–88, in calo graduale verso 80), primo maratoneta. Base attuale: ~25–30 km/sett, mezza più recente 21,1 km a 7:56/km (FC media 167). Faccio anche molta palestra/pesi.\n\n`;
+  summary += `## Settimana ${w.label} — ${w.title}\n`;
+  summary += `Target: ${w.totalKm} km\n`;
+  summary += `Note settimana: ${state[weekNoteKey(weekIdx)]||'(nessuna)'}\n\n`;
+  summary += `## Corse\n`;
+  w.runs.forEach((run, ri) => {
+    const l = state[runKey(weekIdx, ri)];
+    summary += `\n**${run.day} (${getBadgeLabel(run.type)})** — target ${run.km}km a ${run.pace}\n`;
+    if(l) {
+      summary += `→ Completata: ${l.dist||'—'}km, passo ${l.pace||'—'}, HR avg ${l.hrAvg||'—'}/max ${l.hrMax||'—'}, RPE ${l.rpe||'—'}/10\n`;
+      if(l.notes) summary += `Note: ${l.notes}\n`;
+    } else {
+      summary += `→ Non ancora completata\n`;
+    }
+  });
+  summary += `\nPer favore analizza: 1) Sto rispettando le zone cardiache? 2) Il passo è appropriato? 3) Cosa devo aggiustare? 4) Qualche rischio da monitorare?`;
+
+  const url = `https://claude.ai/new?q=${encodeURIComponent(summary)}`;
+  window.open(url, '_blank');
+}
+
+// ===== NAVIGATION =====
+function scrollToEl(id) {
+  const el = document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function scrollToPhase(phaseId) {
+  const el = document.getElementById(`phase-section-${phaseId}`);
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  document.querySelectorAll('.phase-nav-item').forEach((item,i)=>{
+    item.classList.toggle('active', i===phaseId-1);
+  });
+}
+
+// Close modal on overlay click
+document.getElementById('modal-overlay').addEventListener('click', function(e) {
+  if(e.target === this) closeModal();
+});
+
+// ===== INIT =====
+loadState();
+if(!state.shoes) { state.shoes = [{id:'shoe_novablast5', name:'Asics Novablast 5 (facili/qualità)', base:0, retired:false}, {id:'shoe_superblast2', name:'Asics Superblast 2 (lungo/gara)', base:0, retired:false}]; saveState(); }
+renderAll();
+renderShoes();
+updateCountdown();
+setInterval(updateCountdown, 30000);
+</script>
+</body>
+</html>
