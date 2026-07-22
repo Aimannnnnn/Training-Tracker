@@ -26,16 +26,19 @@ const COOKIE_NAME = 'vsid';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 giorni
 
 // ---- credentials ----
-// On first run (no auth.json yet), create one login: from AUTH_USERNAME/AUTH_PASSWORD
-// env vars if set, otherwise a random password written once to CREDENTIALS.txt
-// (gitignored — read it, note the password, then delete the file).
+// auth.json holds a list of users, each with a role: 'admin' (read/write) or
+// 'readonly' (view only — the server rejects their POST /api/state regardless
+// of what the client sends). On first run (no auth.json yet), create one admin
+// login: from AUTH_USERNAME/AUTH_PASSWORD env vars if set, otherwise a random
+// password written once to CREDENTIALS.txt (gitignored — read it, note the
+// password, then delete the file).
 function bootstrapAuth() {
   if (fs.existsSync(AUTH)) return;
   const username = process.env.AUTH_USERNAME || 'aiman';
   const password = process.env.AUTH_PASSWORD || crypto.randomBytes(9).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.scryptSync(password, salt, 64).toString('hex');
-  fs.writeFileSync(AUTH, JSON.stringify({ username, salt, hash }, null, 2));
+  fs.writeFileSync(AUTH, JSON.stringify({ users: [{ username, salt, hash, role: 'admin' }] }, null, 2));
   if (!process.env.AUTH_PASSWORD) {
     fs.writeFileSync(CREDENTIALS_OUT, `username: ${username}\npassword: ${password}\n(cancella questo file dopo averla salvata altrove)\n`);
     console.log('Credenziali generate — vedi ' + CREDENTIALS_OUT);
@@ -46,29 +49,34 @@ bootstrapAuth();
 function loadAuth() {
   try { return JSON.parse(fs.readFileSync(AUTH, 'utf8')); } catch (e) { return null; }
 }
-function checkPassword(username, password) {
+function findUser(username) {
   const auth = loadAuth();
-  if (!auth) return false;
-  if (username !== auth.username) return false;
-  const hash = crypto.scryptSync(password, auth.salt, 64).toString('hex');
+  if (!auth || !auth.users) return null;
+  return auth.users.find(u => u.username === username) || null;
+}
+function checkPassword(username, password) {
+  const user = findUser(username);
+  if (!user) return null;
+  const hash = crypto.scryptSync(password, user.salt, 64).toString('hex');
   // timing-safe compare
-  const a = Buffer.from(hash, 'hex'), b = Buffer.from(auth.hash, 'hex');
-  return a.length === b.length && crypto.timingSafeEqual(a, b);
+  const a = Buffer.from(hash, 'hex'), b = Buffer.from(user.hash, 'hex');
+  if (a.length !== b.length || !crypto.timingSafeEqual(a, b)) return null;
+  return user;
 }
 
 // ---- sessions (in-memory; lost on server restart -> user logs in again) ----
-const sessions = new Map(); // token -> expiresAt
-function newSession() {
+const sessions = new Map(); // token -> {role, expires}
+function newSession(role) {
   const token = crypto.randomBytes(32).toString('hex');
-  sessions.set(token, Date.now() + SESSION_TTL_MS);
+  sessions.set(token, { role, expires: Date.now() + SESSION_TTL_MS });
   return token;
 }
 function validSession(token) {
-  if (!token) return false;
-  const exp = sessions.get(token);
-  if (!exp) return false;
-  if (Date.now() > exp) { sessions.delete(token); return false; }
-  return true;
+  if (!token) return null;
+  const s = sessions.get(token);
+  if (!s) return null;
+  if (Date.now() > s.expires) { sessions.delete(token); return null; }
+  return s;
 }
 function getCookie(req, name) {
   const header = req.headers.cookie || '';
@@ -82,11 +90,16 @@ function getCookie(req, name) {
 
 // Sync shim injected right after <body>. Runs BEFORE the app's own script, using a
 // synchronous request so localStorage is populated before the tracker reads it.
-const SHIM = `<script>
+// readonly is baked in server-side per session, so the client can hide edit
+// controls — but the real enforcement is the server rejecting POST /api/state
+// for readonly sessions regardless of what a client sends (see the handler below).
+function buildShim(readonly) {
+  return `<script>
+window.IS_READONLY = ${readonly ? 'true' : 'false'};
 (function(){
   var KEY='valencia_2026';
   function sGet(){try{var x=new XMLHttpRequest();x.open('GET','/api/state',false);x.send();if(x.status===200)return (x.responseText||'').trim();if(x.status===401){location.href='/login';}}catch(e){}return '';}
-  function sPut(v){try{var p=new XMLHttpRequest();p.open('POST','/api/state',true);p.setRequestHeader('Content-Type','application/json');p.send(v);}catch(e){}}
+  function sPut(v){if(window.IS_READONLY)return;try{var p=new XMLHttpRequest();p.open('POST','/api/state',true);p.setRequestHeader('Content-Type','application/json');p.send(v);}catch(e){}}
   function empty(s){return !s||s==='null'||s==='{}';}
   var srv=sGet(), loc=localStorage.getItem(KEY);
   if(!empty(srv)){ localStorage.setItem(KEY,srv); }   // server wins when it has data
@@ -95,6 +108,12 @@ const SHIM = `<script>
   localStorage.setItem=function(k,v){ _set(k,v); if(k===KEY) sPut(v); };  // mirror every save
 
   document.addEventListener('DOMContentLoaded', function(){
+    if(window.IS_READONLY){
+      var badge=document.createElement('div');
+      badge.textContent='SOLA LETTURA';
+      badge.style.cssText='position:fixed;bottom:14px;right:82px;z-index:2000;padding:7px 12px;background:rgba(240,160,48,0.12);border:1px solid rgba(240,160,48,0.3);border-radius:6px;color:#F0A030;font-size:10px;letter-spacing:0.06em;font-family:Inter,sans-serif;';
+      document.body.appendChild(badge);
+    }
     var b=document.createElement('button');
     b.textContent='Esci';
     b.style.cssText='position:fixed;bottom:14px;right:14px;z-index:2000;padding:7px 12px;background:#161918;border:1px solid rgba(255,255,255,0.11);border-radius:6px;color:#7A8078;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;';
@@ -103,6 +122,7 @@ const SHIM = `<script>
   });
 })();
 </script>`;
+}
 
 const LOGIN_PAGE = `<!DOCTYPE html>
 <html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -158,7 +178,7 @@ function clearSessionCookie(res) {
 }
 
 http.createServer((req, res) => {
-  const authed = validSession(getCookie(req, COOKIE_NAME));
+  const session = validSession(getCookie(req, COOKIE_NAME));
 
   if (req.url === '/login' && req.method === 'GET') {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -172,8 +192,9 @@ http.createServer((req, res) => {
     req.on('end', () => {
       try {
         const { username, password } = JSON.parse(body || '{}');
-        if (checkPassword(username, password)) {
-          setSessionCookie(res, newSession());
+        const user = checkPassword(username, password);
+        if (user) {
+          setSessionCookie(res, newSession(user.role));
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end('{"ok":true}');
         } else {
@@ -197,7 +218,7 @@ http.createServer((req, res) => {
   }
 
   // Everything below requires a valid session.
-  if (!authed) {
+  if (!session) {
     if (req.url.startsWith('/api/')) {
       res.writeHead(401, { 'Content-Type': 'application/json' });
       res.end('{"ok":false,"error":"unauthorized"}');
@@ -215,6 +236,11 @@ http.createServer((req, res) => {
       return;
     }
     if (req.method === 'POST') {
+      if (session.role === 'readonly') {
+        res.writeHead(403, { 'Content-Type': 'application/json' });
+        res.end('{"ok":false,"error":"readonly"}');
+        return;
+      }
       let body = '';
       req.on('data', c => { body += c; if (body.length > 5e6) req.destroy(); });
       req.on('end', () => {
@@ -234,7 +260,7 @@ http.createServer((req, res) => {
 
   fs.readFile(FILE, 'utf8', (err, html) => {
     if (err) { res.writeHead(500, { 'Content-Type': 'text/plain' }); res.end('Tracker file not found: ' + FILE); return; }
-    const injected = html.replace('<body>', '<body>\n' + SHIM);
+    const injected = html.replace('<body>', '<body>\n' + buildShim(session.role === 'readonly'));
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(injected);
   });

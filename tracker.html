@@ -261,6 +261,13 @@ select.form-input{cursor:pointer;}
 .chart-bar-actual{fill:var(--accent);}
 .chart-bar-hit{fill:transparent;cursor:crosshair;}
 
+/* READ-ONLY MODE */
+body.readonly-mode .log-btn,
+body.readonly-mode .shoe-btn,
+body.readonly-mode .shoe-actions,
+body.readonly-mode .add-shoe-btn{display:none;}
+body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
+
 /* MOBILE */
 .menu-toggle{display:none;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text);width:36px;height:36px;font-size:16px;cursor:pointer;flex-shrink:0;}
 .sidebar-backdrop{display:none;}
@@ -842,6 +849,7 @@ function loadState() {
   try { state = JSON.parse(localStorage.getItem('valencia_2026') || '{}'); } catch(e) { state = {}; }
 }
 function saveState() {
+  if (window.IS_READONLY) return;
   localStorage.setItem('valencia_2026', JSON.stringify(state));
 }
 function runKey(weekIdx, runIdx) { return `w${weekIdx}_r${runIdx}`; }
@@ -1567,6 +1575,7 @@ document.getElementById('modal-overlay').addEventListener('click', function(e) {
 });
 
 // ===== INIT =====
+if (window.IS_READONLY) document.body.classList.add('readonly-mode');
 loadState();
 if(!state.shoes) { state.shoes = [{id:'shoe_novablast5', name:'Asics Novablast 5 (facili/qualità)', base:0, retired:false}, {id:'shoe_superblast2', name:'Asics Superblast 2 (lungo/gara)', base:0, retired:false}]; saveState(); }
 renderAll();
