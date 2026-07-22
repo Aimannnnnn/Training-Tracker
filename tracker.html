@@ -236,11 +236,67 @@ aside::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 .add-shoe-btn{margin-top:14px;padding:9px 14px;background:transparent;border:1px dashed var(--border-raised);border-radius:6px;color:var(--text-sec);font-size:12px;cursor:pointer;font-family:'Inter',sans-serif;width:100%;}
 .add-shoe-btn:hover{border-color:var(--accent-border);color:var(--accent);}
 select.form-input{cursor:pointer;}
+
+/* CHARTS */
+.chart-card{margin-bottom:12px;}
+.chart-sub{font-size:11px;color:var(--text-muted);margin:-4px 0 12px;}
+.chart-svg-wrap{position:relative;width:100%;}
+.chart-svg-wrap svg{width:100%;height:auto;display:block;overflow:visible;}
+.chart-axis-label{font-size:9px;fill:var(--text-muted);font-family:'DM Mono',monospace;}
+.chart-gridline{stroke:var(--text-muted);stroke-opacity:0.25;stroke-width:1;}
+.chart-line{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round;}
+.chart-dot{stroke:var(--surface);stroke-width:2;}
+.chart-hit{fill:transparent;cursor:crosshair;}
+.chart-crosshair{stroke:var(--border-raised);stroke-width:1;opacity:0;pointer-events:none;}
+.chart-refline{stroke:var(--text-sec);stroke-width:1;opacity:0.5;}
+.chart-empty{font-size:12px;color:var(--text-muted);padding:30px 0;text-align:center;}
+.chart-tooltip{position:absolute;pointer-events:none;background:var(--surface-raised);border:1px solid var(--border-raised);border-radius:6px;padding:6px 10px;font-size:11px;color:var(--text);opacity:0;transition:opacity 0.1s;white-space:nowrap;transform:translate(-50%,-110%);z-index:10;box-shadow:0 4px 14px rgba(0,0,0,0.35);}
+.chart-tooltip .ctt-label{color:var(--text-sec);font-size:10px;margin-bottom:2px;}
+.chart-tooltip .ctt-val{font-family:'DM Mono',monospace;font-weight:600;}
+.chart-legend{display:flex;gap:16px;margin-bottom:10px;}
+.chart-legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-sec);}
+.chart-legend-swatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+.chart-legend-swatch.line{width:14px;height:2px;border-radius:1px;}
+.chart-bar-target{fill:none;stroke:var(--text-sec);stroke-width:1.5;}
+.chart-bar-actual{fill:var(--accent);}
+.chart-bar-hit{fill:transparent;cursor:crosshair;}
+
+/* MOBILE */
+.menu-toggle{display:none;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text);width:36px;height:36px;font-size:16px;cursor:pointer;flex-shrink:0;}
+.sidebar-backdrop{display:none;}
+@media(max-width:860px){
+  header{padding:0 1rem;gap:0.75rem;}
+  .logo{font-size:11px;}
+  .header-goal{display:none;}
+  .countdown-wrap{gap:0;margin-left:auto;}
+  .countdown{gap:8px;}
+  .cd-num{font-size:17px;}
+  .cd-sep{font-size:15px;}
+  .menu-toggle{display:block;}
+  aside{position:fixed;left:0;top:56px;bottom:0;height:auto;z-index:200;transform:translateX(-100%);transition:transform 0.25s ease;box-shadow:2px 0 16px rgba(0,0,0,0.4);}
+  aside.open{transform:translateX(0);}
+  .sidebar-backdrop{display:block;position:fixed;left:0;right:0;top:56px;bottom:0;background:rgba(0,0,0,0.5);z-index:150;opacity:0;pointer-events:none;transition:opacity 0.2s;}
+  .sidebar-backdrop.open{opacity:1;pointer-events:auto;}
+  main{padding:1rem;max-width:100%;}
+  .week-header{flex-wrap:wrap;row-gap:6px;}
+  .week-title{flex-basis:100%;}
+  .week-summary-row{flex-wrap:wrap;row-gap:10px;gap:1.25rem;}
+  .run-targets{flex-wrap:wrap;row-gap:8px;}
+  .guide-grid{grid-template-columns:1fr;}
+  .modal{max-width:92vw;}
+}
+@media(max-width:420px){
+  .header-goal{display:none;}
+  .logo{font-size:10px;}
+  .cd-num{font-size:15px;}
+  .countdown{gap:6px;}
+}
 </style>
 </head>
 <body>
 
 <header>
+  <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
   <div class="logo">AIMAN <span>→</span> VALENCIA 2026</div>
   <div class="countdown-wrap">
     <div class="header-goal">obiettivo <strong>5:15</strong> · cutoff <strong>5:30</strong> da battere · passo gara <strong>7:28</strong>/km · FC max <strong>202</strong></div>
@@ -255,6 +311,7 @@ select.form-input{cursor:pointer;}
 </header>
 
 <div class="app">
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 <aside id="sidebar">
   <div class="sidebar-section">
     <div class="sidebar-label">Fasi</div>
@@ -308,6 +365,11 @@ select.form-input{cursor:pointer;}
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">
+    <div class="sidebar-label">Andamento</div>
+    <div class="phase-nav-item" onclick="scrollToEl('trend-section')"><div class="phase-dot" style="background:var(--accent)"></div><div class="phase-nav-name">Grafici progressi</div></div>
+  </div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section">
     <div class="sidebar-label">Guide</div>
     <div class="phase-nav-item" onclick="scrollToEl('guide-stretching')"><div class="phase-dot" style="background:#7AB8F0"></div><div class="phase-nav-name">Stretching &amp; mobilità</div></div>
     <div class="phase-nav-item" onclick="scrollToEl('guide-nutrition')"><div class="phase-dot" style="background:#4AE89B"></div><div class="phase-nav-name">Alimentazione</div></div>
@@ -332,6 +394,37 @@ select.form-input{cursor:pointer;}
     </div>
   </div>
   <div id="plan-container"></div>
+
+  <!-- ===== ANDAMENTO ===== -->
+  <div class="guide-section" id="trend-section">
+    <div class="phase-header">
+      <div class="phase-indicator" style="background:var(--accent)"></div>
+      <div class="phase-title-wrap">
+        <div class="phase-eyebrow">Andamento</div>
+        <div class="phase-title">Come sta andando l'allenamento</div>
+      </div>
+    </div>
+    <div class="guide-card wide chart-card">
+      <h4>Indice di efficienza aerobica</h4>
+      <div class="chart-sub">Velocità ottenuta per battito cardiaco (m/min ÷ bpm). Più in alto = più veloce a parità di frequenza cardiaca, cioè miglior efficienza aerobica — è la risposta diretta a "quanto sto migliorando".</div>
+      <div class="chart-svg-wrap" id="chart-ef-wrap"></div>
+    </div>
+    <div class="guide-card wide chart-card">
+      <h4>Passo per corsa</h4>
+      <div class="chart-sub">Più in alto = più veloce. Ogni punto è una corsa registrata.</div>
+      <div class="chart-svg-wrap" id="chart-pace-wrap"></div>
+    </div>
+    <div class="guide-card wide chart-card">
+      <h4>Frequenza cardiaca media per corsa</h4>
+      <div class="chart-sub">Sfondo colorato per zona (Z2 verde · Z3 arancio · Z4 rosso · Z5 viola), stessa scala della sidebar.</div>
+      <div class="chart-svg-wrap" id="chart-hr-wrap"></div>
+    </div>
+    <div class="guide-card wide chart-card">
+      <h4>Km settimanali: target vs effettivo</h4>
+      <div class="chart-legend" id="chart-km-legend"></div>
+      <div class="chart-svg-wrap" id="chart-km-wrap"></div>
+    </div>
+  </div>
 
   <!-- ===== GUIDA: STRETCHING & MOBILITÀ ===== -->
   <div class="guide-section" id="guide-stretching">
@@ -782,12 +875,23 @@ function getBadgeLabel(type) {
   return {easy:'Facile Z2',tempo:'Qualità Z3',long:'Lungo',race:'Ritmo gara',test:'TEST GARA',rest:'Riposo'}[type]||type;
 }
 
+const DAY_OFFSET = {'Lunedì':-1,'Martedì':0,'Mercoledì':1,'Giovedì':2,'Venerdì':3,'Sabato':4,'Domenica':5};
+function getRunDate(weekIdx, dayName) {
+  const d = new Date(PLAN_START);
+  d.setDate(d.getDate() + weekIdx*7 + (DAY_OFFSET[dayName] ?? 0));
+  return d;
+}
+function formatShortDate(d) {
+  return d.toLocaleDateString('it-IT', {day:'numeric', month:'short'});
+}
+
 function renderRunCard(weekIdx, runIdx, run) {
   const key = runKey(weekIdx, runIdx);
   const logged = state[key];
+  const runDate = getRunDate(weekIdx, run.day);
   return `<div class="run-card ${logged?'logged':''}" id="rcard-${key}">
     <div class="run-type-badge ${getBadgeClass(run.type)}">${getBadgeLabel(run.type)}</div>
-    <div class="run-day">${run.day}</div>
+    <div class="run-day">${run.day} · ${formatShortDate(runDate)}</div>
     <div class="run-targets">
       <div class="run-target"><div class="rt-label">Obiettivo</div><div class="rt-val mono">${run.km} km</div></div>
       <div class="run-target"><div class="rt-label">Passo</div><div class="rt-val mono">${run.pace}</div></div>
@@ -816,9 +920,9 @@ function renderWeek(weekIdx) {
   const isCurrent = weekIdx === curWeek;
   const runsLogged = w.runs.filter((_,ri)=>state[runKey(weekIdx,ri)]).length;
   const allDone = runsLogged === w.runs.length;
-  const weekDate = new Date(PLAN_START);
-  weekDate.setDate(weekDate.getDate() + weekIdx * 7);
-  const dateStr = weekDate.toLocaleDateString('it-IT',{day:'numeric',month:'short'});
+  const mondayDate = getRunDate(weekIdx, 'Lunedì');
+  const sundayDate = getRunDate(weekIdx, 'Domenica');
+  const dateStr = `${formatShortDate(mondayDate)} – ${formatShortDate(sundayDate)}`;
 
   const dots = w.runs.map((_,ri)=>`<div class="run-dot ${state[runKey(weekIdx,ri)]?'done':''}"></div>`).join('');
 
@@ -891,6 +995,275 @@ function calcWeekAvgHR(weekIdx) {
   return Math.round(hrs.reduce((a,b)=>a+b,0)/hrs.length)+' bpm';
 }
 
+// ===== TREND CHARTS =====
+function paceStrToSec(p) {
+  if(!p || !/^\d+:\d+$/.test(p)) return null;
+  const [m,s] = p.split(':').map(Number);
+  return m*60+s;
+}
+function secToPaceStr(sec) {
+  const m = Math.floor(sec/60), s = Math.round(sec%60);
+  return `${m}:${String(s).padStart(2,'0')}`;
+}
+function getLoggedRunsChrono() {
+  const rows = [];
+  WEEKS.forEach((w,wi) => {
+    w.runs.forEach((run,ri) => {
+      const l = state[runKey(wi,ri)];
+      if(!l) return;
+      rows.push({
+        date: getRunDate(wi, run.day),
+        pace: paceStrToSec(l.pace),
+        hr: l.hrAvg ? parseFloat(l.hrAvg) : null,
+        ef: (l.pace && l.hrAvg && paceStrToSec(l.pace)) ? (60000 / paceStrToSec(l.pace)) / parseFloat(l.hrAvg) : null,
+        label: `${w.label} · ${run.day} · ${formatShortDate(getRunDate(wi, run.day))}`
+      });
+    });
+  });
+  rows.sort((a,b)=>a.date-b.date);
+  return rows;
+}
+
+function niceTicks(min, max, count) {
+  const range = (max - min) || 1;
+  const rawStep = range / Math.max(count - 1, 1);
+  const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const norm = rawStep / mag;
+  const step = (norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10) * mag;
+  const niceMin = Math.ceil(min / step) * step;
+  const out = [];
+  for (let v = niceMin; v <= max + step * 0.001; v += step) out.push(v);
+  return out;
+}
+function niceTicksSeconds(min, max) {
+  const candidates = [15, 30, 60, 90, 120, 180, 300, 600, 900];
+  const range = max - min || 1;
+  const step = candidates.find(s => range / s <= 5) || candidates[candidates.length - 1];
+  const niceMin = Math.ceil(min / step) * step;
+  const out = [];
+  for (let v = niceMin; v <= max + step * 0.001; v += step) out.push(v);
+  return out;
+}
+
+function svgCoord(svg, clientX, clientY) {
+  const rect = svg.getBoundingClientRect();
+  const vb = svg.viewBox.baseVal;
+  return {
+    x: (clientX - rect.left) * (vb.width / rect.width),
+    y: (clientY - rect.top) * (vb.height / rect.height)
+  };
+}
+
+function renderLineChart(wrapId, rows, opts) {
+  const wrap = document.getElementById(wrapId);
+  const valid = rows.filter(r => r.value !== null && r.value !== undefined);
+  if (valid.length < 2) {
+    wrap.innerHTML = `<div class="chart-empty">Servono almeno 2 corse registrate con questo dato.</div>`;
+    return;
+  }
+  const W = 600, H = 160, padL = 30, padR = 10, padT = 14, padB = 20;
+  const dates = valid.map(r => r.date.getTime());
+  const values = valid.map(r => r.value);
+  const minDate = Math.min(...dates), maxDate = Math.max(...dates);
+  let minV = Math.min(...values), maxV = Math.max(...values);
+  if (opts.refValue !== undefined) { minV = Math.min(minV, opts.refValue); maxV = Math.max(maxV, opts.refValue); }
+  const vSpan = (maxV - minV) || 1;
+  minV -= vSpan * 0.15; maxV += vSpan * 0.15;
+
+  const xOf = t => padL + (maxDate > minDate ? (t - minDate) / (maxDate - minDate) : 0.5) * (W - padL - padR);
+  const yOf = v => {
+    const norm = (v - minV) / (maxV - minV);
+    return opts.invert ? padT + norm * (H - padT - padB) : padT + (1 - norm) * (H - padT - padB);
+  };
+
+  const points = valid.map(r => ({ x: xOf(r.date.getTime()), y: yOf(r.value), r }));
+  const path = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+
+  const tickVals = opts.secondsTicks ? niceTicksSeconds(minV, maxV) : niceTicks(minV, maxV, 4);
+  const ticks = tickVals.map(v => ({ v, y: yOf(v) }));
+
+  let refLineSvg = '';
+  if (opts.refValue !== undefined) {
+    const ry = yOf(opts.refValue);
+    refLineSvg = `<line x1="${padL}" y1="${ry.toFixed(1)}" x2="${W - padR}" y2="${ry.toFixed(1)}" class="chart-refline"/>
+      <text x="${padL + 4}" y="${(ry - 4).toFixed(1)}" text-anchor="start" class="chart-axis-label">${opts.refLabel || ''}</text>`;
+  }
+
+  let zonesSvg = '';
+  if (opts.zones) {
+    zonesSvg = opts.zones.map(z => {
+      const from = z.from === undefined ? minV : Math.max(z.from, minV);
+      const to = z.to === undefined ? maxV : Math.min(z.to, maxV);
+      if (to <= from) return '';
+      const yTop = yOf(to), yBot = yOf(from);
+      const label = (yBot - yTop) > 10 ? `<text x="${W - padR - 3}" y="${(yTop + 9).toFixed(1)}" text-anchor="end" class="chart-axis-label" style="fill:${z.color}">${z.label}</text>` : '';
+      return `<rect x="${padL}" y="${yTop.toFixed(1)}" width="${W - padL - padR}" height="${(yBot - yTop).toFixed(1)}" fill="${z.color}" opacity="0.1"/>${label}`;
+    }).join('');
+  }
+
+  const gridSvg = ticks.map(t => `<line x1="${padL}" y1="${t.y.toFixed(1)}" x2="${W - padR}" y2="${t.y.toFixed(1)}" class="chart-gridline"/>
+    <text x="${padL - 5}" y="${(t.y + 3).toFixed(1)}" text-anchor="end" class="chart-axis-label">${opts.formatTick(t.v)}</text>`).join('');
+
+  const end = points[points.length - 1];
+  const endLabelSvg = `<text x="${end.x.toFixed(1)}" y="${(end.y - 10).toFixed(1)}" text-anchor="end" class="chart-axis-label" style="fill:${opts.color}">${opts.formatValue(end.r.value)}</text>`;
+
+  const dotsSvg = points.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3" fill="${opts.color}" class="chart-dot"/>`).join('');
+  const hitsSvg = points.map((p, i) => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="10" class="chart-hit" data-i="${i}"/>`).join('');
+
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      ${zonesSvg}
+      ${gridSvg}
+      ${refLineSvg}
+      <path d="${path}" class="chart-line" stroke="${opts.color}"/>
+      ${dotsSvg}
+      <circle cx="${end.x.toFixed(1)}" cy="${end.y.toFixed(1)}" r="4" fill="${opts.color}" class="chart-dot"/>
+      ${endLabelSvg}
+      <line class="chart-crosshair" x1="0" y1="${padT}" x2="0" y2="${H - padB}"/>
+      ${hitsSvg}
+    </svg><div class="chart-tooltip"></div>`;
+
+  const svg = wrap.querySelector('svg');
+  const crosshair = wrap.querySelector('.chart-crosshair');
+  const tooltip = wrap.querySelector('.chart-tooltip');
+  const wrapRect = () => wrap.getBoundingClientRect();
+
+  function showPoint(idx) {
+    const p = points[idx];
+    crosshair.setAttribute('x1', p.x.toFixed(1));
+    crosshair.setAttribute('x2', p.x.toFixed(1));
+    crosshair.style.opacity = '1';
+    const label = document.createElement('div');
+    label.className = 'ctt-label';
+    label.textContent = p.r.label;
+    const val = document.createElement('div');
+    val.className = 'ctt-val';
+    val.style.color = opts.color;
+    val.textContent = opts.formatValue(p.r.value);
+    tooltip.innerHTML = '';
+    tooltip.appendChild(label);
+    tooltip.appendChild(val);
+    const scale = wrapRect().width / W;
+    tooltip.style.left = (p.x * scale) + 'px';
+    tooltip.style.top = (p.y * scale - 6) + 'px';
+    tooltip.style.opacity = '1';
+  }
+  function hide() {
+    crosshair.style.opacity = '0';
+    tooltip.style.opacity = '0';
+  }
+  svg.addEventListener('pointermove', e => {
+    const pt = svgCoord(svg, e.clientX, e.clientY);
+    let nearest = 0, best = Infinity;
+    points.forEach((p, i) => { const d = Math.abs(p.x - pt.x); if (d < best) { best = d; nearest = i; } });
+    showPoint(nearest);
+  });
+  svg.addEventListener('pointerleave', hide);
+}
+
+function renderKmBarChart(wrapId, legendId) {
+  const wrap = document.getElementById(wrapId);
+  const legend = document.getElementById(legendId);
+  legend.innerHTML = `
+    <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:var(--accent)"></div>Effettivo</div>
+    <div class="chart-legend-item"><div class="chart-legend-swatch" style="border:1.5px solid var(--text-sec);background:transparent"></div>Target</div>`;
+
+  const cur = getCurrentWeekIdx();
+  const weeksData = [];
+  for (let wi = 0; wi <= cur; wi++) {
+    const w = WEEKS[wi];
+    const actual = parseFloat(calcWeekActualKm(wi));
+    weeksData.push({ label: w.label, target: w.totalKm, actual: isNaN(actual) ? 0 : actual });
+  }
+  if (weeksData.length < 1) {
+    wrap.innerHTML = `<div class="chart-empty">Nessuna settimana ancora iniziata.</div>`;
+    return;
+  }
+
+  const W = 600, H = 180, padL = 30, padR = 10, padT = 10, padB = 22;
+  const maxV = Math.max(...weeksData.map(d => Math.max(d.target, d.actual))) * 1.15 || 10;
+  const bandW = (W - padL - padR) / weeksData.length;
+  const barW = Math.min(22, bandW * 0.32);
+  const gap = 3;
+  const yOf = v => padT + (1 - v / maxV) * (H - padT - padB);
+  const baseline = H - padB;
+
+  const ticks = [0, 0.5, 1].map(f => ({ v: maxV * f, y: yOf(maxV * f) }));
+  const gridSvg = ticks.map(t => `<line x1="${padL}" y1="${t.y.toFixed(1)}" x2="${W - padR}" y2="${t.y.toFixed(1)}" class="chart-gridline"/>
+    <text x="${padL - 5}" y="${(t.y + 3).toFixed(1)}" text-anchor="end" class="chart-axis-label">${Math.round(t.v)}</text>`).join('');
+
+  let bars = '', hits = '', xlabels = '';
+  weeksData.forEach((d, i) => {
+    const cx = padL + bandW * (i + 0.5);
+    const tX = cx - gap / 2 - barW;
+    const aX = cx + gap / 2;
+    const tY = yOf(d.target), aY = yOf(d.actual);
+    bars += `<rect x="${tX.toFixed(1)}" y="${tY.toFixed(1)}" width="${barW}" height="${(baseline - tY).toFixed(1)}" rx="4" class="chart-bar-target"/>`;
+    bars += `<rect x="${aX.toFixed(1)}" y="${aY.toFixed(1)}" width="${barW}" height="${(baseline - aY).toFixed(1)}" rx="4" class="chart-bar-actual"/>`;
+    hits += `<rect x="${(tX - 2).toFixed(1)}" y="${padT}" width="${(barW * 2 + gap + 4).toFixed(1)}" height="${(baseline - padT).toFixed(1)}" class="chart-bar-hit" data-i="${i}"/>`;
+    xlabels += `<text x="${cx.toFixed(1)}" y="${H - 4}" text-anchor="middle" class="chart-axis-label">${d.label.replace('S', '')}</text>`;
+  });
+
+  wrap.innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      ${gridSvg}
+      <line x1="${padL}" y1="${baseline}" x2="${W - padR}" y2="${baseline}" class="chart-gridline"/>
+      ${bars}
+      ${xlabels}
+      ${hits}
+    </svg><div class="chart-tooltip"></div>`;
+
+  const svg = wrap.querySelector('svg');
+  const tooltip = wrap.querySelector('.chart-tooltip');
+  const W_ = W;
+  svg.querySelectorAll('.chart-bar-hit').forEach(hit => {
+    hit.addEventListener('pointermove', e => {
+      const i = Number(hit.dataset.i);
+      const d = weeksData[i];
+      const rect = wrap.getBoundingClientRect();
+      const scale = rect.width / W_;
+      const pt = svgCoord(svg, e.clientX, e.clientY);
+      const label = document.createElement('div');
+      label.className = 'ctt-label';
+      label.textContent = d.label;
+      const valA = document.createElement('div');
+      valA.className = 'ctt-val';
+      valA.style.color = 'var(--accent)';
+      valA.textContent = `Effettivo: ${d.actual.toFixed(1)} km`;
+      const valT = document.createElement('div');
+      valT.className = 'ctt-val';
+      valT.style.color = 'var(--text-sec)';
+      valT.textContent = `Target: ${d.target} km`;
+      tooltip.innerHTML = '';
+      tooltip.appendChild(label);
+      tooltip.appendChild(valA);
+      tooltip.appendChild(valT);
+      tooltip.style.left = (pt.x * scale) + 'px';
+      tooltip.style.top = (yOf(Math.max(d.target, d.actual)) * scale - 6) + 'px';
+      tooltip.style.opacity = '1';
+    });
+    hit.addEventListener('pointerleave', () => { tooltip.style.opacity = '0'; });
+  });
+}
+
+function renderTrendSection() {
+  const rows = getLoggedRunsChrono();
+  renderLineChart('chart-ef-wrap',
+    rows.map(r => ({ date: r.date, value: r.ef, label: r.label })),
+    { color: 'var(--success)', invert: false, formatValue: v => v.toFixed(2), formatTick: v => v.toFixed(2) });
+  renderLineChart('chart-pace-wrap',
+    rows.map(r => ({ date: r.date, value: r.pace, label: r.label })),
+    { color: 'var(--accent)', invert: true, secondsTicks: true, formatValue: secToPaceStr, formatTick: secToPaceStr });
+  renderLineChart('chart-hr-wrap',
+    rows.map(r => ({ date: r.date, value: r.hr, label: r.label })),
+    { color: 'var(--text)', invert: false, formatValue: v => Math.round(v) + ' bpm', formatTick: v => Math.round(v),
+      zones: [
+        { to: 150, color: '#4AE89B', label: 'Z2' },
+        { from: 150, to: 166, color: '#F0A030', label: 'Z3' },
+        { from: 166, to: 184, color: '#E8614A', label: 'Z4' },
+        { from: 184, color: '#C8A0E8', label: 'Z5' }
+      ] });
+  renderKmBarChart('chart-km-wrap', 'chart-km-legend');
+}
+
 function renderPhase(phaseIdx) {
   const ph = PHASES[phaseIdx];
   const weekIndices = WEEKS.map((w,i)=>({w,i})).filter(({w})=>w.p===ph.id);
@@ -922,6 +1295,7 @@ function renderAll() {
   }
   updateSidebar();
   updateOverallProgress();
+  renderTrendSection();
 }
 
 function toggleWeek(idx) {
@@ -1168,9 +1542,15 @@ function askClaude(weekIdx) {
 }
 
 // ===== NAVIGATION =====
+function toggleSidebar(force) {
+  const open = typeof force === 'boolean' ? force : !document.getElementById('sidebar').classList.contains('open');
+  document.getElementById('sidebar').classList.toggle('open', open);
+  document.getElementById('sidebar-backdrop').classList.toggle('open', open);
+}
 function scrollToEl(id) {
   const el = document.getElementById(id);
   if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  toggleSidebar(false);
 }
 function scrollToPhase(phaseId) {
   const el = document.getElementById(`phase-section-${phaseId}`);
@@ -1178,6 +1558,7 @@ function scrollToPhase(phaseId) {
   document.querySelectorAll('.phase-nav-item').forEach((item,i)=>{
     item.classList.toggle('active', i===phaseId-1);
   });
+  toggleSidebar(false);
 }
 
 // Close modal on overlay click
