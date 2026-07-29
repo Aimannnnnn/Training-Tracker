@@ -2,11 +2,14 @@
 // - Serves the live Desktop HTML on every non-API route (edits show up immediately).
 // - Injects a small sync shim so progress is stored on THIS PC and shared across devices.
 // - Simple single-user login (session cookie) protects both the page and the API.
-// - GET  /api/state  -> returns the saved state JSON (or "{}")  [auth required]
-// - POST /api/state  -> overwrites the saved state with the request body [auth required]
-// - GET  /login      -> login form
-// - POST /api/login  -> checks credentials, sets session cookie
-// - POST /api/logout -> clears session cookie
+// - GET  /api/state    -> returns the saved state JSON (or "{}")  [auth required]
+// - POST /api/state    -> overwrites the saved state with the request body [auth required]
+// - GET  /login        -> login form
+// - POST /api/login    -> checks credentials, sets session cookie
+// - POST /api/logout   -> clears session cookie
+// - POST /api/log-run  -> auto-imports one run from the iOS Shortcuts automation,
+//                         authenticated by a separate long-lived key (X-Log-Key
+//                         header), not the browser session cookie.
 const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -25,6 +28,39 @@ const PORT  = process.env.PORT ? Number(process.env.PORT) : 8787;
 const COOKIE_NAME = 'vsid';
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 giorni
 
+// Mirrors the plan structure in tracker.html (PLAN_START, WEEKS day pattern) so
+// the server can map a run's calendar date to a (week, run) slot on its own,
+// without parsing the HTML. Keep in sync if the weekly day pattern ever changes.
+const PLAN_START = new Date('2026-06-09');
+const TOTAL_WEEKS = 26;
+const DAY_OFFSET = { 'Lunedì': -1, 'Martedì': 0, 'Mercoledì': 1, 'Giovedì': 2, 'Venerdì': 3, 'Sabato': 4, 'Domenica': 5 };
+const WEEK_DAYS = (weekIdx) => weekIdx === 0 ? ['Martedì', 'Giovedì', 'Sabato'] : ['Lunedì', 'Martedì', 'Venerdì', 'Domenica'];
+function runDateFor(weekIdx, dayName) {
+  const d = new Date(PLAN_START);
+  d.setDate(d.getDate() + weekIdx * 7 + (DAY_OFFSET[dayName] ?? 0));
+  return d;
+}
+function sameCalendarDay(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+// Finds the (week, run) slot whose scheduled day matches the given date, only
+// considering weeks near "now" and slots not already logged, so a run on an
+// unexpected weekday doesn't silently overwrite something else.
+function findRunSlot(date, state) {
+  const approxWeek = Math.max(0, Math.min(Math.floor((date - PLAN_START) / (7 * 86400000)), TOTAL_WEEKS - 1));
+  for (const wi of [approxWeek, approxWeek - 1, approxWeek + 1]) {
+    if (wi < 0 || wi >= TOTAL_WEEKS) continue;
+    const days = WEEK_DAYS(wi);
+    for (let ri = 0; ri < days.length; ri++) {
+      if (sameCalendarDay(runDateFor(wi, days[ri]), date)) {
+        const key = `w${wi}_r${ri}`;
+        if (!state[key]) return { weekIdx: wi, runIdx: ri, key, day: days[ri] };
+      }
+    }
+  }
+  return null;
+}
+
 // ---- credentials ----
 // auth.json holds a list of users, each with a role: 'admin' (read/write) or
 // 'readonly' (view only — the server rejects their POST /api/state regardless
@@ -33,15 +69,25 @@ const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 giorni
 // password written once to CREDENTIALS.txt (gitignored — read it, note the
 // password, then delete the file).
 function bootstrapAuth() {
-  if (fs.existsSync(AUTH)) return;
-  const username = process.env.AUTH_USERNAME || 'aiman';
-  const password = process.env.AUTH_PASSWORD || crypto.randomBytes(9).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
-  const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.scryptSync(password, salt, 64).toString('hex');
-  fs.writeFileSync(AUTH, JSON.stringify({ users: [{ username, salt, hash, role: 'admin' }] }, null, 2));
-  if (!process.env.AUTH_PASSWORD) {
-    fs.writeFileSync(CREDENTIALS_OUT, `username: ${username}\npassword: ${password}\n(cancella questo file dopo averla salvata altrove)\n`);
-    console.log('Credenziali generate — vedi ' + CREDENTIALS_OUT);
+  if (!fs.existsSync(AUTH)) {
+    const username = process.env.AUTH_USERNAME || 'aiman';
+    const password = process.env.AUTH_PASSWORD || crypto.randomBytes(9).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 12);
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.scryptSync(password, salt, 64).toString('hex');
+    fs.writeFileSync(AUTH, JSON.stringify({ users: [{ username, salt, hash, role: 'admin' }] }, null, 2));
+    if (!process.env.AUTH_PASSWORD) {
+      fs.writeFileSync(CREDENTIALS_OUT, `username: ${username}\npassword: ${password}\n(cancella questo file dopo averla salvata altrove)\n`);
+      console.log('Credenziali generate — vedi ' + CREDENTIALS_OUT);
+    }
+  }
+  // logKey authenticates the separate /api/log-run ingestion endpoint (used by
+  // the iOS Shortcuts automation) — independent of the user login system.
+  const auth = loadAuth();
+  if (auth && !auth.logKey) {
+    auth.logKey = crypto.randomBytes(24).toString('hex');
+    fs.writeFileSync(AUTH, JSON.stringify(auth, null, 2));
+    fs.appendFileSync(CREDENTIALS_OUT, `log-run key: ${auth.logKey}\n`);
+    console.log('Chiave log-run generata — vedi ' + CREDENTIALS_OUT);
   }
 }
 bootstrapAuth();
@@ -214,6 +260,59 @@ http.createServer((req, res) => {
     clearSessionCookie(res);
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end('{"ok":true}');
+    return;
+  }
+
+  if (req.url === '/api/log-run' && req.method === 'POST') {
+    const auth = loadAuth();
+    const providedKey = req.headers['x-log-key'];
+    const validKey = auth && auth.logKey && providedKey &&
+      Buffer.byteLength(providedKey) === Buffer.byteLength(auth.logKey) &&
+      crypto.timingSafeEqual(Buffer.from(providedKey), Buffer.from(auth.logKey));
+    if (!validKey) {
+      res.writeHead(401, { 'Content-Type': 'application/json' });
+      res.end('{"ok":false,"error":"invalid log key"}');
+      return;
+    }
+    let body = '';
+    req.on('data', c => { body += c; if (body.length > 1e4) req.destroy(); });
+    req.on('end', () => {
+      try {
+        const payload = JSON.parse(body || '{}');
+        const distanceKm = Number(payload.distanceKm);
+        const durationSec = Number(payload.durationSec);
+        if (!distanceKm || !durationSec) throw new Error('distanceKm and durationSec are required');
+        const date = payload.date ? new Date(payload.date) : new Date();
+        if (isNaN(date.getTime())) throw new Error('invalid date');
+
+        const state = JSON.parse(readState());
+        const slot = findRunSlot(date, state);
+        if (!slot) {
+          res.writeHead(409, { 'Content-Type': 'application/json' });
+          res.end('{"ok":false,"error":"no matching empty slot found near this date"}');
+          return;
+        }
+
+        const paceSec = durationSec / distanceKm;
+        const pace = `${Math.floor(paceSec / 60)}:${String(Math.round(paceSec % 60)).padStart(2, '0')}`;
+        state[slot.key] = {
+          dist: String(Math.round(distanceKm * 100) / 100),
+          pace,
+          hrAvg: payload.hrAvg ? String(Math.round(payload.hrAvg)) : '',
+          hrMax: payload.hrMax ? String(Math.round(payload.hrMax)) : '',
+          rpe: null,
+          notes: 'Auto-importato da Apple Health (Shortcuts).',
+          shoe: '',
+          loggedAt: date.toISOString()
+        };
+        fs.writeFileSync(STATE, JSON.stringify(state));
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: true, slot: slot.key, day: slot.day, week: slot.weekIdx + 1 }));
+      } catch (e) {
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ ok: false, error: e.message }));
+      }
+    });
     return;
   }
 
