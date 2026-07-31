@@ -185,6 +185,13 @@ main{flex:1;padding:2rem;overflow-y:auto;max-width:960px;}
 .btn-secondary:hover{border-color:var(--border-raised);color:var(--text);}
 .btn-danger{padding:10px 14px;background:transparent;border:1px solid rgba(232,97,74,0.3);color:var(--danger);border-radius:6px;font-size:13px;cursor:pointer;font-family:'Inter',sans-serif;}
 .btn-danger:hover{background:rgba(232,97,74,0.1);}
+.skip-toggle-row{padding:10px 12px;background:var(--surface-raised);border:1px solid var(--border);border-radius:6px;}
+.skip-toggle-label{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text-sec);cursor:pointer;}
+.skip-toggle-label input{width:16px;height:16px;accent-color:var(--warning);cursor:pointer;}
+.run-skipped-box{background:rgba(240,160,48,0.08);border:1px solid rgba(240,160,48,0.25);border-radius:6px;padding:8px 10px;margin-top:8px;}
+.run-skipped-title{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--warning);margin-bottom:4px;}
+.run-skipped-reason{font-size:11px;color:var(--text-sec);font-style:italic;}
+.run-dot.skipped{background:var(--warning);}
 
 /* MINI GRAPH */
 .week-graph{height:24px;display:flex;align-items:flex-end;gap:2px;margin:8px 0;}
@@ -612,6 +619,13 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     <div class="modal-title" id="modal-title">Registra corsa</div>
     <div class="modal-sub" id="modal-sub"></div>
     <div class="modal-target-row" id="modal-targets"></div>
+    <div class="form-group skip-toggle-row">
+      <label class="skip-toggle-label">
+        <input type="checkbox" id="inp-skip" onchange="onSkipToggle()">
+        Salta questa corsa (infortunio, malattia, ecc.)
+      </label>
+    </div>
+    <div id="modal-fields">
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Distanza percorsa (km)</label>
@@ -650,6 +664,7 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
         <div class="rpe-btn" onclick="selectRpe(9)">9</div>
         <div class="rpe-btn" onclick="selectRpe(10)">10</div>
       </div>
+    </div>
     </div>
     <div class="form-group">
       <label class="form-label">Note libere</label>
@@ -906,7 +921,11 @@ function renderRunCard(weekIdx, runIdx, run) {
       <div class="run-target"><div class="rt-label">Zona</div><div class="rt-val mono">${run.zone}</div></div>
     </div>
     <div class="run-desc">${run.desc}</div>
-    ${logged ? `<div class="run-actual">
+    ${logged && logged.skipped ? `<div class="run-skipped-box">
+      <div class="run-skipped-title">⏸ Saltata</div>
+      ${logged.notes ? `<div class="run-skipped-reason">${logged.notes}</div>` : ''}
+    </div>` : ''}
+    ${logged && !logged.skipped ? `<div class="run-actual">
       <div class="run-actual-title">✓ Completata</div>
       <div class="run-actual-grid">
         <div class="ra-item"><div class="ra-label">Distanza</div><div class="ra-val">${logged.dist||'—'} km</div></div>
@@ -932,7 +951,10 @@ function renderWeek(weekIdx) {
   const sundayDate = getRunDate(weekIdx, 'Domenica');
   const dateStr = `${formatShortDate(mondayDate)} – ${formatShortDate(sundayDate)}`;
 
-  const dots = w.runs.map((_,ri)=>`<div class="run-dot ${state[runKey(weekIdx,ri)]?'done':''}"></div>`).join('');
+  const dots = w.runs.map((_,ri)=>{
+    const l = state[runKey(weekIdx,ri)];
+    return `<div class="run-dot ${l ? (l.skipped ? 'skipped' : 'done') : ''}"></div>`;
+  }).join('');
 
   const isRaceWeek = weekIdx === 25;
   if (isRaceWeek) {
@@ -1366,14 +1388,21 @@ function openModal(weekIdx, runIdx) {
   document.getElementById('inp-hr-avg').value = existing?.hrAvg||'';
   document.getElementById('inp-hr-max').value = existing?.hrMax||'';
   document.getElementById('inp-notes').value = existing?.notes||'';
+  document.getElementById('inp-skip').checked = !!existing?.skipped;
   populateShoeSelect(existing?.shoe||'');
 
   document.querySelectorAll('.rpe-btn').forEach((btn,i)=>{
     btn.classList.toggle('selected', (i+1)==selectedRpe);
   });
 
+  onSkipToggle();
   document.getElementById('btn-delete').style.display = existing ? 'block' : 'none';
   document.getElementById('modal-overlay').classList.add('open');
+}
+
+function onSkipToggle() {
+  const skip = document.getElementById('inp-skip').checked;
+  document.getElementById('modal-fields').style.display = skip ? 'none' : '';
 }
 
 function closeModal() {
@@ -1391,7 +1420,13 @@ function selectRpe(val) {
 function saveRun() {
   if(!currentModal) return;
   const {weekIdx, runIdx, key} = currentModal;
-  const data = {
+  const skipped = document.getElementById('inp-skip').checked;
+  const data = skipped ? {
+    skipped: true,
+    dist: '', pace: '', hrAvg: '', hrMax: '', rpe: null, shoe: '',
+    notes: document.getElementById('inp-notes').value,
+    loggedAt: new Date().toISOString(),
+  } : {
     dist: document.getElementById('inp-dist').value,
     pace: document.getElementById('inp-pace').value,
     hrAvg: document.getElementById('inp-hr-avg').value,
