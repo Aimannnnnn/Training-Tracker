@@ -47,6 +47,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .cd-sep{font-family:'DM Mono',monospace;font-size:20px;color:var(--text-muted);margin-bottom:4px;}
 .header-goal{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-sec);letter-spacing:0.05em;}
 .header-goal strong{color:var(--accent);}
+.lang-switch{margin-left:0.75rem;flex-shrink:0;}
+.lang-switch select{background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:6px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.05em;padding:5px 8px;cursor:pointer;}
+.lang-switch select:hover{border-color:var(--accent);}
+.lang-switch select:focus{outline:none;border-color:var(--accent);}
+@media(max-width:820px){.lang-switch{margin-left:0.5rem;}.lang-switch select{font-size:10px;padding:4px 6px;}}
 
 /* LAYOUT */
 .app{display:flex;flex:1;}
@@ -313,14 +318,15 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
   <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
   <div class="logo">AIMAN <span>→</span> VALENCIA 2026</div>
   <div class="countdown-wrap">
-    <div class="header-goal">obiettivo <strong>5:15</strong> · cutoff <strong>5:30</strong> da battere · passo gara <strong>7:28</strong>/km · FC max <strong>202</strong></div>
+    <div class="header-goal" data-i18n="hdr.goal">obiettivo <strong>5:15</strong> · cutoff <strong>5:30</strong> da battere · passo gara <strong>7:28</strong>/km · FC max <strong>202</strong></div>
     <div class="countdown">
-      <div class="cd-block"><div class="cd-num mono" id="cd-days">--</div><div class="cd-label">giorni</div></div>
+      <div class="cd-block"><div class="cd-num mono" id="cd-days">--</div><div class="cd-label" data-i18n="cd.days">giorni</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-block"><div class="cd-num mono" id="cd-hours">--</div><div class="cd-label">ore</div></div>
+      <div class="cd-block"><div class="cd-num mono" id="cd-hours">--</div><div class="cd-label" data-i18n="cd.hours">ore</div></div>
       <div class="cd-sep">:</div>
-      <div class="cd-block"><div class="cd-num mono" id="cd-mins">--</div><div class="cd-label">min</div></div>
+      <div class="cd-block"><div class="cd-num mono" id="cd-mins">--</div><div class="cd-label" data-i18n="cd.mins">min</div></div>
     </div>
+    <div class="lang-switch"><select id="lang-select" onchange="setLang(this.value)" aria-label="Lingua / Language"><option value="it">IT · Italiano</option><option value="en">EN · English</option></select></div>
   </div>
 </header>
 
@@ -328,83 +334,83 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar(false)"></div>
 <aside id="sidebar">
   <div class="sidebar-section">
-    <div class="sidebar-label">Fasi</div>
+    <div class="sidebar-label" data-i18n="sb.phases">Fasi</div>
     <div class="phase-nav-item active" onclick="scrollToPhase(1)" id="nav-phase-1">
       <div class="phase-dot" style="background:var(--phase1)"></div>
-      <div class="phase-nav-name">Base aerobica</div>
-      <div class="phase-nav-weeks">S1–8</div>
+      <div class="phase-nav-name" data-i18n="sb.ph1">Base aerobica</div>
+      <div class="phase-nav-weeks" data-i18n="sb.ph1w">S1–8</div>
     </div>
     <div class="phase-nav-item" onclick="scrollToPhase(2)" id="nav-phase-2">
       <div class="phase-dot" style="background:var(--phase2)"></div>
-      <div class="phase-nav-name">Sviluppo</div>
-      <div class="phase-nav-weeks">S9–16</div>
+      <div class="phase-nav-name" data-i18n="sb.ph2">Sviluppo</div>
+      <div class="phase-nav-weeks" data-i18n="sb.ph2w">S9–16</div>
     </div>
     <div class="phase-nav-item" onclick="scrollToPhase(3)" id="nav-phase-3">
       <div class="phase-dot" style="background:var(--phase3)"></div>
-      <div class="phase-nav-name">Picco</div>
-      <div class="phase-nav-weeks">S17–22</div>
+      <div class="phase-nav-name" data-i18n="sb.ph3">Picco</div>
+      <div class="phase-nav-weeks" data-i18n="sb.ph3w">S17–22</div>
     </div>
     <div class="phase-nav-item" onclick="scrollToPhase(4)" id="nav-phase-4">
       <div class="phase-dot" style="background:var(--phase4)"></div>
-      <div class="phase-nav-name">Taper</div>
-      <div class="phase-nav-weeks">S23–26</div>
+      <div class="phase-nav-name" data-i18n="sb.ph4">Taper</div>
+      <div class="phase-nav-weeks" data-i18n="sb.ph4w">S23–26</div>
     </div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">
-    <div class="sidebar-label">Progresso</div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Corse completate</span><span class="sidebar-stat-val accent" id="sb-done">0/103</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Km totali</span><span class="sidebar-stat-val" id="sb-km">0 km</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Sett. corrente</span><span class="sidebar-stat-val" id="sb-week">—</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Fase corrente</span><span class="sidebar-stat-val" id="sb-phase">Base</span></div>
+    <div class="sidebar-label" data-i18n="sb.progress">Progresso</div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.runsDone">Corse completate</span><span class="sidebar-stat-val accent" id="sb-done">0/103</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.totalKm">Km totali</span><span class="sidebar-stat-val" id="sb-km">0 km</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.curWeek">Sett. corrente</span><span class="sidebar-stat-val" id="sb-week">—</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.curPhase">Fase corrente</span><span class="sidebar-stat-val" id="sb-phase">Base</span></div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="zone-ref">
-    <div class="sidebar-label">Zone FC (max 202 · ripos. 63)</div>
-    <div class="zone-item"><div class="zone-pip" style="background:#4AE89B"></div><div class="zone-text"><strong>Z2</strong> &lt;150 · facile/conversaz.</div></div>
-    <div class="zone-item"><div class="zone-pip" style="background:#F0A030"></div><div class="zone-text"><strong>Z3</strong> 151–166 · moderato</div></div>
-    <div class="zone-item"><div class="zone-pip" style="background:#E8614A"></div><div class="zone-text"><strong>Z4</strong> 167–184 · soglia/gara</div></div>
-    <div class="zone-item"><div class="zone-pip" style="background:#C8A0E8"></div><div class="zone-text"><strong>Z5</strong> &gt;184 · massimale</div></div>
+    <div class="sidebar-label" data-i18n="sb.zones">Zone FC (max 202 · ripos. 63)</div>
+    <div class="zone-item"><div class="zone-pip" style="background:#4AE89B"></div><div class="zone-text" data-i18n="sb.z2"><strong>Z2</strong> &lt;150 · facile/conversaz.</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#F0A030"></div><div class="zone-text" data-i18n="sb.z3"><strong>Z3</strong> 151–166 · moderato</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#E8614A"></div><div class="zone-text" data-i18n="sb.z4"><strong>Z4</strong> 167–184 · soglia/gara</div></div>
+    <div class="zone-item"><div class="zone-pip" style="background:#C8A0E8"></div><div class="zone-text" data-i18n="sb.z5"><strong>Z5</strong> &gt;184 · massimale</div></div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">
-    <div class="sidebar-label">Settimana tipo</div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Lun</span><span class="sidebar-stat-val">Push + facile</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Mar</span><span class="sidebar-stat-val accent">Qualità</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Mer</span><span class="sidebar-stat-val">Pull</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Gio</span><span class="sidebar-stat-val">Gambe (ridotte)</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Ven</span><span class="sidebar-stat-val">Facile 45–60'</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Sab</span><span class="sidebar-stat-val">Riposo</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-label">Dom</span><span class="sidebar-stat-val accent">Lungo</span></div>
+    <div class="sidebar-label" data-i18n="sb.typWeek">Settimana tipo</div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.mon">Lun</span><span class="sidebar-stat-val" data-i18n="sb.vMon">Push + facile</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.tue">Mar</span><span class="sidebar-stat-val accent" data-i18n="sb.vTue">Qualità</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.wed">Mer</span><span class="sidebar-stat-val" data-i18n="sb.vWed">Pull</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.thu">Gio</span><span class="sidebar-stat-val" data-i18n="sb.vThu">Gambe (ridotte)</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.fri">Ven</span><span class="sidebar-stat-val" data-i18n="sb.vFri">Facile 45–60'</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.sat">Sab</span><span class="sidebar-stat-val" data-i18n="sb.vSat">Riposo</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-label" data-i18n="sb.sun">Dom</span><span class="sidebar-stat-val accent" data-i18n="sb.vSun">Lungo</span></div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">
-    <div class="sidebar-label">Andamento</div>
-    <div class="phase-nav-item" onclick="scrollToEl('trend-section')"><div class="phase-dot" style="background:var(--accent)"></div><div class="phase-nav-name">Grafici progressi</div></div>
+    <div class="sidebar-label" data-i18n="sb.trend">Andamento</div>
+    <div class="phase-nav-item" onclick="scrollToEl('trend-section')"><div class="phase-dot" style="background:var(--accent)"></div><div class="phase-nav-name" data-i18n="sb.trendItem">Grafici progressi</div></div>
   </div>
   <div class="sidebar-divider"></div>
   <div class="sidebar-section">
-    <div class="sidebar-label">Guide</div>
-    <div class="phase-nav-item" onclick="scrollToEl('guide-stretching')"><div class="phase-dot" style="background:#7AB8F0"></div><div class="phase-nav-name">Stretching &amp; mobilità</div></div>
-    <div class="phase-nav-item" onclick="scrollToEl('guide-nutrition')"><div class="phase-dot" style="background:#4AE89B"></div><div class="phase-nav-name">Alimentazione</div></div>
-    <div class="phase-nav-item" onclick="scrollToEl('guide-fueling')"><div class="phase-dot" style="background:#F0A030"></div><div class="phase-nav-name">Nutrizione in corsa</div></div>
-    <div class="phase-nav-item" onclick="scrollToEl('guide-shoes')"><div class="phase-dot" style="background:#E8614A"></div><div class="phase-nav-name">Scarpe / km</div></div>
+    <div class="sidebar-label" data-i18n="sb.guides">Guide</div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-stretching')"><div class="phase-dot" style="background:#7AB8F0"></div><div class="phase-nav-name" data-i18n="sb.gStretch">Stretching &amp; mobilità</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-nutrition')"><div class="phase-dot" style="background:#4AE89B"></div><div class="phase-nav-name" data-i18n="sb.gNutr">Alimentazione</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-fueling')"><div class="phase-dot" style="background:#F0A030"></div><div class="phase-nav-name" data-i18n="sb.gFuel">Nutrizione in corsa</div></div>
+    <div class="phase-nav-item" onclick="scrollToEl('guide-shoes')"><div class="phase-dot" style="background:#E8614A"></div><div class="phase-nav-name" data-i18n="sb.gShoes">Scarpe / km</div></div>
   </div>
 </aside>
 
 <main id="main-content">
   <div class="overall-progress">
     <div class="progress-header">
-      <span class="progress-title">Progressione piano 26 settimane</span>
+      <span class="progress-title" data-i18n="pr.title">Progressione piano 26 settimane</span>
       <span class="progress-pct" id="overall-pct">0%</span>
     </div>
     <div class="progress-track"><div class="progress-fill" id="overall-bar" style="width:0%"></div></div>
     <div class="progress-markers">
-      <span class="progress-marker">Inizio</span>
-      <span class="progress-marker">Base →</span>
-      <span class="progress-marker">Sviluppo →</span>
-      <span class="progress-marker">Picco →</span>
-      <span class="progress-marker">Valencia</span>
+      <span class="progress-marker" data-i18n="pr.m1">Inizio</span>
+      <span class="progress-marker" data-i18n="pr.m2">Base →</span>
+      <span class="progress-marker" data-i18n="pr.m3">Sviluppo →</span>
+      <span class="progress-marker" data-i18n="pr.m4">Picco →</span>
+      <span class="progress-marker" data-i18n="pr.m5">Valencia</span>
     </div>
   </div>
   <div id="plan-container"></div>
@@ -414,27 +420,27 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     <div class="phase-header">
       <div class="phase-indicator" style="background:var(--accent)"></div>
       <div class="phase-title-wrap">
-        <div class="phase-eyebrow">Andamento</div>
-        <div class="phase-title">Come sta andando l'allenamento</div>
+        <div class="phase-eyebrow" data-i18n="tr.eyebrow">Andamento</div>
+        <div class="phase-title" data-i18n="tr.title">Come sta andando l'allenamento</div>
       </div>
     </div>
     <div class="guide-card wide chart-card">
-      <h4>Indice di efficienza aerobica</h4>
-      <div class="chart-sub">Velocità ottenuta per battito cardiaco (m/min ÷ bpm). Più in alto = più veloce a parità di frequenza cardiaca, cioè miglior efficienza aerobica — è la risposta diretta a "quanto sto migliorando".</div>
+      <h4 data-i18n="tr.ef.h">Indice di efficienza aerobica</h4>
+      <div class="chart-sub" data-i18n="tr.ef.sub">Velocità ottenuta per battito cardiaco (m/min ÷ bpm). Più in alto = più veloce a parità di frequenza cardiaca, cioè miglior efficienza aerobica — è la risposta diretta a "quanto sto migliorando".</div>
       <div class="chart-svg-wrap" id="chart-ef-wrap"></div>
     </div>
     <div class="guide-card wide chart-card">
-      <h4>Passo per corsa</h4>
-      <div class="chart-sub">Più in alto = più veloce. Ogni punto è una corsa registrata.</div>
+      <h4 data-i18n="tr.pace.h">Passo per corsa</h4>
+      <div class="chart-sub" data-i18n="tr.pace.sub">Più in alto = più veloce. Ogni punto è una corsa registrata.</div>
       <div class="chart-svg-wrap" id="chart-pace-wrap"></div>
     </div>
     <div class="guide-card wide chart-card">
-      <h4>Frequenza cardiaca media per corsa</h4>
-      <div class="chart-sub">Sfondo colorato per zona (Z2 verde · Z3 arancio · Z4 rosso · Z5 viola), stessa scala della sidebar.</div>
+      <h4 data-i18n="tr.hr.h">Frequenza cardiaca media per corsa</h4>
+      <div class="chart-sub" data-i18n="tr.hr.sub">Sfondo colorato per zona (Z2 verde · Z3 arancio · Z4 rosso · Z5 viola), stessa scala della sidebar.</div>
       <div class="chart-svg-wrap" id="chart-hr-wrap"></div>
     </div>
     <div class="guide-card wide chart-card">
-      <h4>Km settimanali: target vs effettivo</h4>
+      <h4 data-i18n="tr.km.h">Km settimanali: target vs effettivo</h4>
       <div class="chart-legend" id="chart-km-legend"></div>
       <div class="chart-svg-wrap" id="chart-km-wrap"></div>
     </div>
@@ -445,25 +451,25 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     <div class="phase-header">
       <div class="phase-indicator" style="background:#7AB8F0"></div>
       <div class="phase-title-wrap">
-        <div class="phase-eyebrow">Guida</div>
-        <div class="phase-title">Stretching &amp; mobilità</div>
+        <div class="phase-eyebrow" data-i18n="g.guide">Guida</div>
+        <div class="phase-title" data-i18n="gs.title">Stretching &amp; mobilità</div>
       </div>
     </div>
     <div class="guide-grid">
       <div class="guide-card">
-        <h4>Riscaldamento dinamico — prima di qualità e lungo (5–8')</h4>
-        <ul>
+        <h4 data-i18n="gs.c1.h">Riscaldamento dinamico — prima di qualità e lungo (5–8')</h4>
+        <ul data-i18n="gs.c1.ul">
           <li><strong>Slanci gamba</strong> avanti/indietro e laterali, 10 per lato</li>
           <li><strong>Affondi camminati</strong> con rotazione del busto, 8 per lato</li>
           <li><strong>Skip</strong> basso + calciata, 20 m ciascuno</li>
           <li><strong>Cerchi caviglia</strong> e aperture anca, 10 per lato</li>
           <li>Poi 2–3' di corsa molto lenta prima dei blocchi veloci</li>
         </ul>
-        <div class="guide-note">Mai stretching statico "a freddo" prima di correre: riduce la potenza e non previene infortuni. Il dinamico sì.</div>
+        <div class="guide-note" data-i18n="gs.c1.n">Mai stretching statico "a freddo" prima di correre: riduce la potenza e non previene infortuni. Il dinamico sì.</div>
       </div>
       <div class="guide-card">
-        <h4>Defaticamento — dopo OGNI corsa (10', 30" per posizione)</h4>
-        <ul>
+        <h4 data-i18n="gs.c2.h">Defaticamento — dopo OGNI corsa (10', 30" per posizione)</h4>
+        <ul data-i18n="gs.c2.ul">
           <li><strong>Polpacci</strong> (gastrocnemio a gamba tesa + soleo a gamba piegata)</li>
           <li><strong>Flessori dell'anca</strong> (affondo basso) — prioritari per te</li>
           <li><strong>Femorali</strong> e <strong>quadricipiti</strong></li>
@@ -472,8 +478,8 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Mobilità quotidiana — anche nei giorni di riposo (5–10')</h4>
-        <ul>
+        <h4 data-i18n="gs.c3.h">Mobilità quotidiana — anche nei giorni di riposo (5–10')</h4>
+        <ul data-i18n="gs.c3.ul">
           <li>Anca <strong>90/90</strong> e rotazioni</li>
           <li><strong>Dorsiflessione caviglia</strong> al muro (chiave per la corsa)</li>
           <li>Mobilità <strong>toracica</strong> (rotazioni) + gatto-mucca</li>
@@ -481,13 +487,13 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Foam roller — dopo il lungo e dopo Gambe (15')</h4>
-        <ul>
+        <h4 data-i18n="gs.c4.h">Foam roller — dopo il lungo e dopo Gambe (15')</h4>
+        <ul data-i18n="gs.c4.ul">
           <li>Quadricipiti, <strong>banda IT</strong>, polpacci</li>
           <li>Glutei e schiena bassa</li>
           <li>Lento, fermati 20–30" sui punti dolenti</li>
         </ul>
-        <div class="guide-note">Nota lifter: squat e stacchi accorciano flessori dell'anca e polpacci. Dedicagli attenzione extra: sono le zone da cui partono la maggior parte degli infortuni da corsa.</div>
+        <div class="guide-note" data-i18n="gs.c4.n">Nota lifter: squat e stacchi accorciano flessori dell'anca e polpacci. Dedicagli attenzione extra: sono le zone da cui partono la maggior parte degli infortuni da corsa.</div>
       </div>
     </div>
   </div>
@@ -498,44 +504,44 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
       <div class="phase-indicator" style="background:#4AE89B"></div>
       <div class="phase-title-wrap">
         <div class="phase-eyebrow">Guida</div>
-        <div class="phase-title">Alimentazione (quotidiana)</div>
+        <div class="phase-title" data-i18n="gn.title">Alimentazione (quotidiana)</div>
       </div>
     </div>
     <div class="guide-grid">
       <div class="guide-card">
-        <h4>Proteine — 1.6–2.0 g/kg → ~135–170 g/giorno</h4>
-        <ul>
+        <h4 data-i18n="gn.c1.h">Proteine — 1.6–2.0 g/kg → ~135–170 g/giorno</h4>
+        <ul data-i18n="gn.c1.ul">
           <li>Fai pesi: stai sulla parte <strong>alta</strong> del range</li>
           <li>Distribuisci <strong>30–40 g per pasto</strong> (4 pasti)</li>
           <li>Fonti: uova, carne/pesce, latticini, legumi, whey</li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Carboidrati — periodizzati sul carico</h4>
-        <ul>
+        <h4 data-i18n="gn.c2.h">Carboidrati — periodizzati sul carico</h4>
+        <ul data-i18n="gn.c2.ul">
           <li>Giorni <strong>qualità/lungo</strong> (Mar, Dom): 5–7 g/kg</li>
           <li>Giorni <strong>facili/riposo</strong>: 3–4 g/kg</li>
           <li>Sono il carburante della corsa: <strong>non tagliarli</strong> nei giorni chiave</li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Recupero — entro 30–60' da lungo/qualità</h4>
-        <ul>
+        <h4 data-i18n="gn.c3.h">Recupero — entro 30–60' da lungo/qualità</h4>
+        <ul data-i18n="gn.c3.ul">
           <li><strong>60–80 g carbo + 25–30 g proteine</strong></li>
           <li>Es.: yogurt greco + frutta + miele + granola; o latte cioccolato + banana</li>
           <li>Reidrata: acqua + un pizzico di sale dopo le uscite sudate</li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Idratazione &amp; peso — da ~84 verso 80 kg</h4>
-        <ul>
+        <h4 data-i18n="gn.c4.h">Idratazione &amp; peso — da ~84 verso 80 kg</h4>
+        <ul data-i18n="gn.c4.ul">
           <li>~<strong>35 ml/kg</strong> ≈ 3 L/giorno, di più nei giorni di corsa</li>
           <li>Cala a <strong>0.3–0.4 kg/sett</strong>: ~4 kg = ~10–13 settimane (Fasi 1–2)</li>
           <li>Obiettivo <strong>~80 kg entro S14–16</strong> (test mezza), poi MANTIENI</li>
           <li>Picco/taper (da S17): <strong>mangia abbastanza</strong>, niente deficit</li>
           <li>In deficit tieni <strong>proteine 1.8–2.0 g/kg</strong> per salvare il muscolo</li>
         </ul>
-        <div class="guide-note">Da 87–88 a &lt;84: ottimo, continua piano. I 4 kg verso 80 (~5%) possono valere qualche minuto in maratona — margine prezioso sul cutoff. Guarda il trend settimanale, non la bilancia giornaliera (carbo e acqua oscillano).</div>
+        <div class="guide-note" data-i18n="gn.c4.n">Da 87–88 a &lt;84: ottimo, continua piano. I 4 kg verso 80 (~5%) possono valere qualche minuto in maratona — margine prezioso sul cutoff. Guarda il trend settimanale, non la bilancia giornaliera (carbo e acqua oscillano).</div>
       </div>
     </div>
   </div>
@@ -546,50 +552,50 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
       <div class="phase-indicator" style="background:#F0A030"></div>
       <div class="phase-title-wrap">
         <div class="phase-eyebrow">Guida</div>
-        <div class="phase-title">Nutrizione in corsa</div>
+        <div class="phase-title" data-i18n="gf.title">Nutrizione in corsa</div>
       </div>
     </div>
     <div class="guide-grid">
       <div class="guide-card">
-        <h4>Prima della corsa</h4>
-        <ul>
+        <h4 data-i18n="gf.c1.h">Prima della corsa</h4>
+        <ul data-i18n="gf.c1.ul">
           <li>Corse <strong>&lt;60'</strong>: a digiuno o spuntino leggero, va bene</li>
           <li>Lungo/qualità: <strong>1–2h prima, 40–60 g carbo</strong> (banana, toast+miele, fette biscottate)</li>
           <li>Caffè ok se lo digerisci</li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Durante (corse &gt;75–90')</h4>
-        <ul>
+        <h4 data-i18n="gf.c2.h">Durante (corse &gt;75–90')</h4>
+        <ul data-i18n="gf.c2.ul">
           <li><strong>30–60 g carbo/ora</strong> = 1 gel ogni 30–40'</li>
           <li><strong>Inizia presto</strong> (entro km 8–10), non quando sei già vuoto</li>
           <li>Sempre con un sorso d'acqua per assorbirlo</li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Idratazione &amp; intestino</h4>
-        <ul>
+        <h4 data-i18n="gf.c3.h">Idratazione &amp; intestino</h4>
+        <ul data-i18n="gf.c3.ul">
           <li>Bevi <strong>a sete</strong>; nei lunghi/caldo aggiungi <strong>elettroliti</strong> (sodio)</li>
           <li><strong>Allena l'intestino</strong>: prova gel e quantità nei lunghi (il piano lo prevede)</li>
           <li>Trova la marca che digerisci. <strong>Mai nulla di nuovo il giorno gara</strong></li>
         </ul>
       </div>
       <div class="guide-card">
-        <h4>Giorno gara — Valencia</h4>
-        <ul>
+        <h4 data-i18n="gf.c4.h">Giorno gara — Valencia</h4>
+        <ul data-i18n="gf.c4.ul">
           <li>Carico carbo nei <strong>2–3 giorni prima</strong> (carbo alti, meno fibre/grassi)</li>
           <li>Colazione <strong>2.5–3h prima</strong>: 100–150 g carbo (pane+marmellata, banana, caffè)</li>
           <li>Gel <strong>ogni 30–35' da km 10</strong> (≈5–6 gel totali) + acqua/sport drink ai ristori</li>
         </ul>
       </div>
       <div class="guide-card wide">
-        <h4>Tabella passo — target 5:15 (7:28/km) · cutoff 5:30</h4>
-        <div class="pace-row"><span>10 km</span><span>~1:15</span></div>
-        <div class="pace-row"><span>Mezza (21.1 km)</span><span>~2:38</span></div>
-        <div class="pace-row"><span>30 km</span><span>~3:44</span></div>
-        <div class="pace-row"><span>Arrivo (42.2 km) — target</span><span>~5:15</span></div>
-        <div class="pace-row"><span>Arrivo — limite da NON superare</span><span>5:30</span></div>
-        <div class="guide-note">Parti a 7:40–7:45/km i primi 10 km (gambe "fredde" + folla), poi assesta a 7:28. Se a metà sei oltre ~2:40, recupera con calma: meglio finire che spaccarsi a metà.</div>
+        <h4 data-i18n="gf.c5.h">Tabella passo — target 5:15 (7:28/km) · cutoff 5:30</h4>
+        <div class="pace-row"><span data-i18n="gf.c5.r1">10 km</span><span>~1:15</span></div>
+        <div class="pace-row"><span data-i18n="gf.c5.r2">Mezza (21.1 km)</span><span>~2:38</span></div>
+        <div class="pace-row"><span data-i18n="gf.c5.r3">30 km</span><span>~3:44</span></div>
+        <div class="pace-row"><span data-i18n="gf.c5.r4">Arrivo (42.2 km) — target</span><span>~5:15</span></div>
+        <div class="pace-row"><span data-i18n="gf.c5.r5">Arrivo — limite da NON superare</span><span>5:30</span></div>
+        <div class="guide-note" data-i18n="gf.c5.n">Parti a 7:40–7:45/km i primi 10 km (gambe "fredde" + folla), poi assesta a 7:28. Se a metà sei oltre ~2:40, recupera con calma: meglio finire che spaccarsi a metà.</div>
       </div>
     </div>
   </div>
@@ -599,15 +605,15 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     <div class="phase-header">
       <div class="phase-indicator" style="background:#E8614A"></div>
       <div class="phase-title-wrap">
-        <div class="phase-eyebrow">Attrezzatura</div>
-        <div class="phase-title">Scarpe / chilometraggio</div>
+        <div class="phase-eyebrow" data-i18n="gsh.eyebrow">Attrezzatura</div>
+        <div class="phase-title" data-i18n="gsh.title">Scarpe / chilometraggio</div>
       </div>
     </div>
     <div class="guide-card wide">
-      <h4>Le tue scarpe — km live (si aggiornano dalle corse registrate)</h4>
+      <h4 data-i18n="gsh.h">Le tue scarpe — km live (si aggiornano dalle corse registrate)</h4>
       <div id="shoes-list"></div>
-      <button class="add-shoe-btn" onclick="addShoe()">+ Aggiungi scarpa</button>
-      <div class="guide-note">Seleziona la scarpa quando registri una corsa: i km si sommano qui in automatico. A 84 kg, ritira verso i ~650 km (barra rossa) o prima se senti la suola "piatta". Imposta i km già fatti con "Modifica".</div>
+      <button class="add-shoe-btn" onclick="addShoe()" data-i18n="gsh.add">+ Aggiungi scarpa</button>
+      <div class="guide-note" data-i18n="gsh.n">Seleziona la scarpa quando registri una corsa: i km si sommano qui in automatico. A 84 kg, ritira verso i ~650 km (barra rossa) o prima se senti la suola "piatta". Imposta i km già fatti con "Modifica".</div>
     </div>
   </div>
 </main>
@@ -622,36 +628,36 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     <div class="form-group skip-toggle-row">
       <label class="skip-toggle-label">
         <input type="checkbox" id="inp-skip" onchange="onSkipToggle()">
-        Salta questa corsa (infortunio, malattia, ecc.)
+        <span data-i18n="md.skip">Salta questa corsa (infortunio, malattia, ecc.)</span>
       </label>
     </div>
     <div id="modal-fields">
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Distanza percorsa (km)</label>
-        <input class="form-input" id="inp-dist" type="number" step="0.1" placeholder="es. 8.2">
+        <label class="form-label" data-i18n="md.dist">Distanza percorsa (km)</label>
+        <input class="form-input" id="inp-dist" type="number" step="0.1" placeholder="es. 8.2" data-i18n-ph="md.ph.dist">
       </div>
       <div class="form-group">
-        <label class="form-label">Passo medio (mm:ss)</label>
-        <input class="form-input" id="inp-pace" type="text" placeholder="es. 8:45">
+        <label class="form-label" data-i18n="md.pace">Passo medio (mm:ss)</label>
+        <input class="form-input" id="inp-pace" type="text" placeholder="es. 8:45" data-i18n-ph="md.ph.pace">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">FC media (bpm)</label>
-        <input class="form-input" id="inp-hr-avg" type="number" placeholder="es. 138">
+        <label class="form-label" data-i18n="md.hrAvg">FC media (bpm)</label>
+        <input class="form-input" id="inp-hr-avg" type="number" placeholder="es. 138" data-i18n-ph="md.ph.hrAvg">
       </div>
       <div class="form-group">
-        <label class="form-label">FC massima (bpm)</label>
-        <input class="form-input" id="inp-hr-max" type="number" placeholder="es. 155">
+        <label class="form-label" data-i18n="md.hrMax">FC massima (bpm)</label>
+        <input class="form-input" id="inp-hr-max" type="number" placeholder="es. 155" data-i18n-ph="md.ph.hrMax">
       </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Scarpe usate</label>
+      <label class="form-label" data-i18n="md.shoe">Scarpe usate</label>
       <select class="form-input" id="inp-shoe"></select>
     </div>
     <div class="form-group">
-      <label class="form-label">RPE — sforzo percepito</label>
+      <label class="form-label" data-i18n="md.rpe">RPE — sforzo percepito</label>
       <div class="rpe-buttons" id="rpe-buttons">
         <div class="rpe-btn" onclick="selectRpe(1)">1</div>
         <div class="rpe-btn" onclick="selectRpe(2)">2</div>
@@ -667,25 +673,343 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
     </div>
     </div>
     <div class="form-group">
-      <label class="form-label">Note libere</label>
-      <textarea class="form-input form-textarea" id="inp-notes" placeholder="Come ti sei sentito? Dolori? Meteo? Qualsiasi cosa..."></textarea>
+      <label class="form-label" data-i18n="md.notes">Note libere</label>
+      <textarea class="form-input form-textarea" id="inp-notes" placeholder="Come ti sei sentito? Dolori? Meteo? Qualsiasi cosa..." data-i18n-ph="md.ph.notes"></textarea>
     </div>
     <div class="modal-actions">
-      <button class="btn-primary" onclick="saveRun()">Salva corsa</button>
-      <button class="btn-danger" id="btn-delete" onclick="deleteRun()" style="display:none">Elimina</button>
-      <button class="btn-secondary" onclick="closeModal()">Annulla</button>
+      <button class="btn-primary" onclick="saveRun()" data-i18n="md.save">Salva corsa</button>
+      <button class="btn-danger" id="btn-delete" onclick="deleteRun()" style="display:none" data-i18n="md.delete">Elimina</button>
+      <button class="btn-secondary" onclick="closeModal()" data-i18n="md.cancel">Annulla</button>
     </div>
   </div>
 </div>
 
 <script>
+// ===================== I18N =====================
+let LANG = (function(){ try { return localStorage.getItem('valencia_lang') || 'it'; } catch(e){ return 'it'; } })();
+
+// --- Traduzioni dei DATI del piano (chiave = testo italiano sorgente) ---
+const TD_PAIRS = [
+// giorni
+[`Lunedì`,`Monday`],[`Martedì`,`Tuesday`],[`Mercoledì`,`Wednesday`],[`Giovedì`,`Thursday`],
+[`Venerdì`,`Friday`],[`Sabato`,`Saturday`],[`Domenica`,`Sunday`],
+// badge
+[`Facile Z2`,`Easy Z2`],[`Qualità Z3`,`Quality Z3`],[`Lungo`,`Long run`],[`Ritmo gara`,`Race pace`],
+[`TEST GARA`,`RACE TEST`],[`Riposo`,`Rest`],
+// fasi
+[`Base aerobica`,`Aerobic base`],[`Sviluppo + qualità`,`Development + quality`],[`Picco`,`Peak`],[`Taper`,`Taper`],
+[`Fase 1`,`Phase 1`],[`Fase 2`,`Phase 2`],[`Fase 3`,`Phase 3`],[`Fase 4`,`Phase 4`],
+[`27→38 km/sett`,`27→38 km/wk`],[`28→52 km/sett`,`28→52 km/wk`],[`53→58 km/sett`,`53→58 km/wk`],[`47→24 km/sett`,`47→24 km/wk`],
+[`Fondamenta aerobiche. Tutto Z2. Chiusa con lo stop per il ginocchio a fine luglio.`,`Aerobic foundations. All Z2. Ended with the knee layoff in late July.`],
+[`Rampa di rientro S10–S12 (28→41), poi piano pieno. Mezza test S16.`,`Comeback ramp W10–W12 (28→41), then the full plan. Half-marathon test in W16.`],
+[`Volume massimo. Lungo fino a 30 km. Riduci gambe in palestra.`,`Maximum volume. Long run up to 30 km. Cut back leg day at the gym.`],
+[`Scarico verso Valencia. Mantieni qualità, abbassa volume.`,`Winding down towards Valencia. Keep the quality, drop the volume.`],
+// pace con parole
+[`7:45–8:00 blocchi`,`7:45–8:00 blocks`],[`7:25–7:35 (parte)`,`7:25–7:35 (part)`],
+[`obiettivo 7:05–7:15`,`target 7:05–7:15`],[`7:28 obiettivo`,`7:28 target`],
+// titoli settimana
+[`Prima settimana (piano 3 giorni)`,`First week (3-day plan)`],
+[`Costruire la base`,`Building the base`],
+[`Volume in salita`,`Volume ramping up`],
+[`Consolidamento`,`Consolidation`],
+[`Primo lungo vero`,`First real long run`],
+[`Conferma del volume`,`Confirming the volume`],
+[`Settimana di recupero`,`Recovery week`],
+[`Fine fase base — test Z2`,`End of base phase — Z2 test`],
+[`Settimana ponte — test del ginocchio`,`Bridge week — testing the knee`],
+[`Rampa 1 — riaccendere il motore`,`Ramp 1 — restarting the engine`],
+[`Rampa 2 — rientra la qualità`,`Ramp 2 — quality comes back`],
+[`Rampa 3 — aggancio al piano pieno`,`Ramp 3 — rejoining the full plan`],
+[`Introduzione ritmo gara`,`Introducing race pace`],
+[`Volume massimo fase 2`,`Phase 2 peak volume`],
+[`Scarico pre-test`,`Pre-test cutback`],
+[`TEST — Mezza maratona`,`TEST — Half marathon`],
+[`Ingresso nel picco`,`Entering the peak`],
+[`Volume picco crescente`,`Peak volume rising`],
+[`Picco intenso`,`Hard peak`],
+[`Conferma picco`,`Confirming the peak`],
+[`Settimana di picco massimo`,`Maximum peak week`],
+[`Recupero post-picco`,`Post-peak recovery`],
+[`Taper — primo scarico`,`Taper — first cutback`],
+[`Taper progressivo`,`Progressive taper`],
+[`Pre-gara — gambe fresche`,`Pre-race — fresh legs`],
+[`Race week — Valencia!`,`Race week — Valencia!`],
+];
+
+const TD_PAIRS_RUNS = [
+[`Prima uscita del piano. Vai più piano di quanto pensi: HR < 150. (Settimana svolta col vecchio schema a 3 giorni — dalla S2 si passa a 4.)`,`First run of the plan. Go slower than you think: HR < 150. (This week ran on the old 3-day schedule — from W2 it goes to 4.)`],
+[`Corsa facile, stessa impostazione di martedì. Se le gambe sono stanche, cammina un po'.`,`Easy run, same approach as Tuesday. If your legs are tired, walk a bit.`],
+[`Primo lungo. Bevi ogni 20', banana 1h prima. Obiettivo: finire, non il passo. Dopo: stretching 10–15'.`,`First long run. Drink every 20', banana 1h before. The goal is to finish, not the pace. After: 10–15' stretching.`],
+[`Facile dopo il Push. HR sotto 150.`,`Easy after Push day. HR under 150.`],
+[`Facile. Stessa routine.`,`Easy. Same routine.`],
+[`45' tapis Z2, social. Dopo: 10' stretching.`,`45' treadmill Z2, social. After: 10' stretching.`],
+[`Lungo 13 km. Dopo: stretching 10–15'.`,`13 km long run. After: 10–15' stretching.`],
+[`6 km facili. Gestisci il passo dall'inizio.`,`6 km easy. Control the pace from the start.`],
+[`Facile.`,`Easy.`],
+[`45' tapis Z2, social. Dopo: stretching 10'.`,`45' treadmill Z2, social. After: 10' stretching.`],
+[`Lungo 14 km. Acqua + 1 gel verso km 10–11. Dopo: stretching.`,`14 km long run. Water + 1 gel around km 10–11. After: stretching.`],
+[`Mantieni il volume. Focus sulla regolarità.`,`Hold the volume. Focus on consistency.`],
+[`Lungo 14 km. Ultimi 2 km leggermente più spediti (Z3 basso) se le gambe rispondono.`,`14 km long run. Last 2 km slightly quicker (low Z3) if the legs respond.`],
+[`7 km Z2.`,`7 km Z2.`],
+[`Facile 6 km.`,`Easy 6 km.`],
+[`16 km! 2 gel (primo a km 8). Le gambe da km 13 in poi si sentono — è normale. Dopo: stretching.`,`16 km! 2 gels (first at km 8). From km 13 on you'll feel your legs — that's normal. After: stretching.`],
+[`7 km Z2. Ultimi 2 km: 4 allunghi (20" veloci ma rilassati + 60" cammino) per l'economia di corsa.`,`7 km Z2. Last 2 km: 4 strides (20" fast but relaxed + 60" walk) for running economy.`],
+[`Ripeti 16 km. Obiettivo: sentirli più facili della scorsa settimana.`,`Repeat 16 km. Goal: make them feel easier than last week.`],
+[`Recupero. Piano. Il corpo si adatta durante il riposo, non durante il lavoro. RIDUCI anche le gambe in palestra.`,`Recovery. Easy. The body adapts during rest, not during the work. Cut back leg day at the gym too.`],
+[`Facile, gambe leggere.`,`Easy, light legs.`],
+[`30–40' tapis molto rilassati. Dopo: stretching abbondante 15'.`,`30–40' very relaxed treadmill. After: plenty of stretching, 15'.`],
+[`Lungo ridotto 10 km, super rilassato. Niente pressione.`,`Cut-down 10 km long run, super relaxed. No pressure.`],
+[`Passo leggermente più spedito ma HR < 150. Quanto acceleri rispetto a S1 a parità di FC? È il tuo progresso aerobico.`,`Slightly quicker pace but HR < 150. How much faster are you than W1 at the same heart rate? That's your aerobic progress.`],
+[`Facile. Ultimi 2 km: 4 allunghi.`,`Easy. Last 2 km: 4 strides.`],
+[`18 km! Primo lungo importante. 2 gel, acqua, ~2h20–2h40 in piedi. Mangia bene la sera prima. Dopo: stretching.`,`18 km! First big long run. 2 gels, water, ~2h20–2h40 on your feet. Eat well the night before. After: stretching.`],
+[`Settimana riscritta a posteriori (10 ago): il piano originale prevedeva 41 km con qualità, ma eri appena rientrato dallo stop per il ginocchio. Fatte 2 corse (3 e 5 ago) per circa 17,6 km totali — entrambe però troppo veloci per essere "facili".`,`Week rewritten after the fact (10 Aug): the original plan called for 41 km with quality work, but you had just come back from the knee layoff. You ran 2 sessions (3 and 5 Aug) for about 17.6 km total — both too fast to count as "easy".`],
+[`Seconda uscita della settimana ponte.`,`Second run of the bridge week.`],
+[`Si riparte oggi. Unica regola non negoziabile: FC media sotto 150. Al tuo livello sono circa 8:15–8:45/km — NON 7:20 come il 3 agosto (FC 167, picco 182: quella non era una corsa facile).`,`Today you restart. The one non-negotiable rule: average HR under 150. At your level that's about 8:15–8:45/km — NOT 7:20 like on 3 August (HR 167, peak 182: that was not an easy run).`],
+[`Facile. Ultimi 2 km: 4 allunghi da 20" (veloci ma rilassati, recupero camminato). Servono a risvegliare la spinta senza caricare il ginocchio come farebbe un blocco a ritmo.`,`Easy. Last 2 km: 4 strides of 20" (fast but relaxed, walk recovery). They wake up your drive without loading the knee the way a tempo block would.`],
+[`45' tapis Z2, social. Dopo: mobilità + stretching 10'.`,`45' treadmill Z2, social. After: mobility + 10' stretching.`],
+[`Lungo 10 km. Volutamente corto: è il lungo che riapre la progressione, non quello che recupera il tempo perso.`,`10 km long run. Deliberately short: this is the long run that reopens the progression, not the one that makes up for lost time.`],
+[`Facile — gambe pronte per la qualità di domani.`,`Easy — legs ready for tomorrow's quality session.`],
+[`QUALITÀ, prima uscita sopra Z2 dal ginocchio: 2 km risc., 3×8' a 7:45–8:00 con 2' cammino, 1 km defat. Se senti tirare sotto la rotula durante un blocco, chiudi lì e finisci in Z2 — non è la seduta che decide la maratona.`,`QUALITY, first run above Z2 since the knee: 2 km warm-up, 3×8' at 7:45–8:00 with 2' walk, 1 km cool-down. If you feel a pull under the kneecap during a block, stop there and finish in Z2 — this is not the session that decides the marathon.`],
+[`Lungo 13 km. 1 gel se superi l'ora e mezza.`,`13 km long run. 1 gel if you go past an hour and a half.`],
+[`QUALITÀ: 2 km risc., 4×8' a 7:30–7:45 (Z3) con 90" cammino, 1 km defat. È la seduta che il piano originale prevedeva per la S10: ci sei arrivato con due settimane di rampa invece che a freddo.`,`QUALITY: 2 km warm-up, 4×8' at 7:30–7:45 (Z3) with 90" walk, 1 km cool-down. This is the session the original plan had for W10: you're getting to it after two ramp weeks instead of cold.`],
+[`Lungo 17 km. 2 gel. Da lunedì prossimo (31 ago) sei sul piano originale senza sconti: la S13 chiede 49 km e il primo blocco vero a ritmo gara.`,`17 km long run. 2 gels. From next Monday (31 Aug) you're on the original plan with no discounts: W13 asks for 49 km and the first real race-pace block.`],
+[`Facile — gambe fresche per il ritmo gara di domani.`,`Easy — fresh legs for tomorrow's race pace.`],
+[`RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 4 defat. Z2. Prima uscita vera a ritmo gara!`,`RACE PACE: 3 warm-up, 6 km at race pace (7:25–7:35), 4 cool-down. Z2. Your first real race-pace session!`],
+[`45' tapis Z2, social — recupero. Dopo: stretching 10'.`,`45' treadmill Z2, social — recovery. After: 10' stretching.`],
+[`21 km Z2, a passo lento. Distanza di mezza, ma controllata. Dopo: stretching.`,`21 km Z2, at a slow pace. Half-marathon distance, but controlled. After: stretching.`],
+[`RITMO GARA: stessa struttura S13 — 3 risc. + 6 km ritmo gara + 4 defat.`,`RACE PACE: same structure as W13 — 3 warm-up + 6 km race pace + 4 cool-down.`],
+[`23 km, il lungo più lungo finora. Parti lento, finisci lento. Non fare l'eroe. Dopo: stretching.`,`23 km, your longest long run so far. Start slow, finish slow. Don't be a hero. After: stretching.`],
+[`Recupero. Gambe fresche per la mezza di domenica prossima. RIDUCI le gambe in palestra.`,`Recovery. Fresh legs for next Sunday's half. Cut back leg day at the gym.`],
+[`Leggero. 4–5 km se ti senti stanco. Non strafare.`,`Light. 4–5 km if you feel tired. Don't overdo it.`],
+[`30–40' tapis rilassati. Dopo: stretching.`,`30–40' relaxed treadmill. After: stretching.`],
+[`14 km tranquilli, ultima uscita media prima del test. Gambe leggere per settimana prossima.`,`14 km steady, the last medium run before the test. Light legs for next week.`],
+[`Leggerissimo, 6 km di attivazione. Niente Gambe pesanti questa settimana.`,`Very light, 6 km to switch the legs on. No heavy leg day this week.`],
+[`4 km facilissimi + mobilità/stretching. Riposa le gambe.`,`4 km very easy + mobility/stretching. Rest your legs.`],
+[`Shakeout 3–4 km + 3 allunghi brevi. Solo per sciogliere. Riposo totale sabato.`,`3–4 km shakeout + 3 short strides. Just to loosen up. Complete rest on Saturday.`],
+[`MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Gel ogni 35'. Annota passo, FC, sensazioni a km 15+.`,`HALF MARATHON TEST — the GO/NO-GO call on the 5:30 cutoff. Run hard but controlled. Rule of thumb: marathon pace ≈ half pace +20–30 sec/km. To stay under 5:30 (7:49/km) you need a half around 7:20 or better; for the 5:15 target (7:28/km) a half around 7:05. If the half is ≥7:30 → as of today you will NOT make the cutoff: you'll need a plan B (more volume, or a marathon with a longer time limit). Gel every 35'. Note your pace, HR and how you feel from km 15 on.`],
+[`Facile Z2, gambe che si rimettono dalla mezza. Da qui RIDUCI le gambe in palestra (~40%).`,`Easy Z2, legs recovering from the half. From here cut back leg day at the gym (~40%).`],
+[`RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 4 defat. Allunga il blocco.`,`RACE PACE: 3 warm-up, 8 km at race pace (7:25–7:35), 4 cool-down. The block gets longer.`],
+[`24 km! 4 gel. Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.`,`24 km! 4 gels. Eat plenty the day before. ~3h20–3h40 on your feet. After: stretching.`],
+[`RITMO GARA: ripeti S17. Tieni il ritmo per tutti gli 8 km senza cedere.`,`RACE PACE: repeat W17. Hold the pace for all 8 km without fading.`],
+[`26 km, oltre la mezza — passo psicologico. Nutrizione ogni 35'. Dopo: stretching.`,`26 km, past the halfway distance — a psychological step. Fuel every 35'. After: stretching.`],
+[`RITMO GARA: 2 risc., 9 km a ritmo gara, 3 defat.`,`RACE PACE: 2 warm-up, 9 km at race pace, 3 cool-down.`],
+[`28 km — il lungo più lungo della tua vita. Preparazione nutrizionale il giorno prima fondamentale. Dopo: stretching.`,`28 km — the longest run of your life. Getting your nutrition right the day before is essential. After: stretching.`],
+[`RITMO GARA: ripeti S19. Il ritmo gara deve sembrare "normale".`,`RACE PACE: repeat W19. Race pace should start to feel "normal".`],
+[`Ripeti 28 km. Se la scorsa è andata bene, ultimi 3 km a ritmo gara. Dopo: stretching.`,`Repeat 28 km. If the last one went well, run the final 3 km at race pace. After: stretching.`],
+[`Facile, 8 km — settimana di volume massimo. Tieni le gambe in palestra al minimo.`,`Easy, 8 km — maximum volume week. Keep leg work at the gym to a minimum.`],
+[`RITMO GARA: 14 km con 9 km a ritmo gara. Picco qualitativo.`,`RACE PACE: 14 km with 9 km at race pace. The peak quality session.`],
+[`45' tapis Z2, social — riposo attivo prima del lungo da 30. Dopo: stretching.`,`45' treadmill Z2, social — active rest before the 30 km long run. After: stretching.`],
+[`30 km — il lungo massimo! ~4h10–4h20 in piedi. 4–5 gel + acqua. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.`,`30 km — the longest long run! ~4h10–4h20 on your feet. 4–5 gels + water. For a first marathon, 30 km is enough: better healthy than overreaching at 32+. This is the run that gives you confidence for Valencia. After: plenty of stretching.`],
+[`Recupero obbligatorio. Il corpo assorbe il picco adesso. Gambe in palestra al minimo.`,`Recovery is mandatory. Your body absorbs the peak now. Keep leg work at the gym to a minimum.`],
+[`9 km facili. Niente fretta, niente qualità questa settimana.`,`9 km easy. No rush, no quality work this week.`],
+[`45' tapis rilassati, social. Dopo: stretching.`,`45' relaxed treadmill, social. After: stretching.`],
+[`Lungo ridotto 16 km. Gambe che si rigenerano. Il taper inizia la prossima settimana.`,`Cut-down 16 km long run. Legs regenerating. The taper starts next week.`],
+[`RITMO GARA: 3 risc., 4 km a ritmo gara, 5 defat. Volume calato, qualità mantenuta.`,`RACE PACE: 3 warm-up, 4 km at race pace, 5 cool-down. Volume down, quality kept.`],
+[`20 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.`,`20 km, the first real drop in the long run. Your legs start to recharge. After: stretching.`],
+[`Facile 7 km.`,`Easy 7 km.`],
+[`RITMO GARA: 2 risc., 3 km a ritmo gara, 5 defat. Mantieni la sensazione del passo gara.`,`RACE PACE: 2 warm-up, 3 km at race pace, 5 cool-down. Keep the feel of race pace.`],
+[`45' tapis Z2 leggero, social. Dopo: stretching.`,`45' light treadmill Z2, social. After: stretching.`],
+[`14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.`,`14 km, a short long run. Your legs should feel fresher and fresher.`],
+[`6 km leggerissimi. Niente Gambe pesanti in palestra da qui alla gara.`,`6 km very light. No heavy leg day at the gym from here to the race.`],
+[`RITMO GARA breve: 2 risc., 2 km a ritmo gara (solo per sentirlo), 3 defat. Niente stress.`,`Short RACE PACE: 2 warm-up, 2 km at race pace (just to feel it), 3 cool-down. No stress.`],
+[`30–40' tapis rilassati + 4 allunghi. Dopo: stretching.`,`30–40' relaxed treadmill + 4 strides. After: stretching.`],
+[`9 km tranquilli, ultima uscita lunga prima di Valencia. Goditi la sensazione di essere pronto.`,`9 km steady, the last longer run before Valencia. Enjoy the feeling of being ready.`],
+[`5 km di attivazione. Solo per muoverti. Niente palestra gambe.`,`5 km to switch the legs on. Just to move. No leg day.`],
+[`4 km + 4×100m strides al ritmo gara (recupero camminato). Mantieni la reattività muscolare.`,`4 km + 4×100m strides at race pace (walk recovery). Keep your muscles sharp.`],
+[`Shakeout 3 km molto facili (o riposo se viaggi). Mobilità + stretching leggero. Gambe fresche per domenica.`,`3 km very easy shakeout (or rest if you're travelling). Mobility + light stretching. Fresh legs for Sunday.`],
+[`MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Gel ogni 30–35' da km 10. Ce la fai.`,`VALENCIA MARATHON. CUTOFF 5:30 — you have to finish under it, with margin. Target 7:28/km (≈5:15). Start at 7:40–7:45 for the first 10 km, then settle at 7:28. Do NOT chase your heart rate: the first kilometres should feel easy. Watch your splits: at halfway (21 km) you need to be through by ~2:38. Gel every 30–35' from km 10. You've got this.`],
+];
+
+const TD_MAP = new Map([...TD_PAIRS, ...TD_PAIRS_RUNS]);
+
+// --- Traduzioni del MARKUP statico e generato (chiave = attributo data-i18n) ---
+const UI_EN = {
+// header
+'hdr.goal': `target <strong>5:15</strong> · <strong>5:30</strong> cutoff to beat · race pace <strong>7:28</strong>/km · max HR <strong>202</strong>`,
+'cd.days': `days`, 'cd.hours': `hours`, 'cd.mins': `min`,
+// sidebar
+'sb.phases': `Phases`,
+'sb.ph1': `Aerobic base`, 'sb.ph1w': `W1–8`,
+'sb.ph2': `Development`, 'sb.ph2w': `W9–16`,
+'sb.ph3': `Peak`, 'sb.ph3w': `W17–22`,
+'sb.ph4': `Taper`, 'sb.ph4w': `W23–26`,
+'sb.progress': `Progress`,
+'sb.runsDone': `Runs completed`, 'sb.totalKm': `Total km`,
+'sb.curWeek': `Current week`, 'sb.curPhase': `Current phase`,
+'sb.zones': `HR zones (max 202 · resting 63)`,
+'sb.z2': `<strong>Z2</strong> &lt;150 · easy/conversational`,
+'sb.z3': `<strong>Z3</strong> 151–166 · moderate`,
+'sb.z4': `<strong>Z4</strong> 167–184 · threshold/race`,
+'sb.z5': `<strong>Z5</strong> &gt;184 · maximal`,
+'sb.typWeek': `Typical week`,
+'sb.mon': `Mon`, 'sb.tue': `Tue`, 'sb.wed': `Wed`, 'sb.thu': `Thu`, 'sb.fri': `Fri`, 'sb.sat': `Sat`, 'sb.sun': `Sun`,
+'sb.vMon': `Push + easy`, 'sb.vTue': `Quality`, 'sb.vWed': `Pull`, 'sb.vThu': `Legs (reduced)`,
+'sb.vFri': `Easy 45–60'`, 'sb.vSat': `Rest`, 'sb.vSun': `Long run`,
+'sb.trend': `Trends`, 'sb.trendItem': `Progress charts`,
+'sb.guides': `Guides`,
+'sb.gStretch': `Stretching &amp; mobility`, 'sb.gNutr': `Nutrition`,
+'sb.gFuel': `Fuelling on the run`, 'sb.gShoes': `Shoes / km`,
+// progress bar
+'pr.title': `26-week plan progression`,
+'pr.m1': `Start`, 'pr.m2': `Base →`, 'pr.m3': `Development →`, 'pr.m4': `Peak →`, 'pr.m5': `Valencia`,
+// trends
+'g.guide': `Guide`,
+'tr.eyebrow': `Trends`, 'tr.title': `How training is going`,
+'tr.ef.h': `Aerobic efficiency index`,
+'tr.ef.sub': `Speed produced per heartbeat (m/min ÷ bpm). Higher = faster at the same heart rate, meaning better aerobic efficiency — the direct answer to "how much am I improving".`,
+'tr.pace.h': `Pace per run`,
+'tr.pace.sub': `Higher = faster. Each point is a logged run.`,
+'tr.hr.h': `Average heart rate per run`,
+'tr.hr.sub': `Background shaded by zone (Z2 green · Z3 orange · Z4 red · Z5 purple), same scale as the sidebar.`,
+'tr.km.h': `Weekly km: target vs actual`,
+'ch.noData': `You need at least 2 logged runs with this data.`,
+'ch.actual': `Actual`, 'ch.target': `Target`,
+// guida stretching
+'gs.title': `Stretching &amp; mobility`,
+'gs.c1.h': `Dynamic warm-up — before quality and long runs (5–8')`,
+'gs.c1.ul': `<li><strong>Leg swings</strong> front/back and lateral, 10 per side</li><li><strong>Walking lunges</strong> with torso rotation, 8 per side</li><li><strong>Low skips</strong> + butt kicks, 20 m each</li><li><strong>Ankle circles</strong> and hip openers, 10 per side</li><li>Then 2–3' of very slow running before the fast blocks</li>`,
+'gs.c1.n': `Never static-stretch cold before running: it cuts your power output and does not prevent injury. Dynamic work does.`,
+'gs.c2.h': `Cool-down — after EVERY run (10', 30" per position)`,
+'gs.c2.ul': `<li><strong>Calves</strong> (gastrocnemius with a straight leg + soleus with a bent leg)</li><li><strong>Hip flexors</strong> (low lunge) — a priority for you</li><li><strong>Hamstrings</strong> and <strong>quads</strong></li><li><strong>Glutes / piriformis</strong> (figure 4)</li><li><strong>IT band</strong> and lateral chain</li>`,
+'gs.c3.h': `Daily mobility — including rest days (5–10')`,
+'gs.c3.ul': `<li><strong>90/90</strong> hip position and rotations</li><li><strong>Ankle dorsiflexion</strong> at the wall (key for running)</li><li><strong>Thoracic</strong> mobility (rotations) + cat-cow</li><li>Do it on off days too: it keeps the joints ready</li>`,
+'gs.c4.h': `Foam roller — after the long run and after leg day (15')`,
+'gs.c4.ul': `<li>Quads, <strong>IT band</strong>, calves</li><li>Glutes and lower back</li><li>Go slow, hold 20–30" on sore spots</li>`,
+'gs.c4.n': `Lifter's note: squats and deadlifts shorten your hip flexors and calves. Give them extra attention: they are where most running injuries start.`,
+// guida alimentazione
+'gn.title': `Nutrition (day to day)`,
+'gn.c1.h': `Protein — 1.6–2.0 g/kg → ~135–170 g/day`,
+'gn.c1.ul': `<li>You lift: stay at the <strong>top</strong> of the range</li><li>Spread it <strong>30–40 g per meal</strong> (4 meals)</li><li>Sources: eggs, meat/fish, dairy, legumes, whey</li>`,
+'gn.c2.h': `Carbs — periodised around the load`,
+'gn.c2.ul': `<li><strong>Quality/long</strong> days (Tue, Sun): 5–7 g/kg</li><li><strong>Easy/rest</strong> days: 3–4 g/kg</li><li>They are your running fuel: <strong>do not cut them</strong> on key days</li>`,
+'gn.c3.h': `Recovery — within 30–60' of a long or quality session`,
+'gn.c3.ul': `<li><strong>60–80 g carbs + 25–30 g protein</strong></li><li>E.g. Greek yoghurt + fruit + honey + granola; or chocolate milk + banana</li><li>Rehydrate: water + a pinch of salt after sweaty sessions</li>`,
+'gn.c4.h': `Hydration &amp; weight — from ~84 towards 80 kg`,
+'gn.c4.ul': `<li>~<strong>35 ml/kg</strong> ≈ 3 L/day, more on running days</li><li>Drop <strong>0.3–0.4 kg/week</strong>: ~4 kg = ~10–13 weeks (Phases 1–2)</li><li>Target <strong>~80 kg by W14–16</strong> (half-marathon test), then HOLD</li><li>Peak/taper (from W17): <strong>eat enough</strong>, no deficit</li><li>While in deficit keep <strong>protein at 1.8–2.0 g/kg</strong> to protect muscle</li>`,
+'gn.c4.n': `From 87–88 to &lt;84: excellent, keep going steadily. The 4 kg down to 80 (~5%) can be worth a few minutes over a marathon — precious margin against the cutoff. Watch the weekly trend, not the daily scale (carbs and water swing it).`,
+// guida nutrizione in corsa
+'gf.title': `Fuelling on the run`,
+'gf.c1.h': `Before the run`,
+'gf.c1.ul': `<li>Runs <strong>&lt;60'</strong>: fasted or a light snack, both fine</li><li>Long/quality: <strong>1–2h before, 40–60 g carbs</strong> (banana, toast+honey, rusks)</li><li>Coffee is fine if it agrees with you</li>`,
+'gf.c2.h': `During (runs &gt;75–90')`,
+'gf.c2.ul': `<li><strong>30–60 g carbs/hour</strong> = 1 gel every 30–40'</li><li><strong>Start early</strong> (by km 8–10), not once you are already empty</li><li>Always with a sip of water so it absorbs</li>`,
+'gf.c3.h': `Hydration &amp; gut`,
+'gf.c3.ul': `<li>Drink <strong>to thirst</strong>; on long runs and in the heat add <strong>electrolytes</strong> (sodium)</li><li><strong>Train your gut</strong>: practise gels and amounts on long runs (the plan builds this in)</li><li>Find the brand you digest. <strong>Never anything new on race day</strong></li>`,
+'gf.c4.h': `Race day — Valencia`,
+'gf.c4.ul': `<li>Carb-load over the <strong>2–3 days before</strong> (high carb, less fibre/fat)</li><li>Breakfast <strong>2.5–3h before</strong>: 100–150 g carbs (bread+jam, banana, coffee)</li><li>Gel <strong>every 30–35' from km 10</strong> (≈5–6 gels total) + water/sports drink at the aid stations</li>`,
+'gf.c5.h': `Pace table — target 5:15 (7:28/km) · cutoff 5:30`,
+'gf.c5.r1': `10 km`, 'gf.c5.r2': `Half (21.1 km)`, 'gf.c5.r3': `30 km`,
+'gf.c5.r4': `Finish (42.2 km) — target`, 'gf.c5.r5': `Finish — limit NOT to exceed`,
+'gf.c5.n': `Start at 7:40–7:45/km for the first 10 km (cold legs + crowds), then settle at 7:28. If you are past ~2:40 at halfway, claw it back calmly: better to finish than to blow up mid-race.`,
+// scarpe
+'gsh.eyebrow': `Gear`, 'gsh.title': `Shoes / mileage`,
+'gsh.h': `Your shoes — live km (updated from logged runs)`,
+'gsh.add': `+ Add shoe`,
+'gsh.n': `Pick the shoe when you log a run: the km add up here automatically. At 84 kg, retire them around ~650 km (red bar) or sooner if the sole feels "flat". Set the km already run with "Edit".`,
+'gsh.none': `No shoes registered. Add one to track km.`,
+'gsh.edit': `Edit`, 'gsh.retire': `Retire`, 'gsh.unretire': `Reactivate`,
+// modal
+'md.title': `Log run`,
+'md.skip': `Skip this run (injury, illness, etc.)`,
+'md.dist': `Distance covered (km)`, 'md.pace': `Average pace (mm:ss)`,
+'md.hrAvg': `Average HR (bpm)`, 'md.hrMax': `Max HR (bpm)`,
+'md.shoe': `Shoes used`, 'md.rpe': `RPE — perceived effort`,
+'md.notes': `Free notes`,
+'md.ph.notes': `How did it feel? Any pain? Weather? Anything at all...`,
+'md.ph.dist': `e.g. 8.2`, 'md.ph.pace': `e.g. 8:45`, 'md.ph.hrAvg': `e.g. 138`, 'md.ph.hrMax': `e.g. 155`,
+'md.save': `Save run`, 'md.delete': `Delete`, 'md.cancel': `Cancel`,
+// run card / week card (generati da JS)
+'rc.target': `Target`, 'rc.pace': `Pace`, 'rc.zone': `Zone`,
+'rc.dist': `Distance`, 'rc.hrAvg': `HR avg`, 'rc.hrMax': `HR max`, 'rc.rpe': `RPE`, 'rc.shoes': `Shoes`,
+'rc.done': `✓ Completed`, 'rc.skipped': `⏸ Skipped`,
+'rc.log': `+ Log run`, 'rc.edit': `Edit log`,
+'wk.targetKm': `Target km`, 'wk.runs': `Runs`, 'wk.actualKm': `Actual km`,
+'wk.avgPace': `Avg pace`, 'wk.avgHr': `Avg HR`,
+'wk.notes': `Week notes`, 'wk.notesPh': `How did this week go? Aches, progress, observations...`,
+'wk.ask': `↗ Ask Claude for feedback`,
+'wk.recovery': `recovery`,
+'wk.raceTitle': `Valencia Marathon — 6 December 2026`,
+'wk.raceSub': `Start conservatively. Gel every 30 min from km 10. Enjoy every metre. You have done all the work.`,
+'ph.weeks': `Weeks`,
+'pl.empty': `No week started yet.`,
+};
+
+function TD(s) {
+  if (LANG === 'it' || s == null) return s;
+  const k = String(s).trim();
+  if (TD_MAP.has(k)) return TD_MAP.get(k);
+  const m = k.match(/^S(\d+)$/);          // etichette settimana: S12 -> W12
+  if (m) return 'W' + m[1];
+  const r = k.match(/^S(\d+)–(\d+)$/);    // intervalli: S1–8 -> W1–8
+  if (r) return 'W' + r[1] + '–' + r[2];
+  return s;
+}
+function TU(key, fallback) {
+  if (LANG === 'en' && UI_EN[key] !== undefined) return UI_EN[key];
+  return fallback;
+}
+
+function applyI18n(root) {
+  const scope = root || document;
+  scope.querySelectorAll('[data-i18n]').forEach(el => {
+    if (el._i18nSrc === undefined) el._i18nSrc = el.innerHTML;
+    const k = el.getAttribute('data-i18n');
+    el.innerHTML = (LANG === 'en' && UI_EN[k] !== undefined) ? UI_EN[k] : el._i18nSrc;
+  });
+  scope.querySelectorAll('[data-i18n-ph]').forEach(el => {
+    if (el._i18nPh === undefined) el._i18nPh = el.getAttribute('placeholder') || '';
+    const k = el.getAttribute('data-i18n-ph');
+    el.setAttribute('placeholder', (LANG === 'en' && UI_EN[k] !== undefined) ? UI_EN[k] : el._i18nPh);
+  });
+}
+
+function setLang(l) {
+  LANG = (l === 'en') ? 'en' : 'it';
+  try { localStorage.setItem('valencia_lang', LANG); } catch (e) {}
+  document.documentElement.lang = LANG;
+  const sel = document.getElementById('lang-select');
+  if (sel) sel.value = LANG;
+  renderAll();
+  renderShoes();
+  applyI18n();
+  updateCountdown();
+}
+
+Object.assign(UI_EN, {
+  'md.tgtDist': `Distance`,
+  'md.tgtPace': `Target pace`,
+  'md.tgtZone': `Zone`,
+});
+
+// Versione inglese del riepilogo inviato a Claude
+function askClaudeEN(weekIdx) {
+  const w = WEEKS[weekIdx];
+  let s = `I'm Aiman, training for the Valencia Marathon (6 Dec 2026). The race CUTOFF is 5:30, so I'm targeting 5:15 (7:28/km pace) to have some margin. My real max HR is 202 bpm, weight ~84 kg (down from 87–88, dropping gradually towards 80), and this is my first marathon. Current base: ~25–30 km/week, most recent half 21.1 km at 7:56/km (average HR 167). I also do a lot of strength training.\n\n`;
+  s += `## Week ${TD(w.label)} — ${TD(w.title)}\n`;
+  s += `Target: ${w.totalKm} km\n`;
+  s += `Week notes: ${state[weekNoteKey(weekIdx)] || '(none)'}\n\n`;
+  s += `## Runs\n`;
+  w.runs.forEach((run, ri) => {
+    const l = state[runKey(weekIdx, ri)];
+    s += `\n**${TD(run.day)} (${TD(getBadgeLabel(run.type))})** — target ${run.km}km at ${TD(run.pace)}\n`;
+    if (l) {
+      s += `→ Completed: ${l.dist || '—'}km, pace ${l.pace || '—'}, HR avg ${l.hrAvg || '—'}/max ${l.hrMax || '—'}, RPE ${l.rpe || '—'}/10\n`;
+      if (l.notes) s += `Notes: ${l.notes}\n`;
+    } else {
+      s += `→ Not completed yet\n`;
+    }
+  });
+  s += `\nPlease analyse: 1) Am I respecting the heart rate zones? 2) Is the pace appropriate? 3) What should I adjust? 4) Any risks to watch out for?`;
+  window.open(`https://claude.ai/new?q=${encodeURIComponent(s)}`, '_blank');
+}
+
 // ===== DATA =====
 const RACE_DATE = new Date('2026-12-06T08:30:00'); // Valencia: domenica 6 dic 2026 (verifica data ufficiale)
-const PLAN_START = new Date('2026-06-09'); // S1, martedì 9 giu 2026
+const PLAN_START = new Date('2026-06-08'); // lunedì 8 giu 2026 — le settimane del piano vanno lun->dom (S1 è partita di martedì)
 
 const PHASES = [
-  { id:1, name:'Base aerobica', eyebrow:'Fase 1', color:'#4AE89B', weeks:'1–8', kmRange:'27→38 km/sett', desc:'Fondamenta aerobiche. Tutto Z2. Niente fretta.' },
-  { id:2, name:'Sviluppo + qualità', eyebrow:'Fase 2', color:'#F0A030', weeks:'9–16', kmRange:'41→52 km/sett', desc:'Introduce lavoro a ritmo gara. Mezza maratona test sett. 16.' },
+  { id:1, name:'Base aerobica', eyebrow:'Fase 1', color:'#4AE89B', weeks:'1–9', kmRange:'27→38 km/sett', desc:'Fondamenta aerobiche. Tutto Z2. Chiusa con lo stop per il ginocchio a fine luglio.' },
+  { id:2, name:'Sviluppo + qualità', eyebrow:'Fase 2', color:'#F0A030', weeks:'10–16', kmRange:'28→52 km/sett', desc:'Rampa di rientro S10–S12 (28→41), poi piano pieno. Mezza test S16.' },
   { id:3, name:'Picco', eyebrow:'Fase 3', color:'#7AB8F0', weeks:'17–22', kmRange:'53→58 km/sett', desc:'Volume massimo. Lungo fino a 30 km. Riduci gambe in palestra.' },
   { id:4, name:'Taper', eyebrow:'Fase 4', color:'#C8F060', weeks:'23–26', kmRange:'47→24 km/sett', desc:'Scarico verso Valencia. Mantieni qualità, abbassa volume.' },
 ];
@@ -743,29 +1067,31 @@ const WEEKS = [
     {day:'Domenica',type:'long',km:18,pace:'9:00–9:20',zone:'Z2',desc:'18 km! Primo lungo importante. 2 gel, acqua, ~2h20–2h40 in piedi. Mangia bene la sera prima. Dopo: stretching.'},
   ]},
   // FASE 2 — SVILUPPO (Martedì diventa la corsa di QUALITÀ)
-  {p:2, label:'S9', title:'Primo lavoro moderato', isRecovery:false, totalKm:41, runs:[
-    {day:'Lunedì',type:'easy',km:8,pace:'8:45–9:15',zone:'Z2',desc:'Facile dopo il Push — gambe pronte per la qualità di domani.'},
-    {day:'Martedì',type:'tempo',km:10,pace:'7:45 blocchi',zone:'Z2+Z3',desc:'QUALITÀ: 2 km risc., 3×10\' a 7:45–8:00 (Z3 basso) con 2\' cammino, 2 km defat. Prima dei blocchi: 5\' mobilità.'},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — recupero attivo tra Gambe (Gio) e lungo (Dom). Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:18,pace:'9:00–9:20',zone:'Z2',desc:'Lungo 18 km Z2 standard. Dopo: stretching.'},
+  {p:1, label:'S9', title:'Settimana ponte — test del ginocchio', isRecovery:true, totalKm:18, runs:[
+    {day:'Lunedì',type:'easy',km:9,pace:'—',zone:'Z2',desc:'Settimana riscritta a posteriori (10 ago): il piano originale prevedeva 41 km con qualità, ma eri appena rientrato dallo stop per il ginocchio. Fatte 2 corse (3 e 5 ago) per circa 17,6 km totali — entrambe però troppo veloci per essere "facili".'},
+    {day:'Mercoledì',type:'easy',km:9,pace:'—',zone:'Z2',desc:'Seconda uscita della settimana ponte.'},
   ]},
-  {p:2, label:'S10', title:'Sviluppo moderato', isRecovery:false, totalKm:43, runs:[
-    {day:'Lunedì',type:'easy',km:8,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'tempo',km:11,pace:'7:30–7:45',zone:'Z3',desc:'QUALITÀ: 2 km risc., 4×8\' a 7:30–7:45 (Z3) con 90\" cammino, 2 km defat.'},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:19,pace:'9:00–9:15',zone:'Z2',desc:'Lungo 19 km. 2 gel. Dopo: stretching.'},
+  // ===== RAMP DI RIENTRO — 3 settimane (rev. 10 ago 2026) =====
+  // Ripartenza dopo lo stop per dolore femoro-rotuleo. NON è un rientro "graduale lungo":
+  // è una rampa compressa che ti riporta sul piano pieno dal 31 agosto (S13).
+  // Il volume sale 28 -> 35 -> 41; la qualità rientra dalla S11.
+  {p:2, label:'S10', title:'Rampa 1 — riaccendere il motore', isRecovery:false, totalKm:28, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'8:15–9:00',zone:'Z2',desc:'Si riparte oggi. Unica regola non negoziabile: FC media sotto 150. Al tuo livello sono circa 8:15–8:45/km — NON 7:20 come il 3 agosto (FC 167, picco 182: quella non era una corsa facile).'},
+    {day:'Martedì',type:'easy',km:7,pace:'8:15–9:00',zone:'Z2',desc:'Facile. Ultimi 2 km: 4 allunghi da 20\" (veloci ma rilassati, recupero camminato). Servono a risvegliare la spinta senza caricare il ginocchio come farebbe un blocco a ritmo.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: mobilità + stretching 10\'.'},
+    {day:'Domenica',type:'long',km:10,pace:'8:45–9:15',zone:'Z2',desc:'Lungo 10 km. Volutamente corto: è il lungo che riapre la progressione, non quello che recupera il tempo perso.'},
   ]},
-  {p:2, label:'S11', title:'Allungamento volume', isRecovery:false, totalKm:47, runs:[
-    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'9 km facili. Gestisci il passo dall\'inizio.'},
-    {day:'Martedì',type:'tempo',km:12,pace:'7:20–7:40',zone:'Z3',desc:'QUALITÀ: 2 risc., 4×10\' a Z3 con 2\' recupero, 2 defat.'},
-    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:20,pace:'8:45–9:15',zone:'Z2',desc:'20 km! 3 gel (km 8, 13, 17). Dopo: stretching.'},
+  {p:2, label:'S11', title:'Rampa 2 — rientra la qualità', isRecovery:false, totalKm:35, runs:[
+    {day:'Lunedì',type:'easy',km:8,pace:'8:15–9:00',zone:'Z2',desc:'Facile — gambe pronte per la qualità di domani.'},
+    {day:'Martedì',type:'tempo',km:9,pace:'7:45–8:00 blocchi',zone:'Z2+Z3',desc:'QUALITÀ, prima uscita sopra Z2 dal ginocchio: 2 km risc., 3×8\' a 7:45–8:00 con 2\' cammino, 1 km defat. Se senti tirare sotto la rotula durante un blocco, chiudi lì e finisci in Z2 — non è la seduta che decide la maratona.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: mobilità + stretching 10\'.'},
+    {day:'Domenica',type:'long',km:13,pace:'8:45–9:15',zone:'Z2',desc:'Lungo 13 km. 1 gel se superi l\'ora e mezza.'},
   ]},
-  {p:2, label:'S12', title:'Consolidamento sviluppo', isRecovery:false, totalKm:49, runs:[
-    {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile 9 km. Ultimi 2 km: 5–6 allunghi da 20\".'},
-    {day:'Martedì',type:'tempo',km:12,pace:'7:20–7:35',zone:'Z3',desc:'QUALITÀ: ripeti struttura S11. Il passo Z3 deve sembrare più naturale.'},
-    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:22,pace:'8:45–9:15',zone:'Z2',desc:'22 km, lungo pre-mezza. Nutrizione come in gara: gel ogni 35–40\' da km 8. Dopo: stretching.'},
+  {p:2, label:'S12', title:'Rampa 3 — aggancio al piano pieno', isRecovery:false, totalKm:41, runs:[
+    {day:'Lunedì',type:'easy',km:8,pace:'8:15–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'tempo',km:10,pace:'7:30–7:45',zone:'Z3',desc:'QUALITÀ: 2 km risc., 4×8\' a 7:30–7:45 (Z3) con 90\" cammino, 1 km defat. È la seduta che il piano originale prevedeva per la S10: ci sei arrivato con due settimane di rampa invece che a freddo.'},
+    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: mobilità + stretching 10\'.'},
+    {day:'Domenica',type:'long',km:17,pace:'8:45–9:15',zone:'Z2',desc:'Lungo 17 km. 2 gel. Da lunedì prossimo (31 ago) sei sul piano originale senza sconti: la S13 chiede 49 km e il primo blocco vero a ritmo gara.'},
   ]},
   {p:2, label:'S13', title:'Introduzione ritmo gara', isRecovery:false, totalKm:49, runs:[
     {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile — gambe fresche per il ritmo gara di domani.'},
@@ -841,7 +1167,7 @@ const WEEKS = [
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2 leggero, social. Dopo: stretching.'},
     {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.'},
   ]},
-  {p:4, label:'S25', title:'Pre-gara — gambe fresche', isRecovery:false, totalKm:24, runs:[
+  {p:4, label:'S25', title:'Pre-gara — gambe fresche', isRecovery:false, totalKm:27, runs:[
     {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'6 km leggerissimi. Niente Gambe pesanti in palestra da qui alla gara.'},
     {day:'Martedì',type:'race',km:7,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA breve: 2 risc., 2 km a ritmo gara (solo per sentirlo), 3 defat. Niente stress.'},
     {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis rilassati + 4 allunghi. Dopo: stretching.'},
@@ -898,14 +1224,14 @@ function getBadgeLabel(type) {
   return {easy:'Facile Z2',tempo:'Qualità Z3',long:'Lungo',race:'Ritmo gara',test:'TEST GARA',rest:'Riposo'}[type]||type;
 }
 
-const DAY_OFFSET = {'Lunedì':-1,'Martedì':0,'Mercoledì':1,'Giovedì':2,'Venerdì':3,'Sabato':4,'Domenica':5};
+const DAY_OFFSET = {'Lunedì':0,'Martedì':1,'Mercoledì':2,'Giovedì':3,'Venerdì':4,'Sabato':5,'Domenica':6};
 function getRunDate(weekIdx, dayName) {
   const d = new Date(PLAN_START);
   d.setDate(d.getDate() + weekIdx*7 + (DAY_OFFSET[dayName] ?? 0));
   return d;
 }
 function formatShortDate(d) {
-  return d.toLocaleDateString('it-IT', {day:'numeric', month:'short'});
+  return d.toLocaleDateString(LANG==='en'?'en-GB':'it-IT', {day:'numeric', month:'short'});
 }
 
 function renderRunCard(weekIdx, runIdx, run) {
@@ -913,31 +1239,31 @@ function renderRunCard(weekIdx, runIdx, run) {
   const logged = state[key];
   const runDate = getRunDate(weekIdx, run.day);
   return `<div class="run-card ${logged?'logged':''}" id="rcard-${key}">
-    <div class="run-type-badge ${getBadgeClass(run.type)}">${getBadgeLabel(run.type)}</div>
-    <div class="run-day">${run.day} · ${formatShortDate(runDate)}</div>
+    <div class="run-type-badge ${getBadgeClass(run.type)}">${TD(getBadgeLabel(run.type))}</div>
+    <div class="run-day">${TD(run.day)} · ${formatShortDate(runDate)}</div>
     <div class="run-targets">
-      <div class="run-target"><div class="rt-label">Obiettivo</div><div class="rt-val mono">${run.km} km</div></div>
-      <div class="run-target"><div class="rt-label">Passo</div><div class="rt-val mono">${run.pace}</div></div>
-      <div class="run-target"><div class="rt-label">Zona</div><div class="rt-val mono">${run.zone}</div></div>
+      <div class="run-target"><div class="rt-label" data-i18n="rc.target">Obiettivo</div><div class="rt-val mono">${run.km} km</div></div>
+      <div class="run-target"><div class="rt-label" data-i18n="rc.pace">Passo</div><div class="rt-val mono">${TD(run.pace)}</div></div>
+      <div class="run-target"><div class="rt-label" data-i18n="rc.zone">Zona</div><div class="rt-val mono">${run.zone}</div></div>
     </div>
-    <div class="run-desc">${run.desc}</div>
+    <div class="run-desc">${TD(run.desc)}</div>
     ${logged && logged.skipped ? `<div class="run-skipped-box">
-      <div class="run-skipped-title">⏸ Saltata</div>
+      <div class="run-skipped-title" data-i18n="rc.skipped">⏸ Saltata</div>
       ${logged.notes ? `<div class="run-skipped-reason">${logged.notes}</div>` : ''}
     </div>` : ''}
     ${logged && !logged.skipped ? `<div class="run-actual">
-      <div class="run-actual-title">✓ Completata</div>
+      <div class="run-actual-title" data-i18n="rc.done">✓ Completata</div>
       <div class="run-actual-grid">
-        <div class="ra-item"><div class="ra-label">Distanza</div><div class="ra-val">${logged.dist||'—'} km</div></div>
-        <div class="ra-item"><div class="ra-label">Passo</div><div class="ra-val">${logged.pace||'—'}</div></div>
-        <div class="ra-item"><div class="ra-label">FC avg</div><div class="ra-val">${logged.hrAvg||'—'}</div></div>
-        <div class="ra-item"><div class="ra-label">FC max</div><div class="ra-val">${logged.hrMax||'—'}</div></div>
-        <div class="ra-item"><div class="ra-label">RPE</div><div class="ra-val">${logged.rpe||'—'}/10</div></div>
-        <div class="ra-item"><div class="ra-label">Scarpe</div><div class="ra-val">${logged.shoe?shoeName(logged.shoe):'—'}</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.dist">Distanza</div><div class="ra-val">${logged.dist||'—'} km</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.pace">Passo</div><div class="ra-val">${logged.pace||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.hrAvg">FC avg</div><div class="ra-val">${logged.hrAvg||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.hrMax">FC max</div><div class="ra-val">${logged.hrMax||'—'}</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.rpe">RPE</div><div class="ra-val">${logged.rpe||'—'}/10</div></div>
+        <div class="ra-item"><div class="ra-label" data-i18n="rc.shoes">Scarpe</div><div class="ra-val">${logged.shoe?shoeName(logged.shoe):'—'}</div></div>
       </div>
       ${logged.notes ? `<div class="run-notes-preview">"${logged.notes.substring(0,80)}${logged.notes.length>80?'…':''}"</div>` : ''}
     </div>` : ''}
-    <button class="log-btn ${logged?'logged':''}" onclick="openModal(${weekIdx},${runIdx})">${logged?'Modifica registrazione':'+ Registra corsa'}</button>
+    <button class="log-btn ${logged?'logged':''}" onclick="openModal(${weekIdx},${runIdx})" data-i18n="${logged?'rc.edit':'rc.log'}">${logged?'Modifica registrazione':'+ Registra corsa'}</button>
   </div>`;
 }
 
@@ -963,8 +1289,8 @@ function renderWeek(weekIdx) {
 
   return `<div class="week-card ${allDone?'completed':''} ${isCurrent?'current':''}" id="week-card-${weekIdx}">
     <div class="week-header" onclick="toggleWeek(${weekIdx})">
-      <div class="week-num mono">${w.label}</div>
-      <div class="week-title">${w.title}${w.isRecovery?'<span class="recovery-badge">recupero</span>':''}</div>
+      <div class="week-num mono">${TD(w.label)}</div>
+      <div class="week-title">${TD(w.title)}${w.isRecovery?'<span class="recovery-badge" data-i18n="wk.recovery">recupero</span>':''}</div>
       <div class="week-date">${dateStr}</div>
       <div class="week-km-target mono">${w.totalKm>0?w.totalKm+'km':''}</div>
       <div class="week-status">${dots}</div>
@@ -972,18 +1298,18 @@ function renderWeek(weekIdx) {
     </div>
     <div class="week-body" id="week-body-${weekIdx}">
       <div class="week-summary-row">
-        <div class="ws-stat"><div class="ws-label">Target km</div><div class="ws-val mono ${isCurrent?'accent':''}">${w.totalKm>0?w.totalKm:'—'}</div></div>
-        <div class="ws-stat"><div class="ws-label">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
-        <div class="ws-stat"><div class="ws-label">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
-        <div class="ws-stat"><div class="ws-label">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
-        <div class="ws-stat"><div class="ws-label">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
+        <div class="ws-stat"><div class="ws-label" data-i18n="wk.targetKm">Target km</div><div class="ws-val mono ${isCurrent?'accent':''}">${w.totalKm>0?w.totalKm:'—'}</div></div>
+        <div class="ws-stat"><div class="ws-label" data-i18n="wk.runs">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
+        <div class="ws-stat"><div class="ws-label" data-i18n="wk.actualKm">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
+        <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgPace">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
+        <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgHr">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
       </div>
-      ${isRaceWeek ? `<div class="race-week-banner"><div class="rwb-icon">🏁</div><div><div class="rwb-title">Maratona di Valencia — 6 Dicembre 2026</div><div class="rwb-sub">Parti conservativo. Gel ogni 30 min da km 10. Goditi ogni metro. Hai fatto tutto il lavoro.</div></div></div>` : ''}
+      ${isRaceWeek ? `<div class="race-week-banner"><div class="rwb-icon">🏁</div><div><div class="rwb-title" data-i18n="wk.raceTitle">Maratona di Valencia — 6 Dicembre 2026</div><div class="rwb-sub" data-i18n="wk.raceSub">Parti conservativo. Gel ogni 30 min da km 10. Goditi ogni metro. Hai fatto tutto il lavoro.</div></div></div>` : ''}
       <div class="runs-grid">${w.runs.map((_,ri)=>renderRunCard(weekIdx,ri,w.runs[ri])).join('')}</div>
       <div class="week-notes-area">
-        <div class="week-notes-label">Note settimana</div>
-        <textarea class="week-notes-input" id="wnote-${weekIdx}" placeholder="Come è andata questa settimana? Dolori, progressi, osservazioni..." onchange="saveWeekNote(${weekIdx})">${state[weekNoteKey(weekIdx)]||''}</textarea>
-        <button class="week-claude-btn" onclick="askClaude(${weekIdx})">↗ Chiedi feedback a Claude</button>
+        <div class="week-notes-label" data-i18n="wk.notes">Note settimana</div>
+        <textarea class="week-notes-input" id="wnote-${weekIdx}" placeholder="Come è andata questa settimana? Dolori, progressi, osservazioni..." data-i18n-ph="wk.notesPh" onchange="saveWeekNote(${weekIdx})">${state[weekNoteKey(weekIdx)]||''}</textarea>
+        <button class="week-claude-btn" onclick="askClaude(${weekIdx})" data-i18n="wk.ask">↗ Chiedi feedback a Claude</button>
       </div>
     </div>
   </div>`;
@@ -1088,7 +1414,7 @@ function renderLineChart(wrapId, rows, opts) {
   const wrap = document.getElementById(wrapId);
   const valid = rows.filter(r => r.value !== null && r.value !== undefined);
   if (valid.length < 2) {
-    wrap.innerHTML = `<div class="chart-empty">Servono almeno 2 corse registrate con questo dato.</div>`;
+    wrap.innerHTML = `<div class="chart-empty" data-i18n="ch.noData">Servono almeno 2 corse registrate con questo dato.</div>`;
     return;
   }
   const W = 600, H = 160, padL = 30, padR = 10, padT = 14, padB = 20;
@@ -1194,8 +1520,8 @@ function renderKmBarChart(wrapId, legendId) {
   const wrap = document.getElementById(wrapId);
   const legend = document.getElementById(legendId);
   legend.innerHTML = `
-    <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:var(--accent)"></div>Effettivo</div>
-    <div class="chart-legend-item"><div class="chart-legend-swatch" style="border:1.5px solid var(--text-sec);background:transparent"></div>Target</div>`;
+    <div class="chart-legend-item"><div class="chart-legend-swatch" style="background:var(--accent)"></div><span data-i18n="ch.actual">Effettivo</span></div>
+    <div class="chart-legend-item"><div class="chart-legend-swatch" style="border:1.5px solid var(--text-sec);background:transparent"></div><span data-i18n="ch.target">Target</span></div>`;
 
   const cur = getCurrentWeekIdx();
   const weeksData = [];
@@ -1205,7 +1531,7 @@ function renderKmBarChart(wrapId, legendId) {
     weeksData.push({ label: w.label, target: w.totalKm, actual: isNaN(actual) ? 0 : actual });
   }
   if (weeksData.length < 1) {
-    wrap.innerHTML = `<div class="chart-empty">Nessuna settimana ancora iniziata.</div>`;
+    wrap.innerHTML = `<div class="chart-empty" data-i18n="pl.empty">Nessuna settimana ancora iniziata.</div>`;
     return;
   }
 
@@ -1253,15 +1579,15 @@ function renderKmBarChart(wrapId, legendId) {
       const pt = svgCoord(svg, e.clientX, e.clientY);
       const label = document.createElement('div');
       label.className = 'ctt-label';
-      label.textContent = d.label;
+      label.textContent = TD(d.label);
       const valA = document.createElement('div');
       valA.className = 'ctt-val';
       valA.style.color = 'var(--accent)';
-      valA.textContent = `Effettivo: ${d.actual.toFixed(1)} km`;
+      valA.textContent = `${TU('ch.actual','Effettivo')}: ${d.actual.toFixed(1)} km`;
       const valT = document.createElement('div');
       valT.className = 'ctt-val';
       valT.style.color = 'var(--text-sec)';
-      valT.textContent = `Target: ${d.target} km`;
+      valT.textContent = `${TU('ch.target','Target')}: ${d.target} km`;
       tooltip.innerHTML = '';
       tooltip.appendChild(label);
       tooltip.appendChild(valA);
@@ -1301,12 +1627,12 @@ function renderPhase(phaseIdx) {
     <div class="phase-header">
       <div class="phase-indicator" style="background:${ph.color}"></div>
       <div class="phase-title-wrap">
-        <div class="phase-eyebrow">${ph.eyebrow}</div>
-        <div class="phase-title">${ph.name}</div>
+        <div class="phase-eyebrow">${TD(ph.eyebrow)}</div>
+        <div class="phase-title">${TD(ph.name)}</div>
       </div>
       <div class="phase-meta">
-        <div class="phase-km">${ph.kmRange}</div>
-        <div class="phase-weeks-range">Settimane ${ph.weeks}</div>
+        <div class="phase-km">${TD(ph.kmRange)}</div>
+        <div class="phase-weeks-range"><span data-i18n="ph.weeks">Settimane</span> ${ph.weeks}</div>
       </div>
     </div>
     ${weekIndices.map(({i})=>renderWeek(i)).join('')}
@@ -1326,6 +1652,7 @@ function renderAll() {
   updateSidebar();
   updateOverallProgress();
   renderTrendSection();
+  applyI18n();
 }
 
 function toggleWeek(idx) {
@@ -1352,9 +1679,9 @@ function updateSidebar() {
   document.getElementById('sb-done').textContent = `${totalDone}/${totalRuns}`;
   document.getElementById('sb-km').textContent = totalKm.toFixed(0)+' km';
   const cur = getCurrentWeekIdx();
-  document.getElementById('sb-week').textContent = WEEKS[cur]?.label || '—';
+  document.getElementById('sb-week').textContent = TD(WEEKS[cur]?.label) || '—';
   const curPhase = PHASES.find(p=>p.id===WEEKS[cur]?.p);
-  document.getElementById('sb-phase').textContent = curPhase?.name.split(' ')[0] || '—';
+  document.getElementById('sb-phase').textContent = (curPhase? TD(curPhase.name).split(' ')[0] : '') || '—';
 }
 
 function updateOverallProgress() {
@@ -1375,13 +1702,14 @@ function openModal(weekIdx, runIdx) {
   currentModal = {weekIdx, runIdx, key};
   selectedRpe = existing?.rpe || null;
 
-  document.getElementById('modal-title').textContent = `${run.day} — ${WEEKS[weekIdx].label}`;
-  document.getElementById('modal-sub').textContent = `${getBadgeLabel(run.type)} · ${run.km} km · ${run.zone}`;
+  document.getElementById('modal-title').textContent = `${TD(run.day)} — ${TD(WEEKS[weekIdx].label)}`;
+  document.getElementById('modal-sub').textContent = `${TD(getBadgeLabel(run.type))} · ${run.km} km · ${run.zone}`;
   document.getElementById('modal-targets').innerHTML = `
-    <div class="mtr-item"><div class="mtr-label">Distanza</div><div class="mtr-val">${run.km} km</div></div>
-    <div class="mtr-item"><div class="mtr-label">Passo target</div><div class="mtr-val">${run.pace}</div></div>
-    <div class="mtr-item"><div class="mtr-label">Zona</div><div class="mtr-val">${run.zone}</div></div>
+    <div class="mtr-item"><div class="mtr-label" data-i18n="md.tgtDist">Distanza</div><div class="mtr-val">${run.km} km</div></div>
+    <div class="mtr-item"><div class="mtr-label" data-i18n="md.tgtPace">Passo target</div><div class="mtr-val">${TD(run.pace)}</div></div>
+    <div class="mtr-item"><div class="mtr-label" data-i18n="md.tgtZone">Zona</div><div class="mtr-val">${run.zone}</div></div>
   `;
+  applyI18n(document.getElementById('modal-overlay'));
 
   document.getElementById('inp-dist').value = existing?.dist||'';
   document.getElementById('inp-pace').value = existing?.pace||'';
@@ -1475,37 +1803,38 @@ function renderShoes() {
   const wrap = document.getElementById('shoes-list');
   if(!wrap) return;
   const shoes = state.shoes||[];
-  if(!shoes.length) { wrap.innerHTML = '<div class="guide-note">Nessuna scarpa registrata. Aggiungine una per tracciare i km.</div>'; return; }
+  if(!shoes.length) { wrap.innerHTML = '<div class="guide-note" data-i18n="gsh.none">Nessuna scarpa registrata. Aggiungine una per tracciare i km.</div>'; applyI18n(wrap); return; }
   wrap.innerHTML = shoes.map(s => {
     const km = shoeKm(s);
     const pct = Math.min(100, Math.round(km/SHOE_LIMIT*100));
     const col = pct<70 ? 'var(--success)' : pct<90 ? 'var(--warning)' : 'var(--danger)';
     return `<div class="shoe-item">
       <div class="shoe-info">
-        <div class="shoe-name ${s.retired?'retired':''}">${s.name}${s.retired?' · ritirata':''}</div>
+        <div class="shoe-name ${s.retired?'retired':''}">${s.name}${s.retired?(LANG==='en'?' · retired':' · ritirata'):''}</div>
         <div class="shoe-km">${km.toFixed(1)} / ${SHOE_LIMIT} km · ${pct}%</div>
         <div class="shoe-bar"><div class="shoe-bar-fill" style="width:${pct}%;background:${col}"></div></div>
       </div>
       <div class="shoe-actions">
-        <button class="shoe-btn" onclick="editShoe('${s.id}')">Modifica</button>
-        <button class="shoe-btn" onclick="toggleRetire('${s.id}')">${s.retired?'Riattiva':'Ritira'}</button>
-        <button class="shoe-btn" onclick="deleteShoe('${s.id}')">Elimina</button>
+        <button class="shoe-btn" onclick="editShoe('${s.id}')" data-i18n="gsh.edit">Modifica</button>
+        <button class="shoe-btn" onclick="toggleRetire('${s.id}')" data-i18n="${s.retired?'gsh.unretire':'gsh.retire'}">${s.retired?'Riattiva':'Ritira'}</button>
+        <button class="shoe-btn" onclick="deleteShoe('${s.id}')" data-i18n="md.delete">Elimina</button>
       </div>
     </div>`;
   }).join('');
+  applyI18n(wrap);
 }
 function addShoe() {
-  const name = prompt('Nome scarpa (es. Asics Novablast 5):');
+  const name = prompt(LANG==='en'?'Shoe name (e.g. Asics Novablast 5):':'Nome scarpa (es. Asics Novablast 5):');
   if(!name) return;
-  const base = parseFloat(prompt('Km già percorsi con questa scarpa (0 se nuova):','0'))||0;
+  const base = parseFloat(prompt(LANG==='en'?'Km already run in this shoe (0 if new):':'Km già percorsi con questa scarpa (0 se nuova):','0'))||0;
   if(!state.shoes) state.shoes = [];
   state.shoes.push({id:'shoe_'+Date.now().toString(36)+Math.random().toString(36).slice(2,5), name:name.trim(), base:base, retired:false});
   saveState(); renderShoes();
 }
 function editShoe(id) {
   const s = (state.shoes||[]).find(x=>x.id===id); if(!s) return;
-  const name = prompt('Nome scarpa:', s.name); if(name===null) return;
-  const base = prompt('Km iniziali già percorsi (prima del tracking):', s.base); if(base===null) return;
+  const name = prompt(LANG==='en'?'Shoe name:':'Nome scarpa:', s.name); if(name===null) return;
+  const base = prompt(LANG==='en'?'Starting km already run (before tracking):':'Km iniziali già percorsi (prima del tracking):', s.base); if(base===null) return;
   s.name = name.trim()||s.name; s.base = parseFloat(base)||0;
   saveState(); renderShoes();
 }
@@ -1514,7 +1843,7 @@ function toggleRetire(id) {
   if(s) { s.retired = !s.retired; saveState(); renderShoes(); }
 }
 function deleteShoe(id) {
-  if(!confirm('Eliminare questa scarpa? Le corse registrate restano, ma non saranno più associate.')) return;
+  if(!confirm(LANG==='en'?'Delete this shoe? Logged runs stay, but will no longer be linked to it.':'Eliminare questa scarpa? Le corse registrate restano, ma non saranno più associate.')) return;
   state.shoes = (state.shoes||[]).filter(x=>x.id!==id);
   saveState(); renderShoes();
 }
@@ -1552,17 +1881,19 @@ function refreshWeek(weekIdx) {
   // Just re-render the summary row
   const summaryRow = body.querySelector('.week-summary-row');
   if(summaryRow) summaryRow.innerHTML = `
-    <div class="ws-stat"><div class="ws-label">Target km</div><div class="ws-val mono">${w.totalKm>0?w.totalKm:'—'}</div></div>
-    <div class="ws-stat"><div class="ws-label">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
-    <div class="ws-stat"><div class="ws-label">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
-    <div class="ws-stat"><div class="ws-label">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
-    <div class="ws-stat"><div class="ws-label">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
+    <div class="ws-stat"><div class="ws-label" data-i18n="wk.targetKm">Target km</div><div class="ws-val mono">${w.totalKm>0?w.totalKm:'—'}</div></div>
+    <div class="ws-stat"><div class="ws-label" data-i18n="wk.runs">Corse</div><div class="ws-val mono">${runsLogged}/${w.runs.length}</div></div>
+    <div class="ws-stat"><div class="ws-label" data-i18n="wk.actualKm">Km effettivi</div><div class="ws-val mono">${calcWeekActualKm(weekIdx)}</div></div>
+    <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgPace">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
+    <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgHr">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
   `;
+  applyI18n(body);
 }
 
 // ===== CLAUDE FEEDBACK =====
 function askClaude(weekIdx) {
   const w = WEEKS[weekIdx];
+  if (LANG === 'en') return askClaudeEN(weekIdx);
   let summary = `Sono Aiman, mi sto allenando per la Maratona di Valencia (6 dic 2026). CUTOFF gara 5:30, quindi obiettivo 5:15 (passo 7:28/km) per avere margine. FC max reale 202 bpm, peso ~84 kg (da 87–88, in calo graduale verso 80), primo maratoneta. Base attuale: ~25–30 km/sett, mezza più recente 21,1 km a 7:56/km (FC media 167). Faccio anche molta palestra/pesi.\n\n`;
   summary += `## Settimana ${w.label} — ${w.title}\n`;
   summary += `Target: ${w.totalKm} km\n`;
@@ -1613,8 +1944,12 @@ document.getElementById('modal-overlay').addEventListener('click', function(e) {
 if (window.IS_READONLY) document.body.classList.add('readonly-mode');
 loadState();
 if(!state.shoes) { state.shoes = [{id:'shoe_novablast5', name:'Asics Novablast 5 (facili/qualità)', base:0, retired:false}, {id:'shoe_superblast2', name:'Asics Superblast 2 (lungo/gara)', base:0, retired:false}]; saveState(); }
+document.documentElement.lang = LANG;
+const _langSel = document.getElementById('lang-select');
+if (_langSel) _langSel.value = LANG;
 renderAll();
 renderShoes();
+applyI18n();
 updateCountdown();
 setInterval(updateCountdown, 30000);
 </script>

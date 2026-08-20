@@ -5,3 +5,9 @@ auth.json
 CREDENTIALS.txt
 tunnel.log
 url.txt
+health/
+
+# Backup e file di lavoro: utili sul momento, inutili nella storia del repo
+*.bak
+*.bak-*
+i18n-patch/

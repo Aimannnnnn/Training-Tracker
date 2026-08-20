@@ -1,31 +1,25 @@
-# Starts the local tracker server + Cloudflare tunnel if not already running.
-# Idempotent: safe to run repeatedly. Writes the current public URL to url.txt.
+# Starts the local tracker server and makes sure the Tailscale Funnel is serving it.
+# Idempotent: safe to run repeatedly. Launched at logon by the "MarathonTracker" scheduled task.
+# Public URL (fixed, never changes): https://valencia-marathon.tail098b53.ts.net
+# The old cloudflared version of this script is kept as start-tracker-cloudflared.ps1.bak.
 $ErrorActionPreference = 'SilentlyContinue'
 $dir = 'C:\Users\aiman\marathon-server'
-$cf  = 'C:\Program Files (x86)\cloudflared\cloudflared.exe'
-$log = Join-Path $dir 'tunnel.log'
+$ts  = 'C:\Program Files\Tailscale\tailscale.exe'
 
-# 1. Local static server (node) — start only if port 8787 is not listening.
+# 1. Local server (node) — start only if port 8787 is not already listening.
 $listening = Get-NetTCPConnection -LocalPort 8787 -State Listen -ErrorAction SilentlyContinue
 if (-not $listening) {
-  Start-Process -FilePath 'node' -ArgumentList (Join-Path $dir 'server.js') -WindowStyle Hidden
-  Start-Sleep -Seconds 2
+  Start-Process -FilePath 'node' -ArgumentList (Join-Path $dir 'server.js') -WorkingDirectory $dir -WindowStyle Hidden
+  Start-Sleep -Seconds 3
 }
 
-# 2. Cloudflare tunnel — start only if cloudflared is not already running.
-$running = Get-Process cloudflared -ErrorAction SilentlyContinue
-if (-not $running) {
-  if (Test-Path $log) { Remove-Item $log -Force }
-  Start-Process -FilePath $cf -ArgumentList "tunnel --url http://127.0.0.1:8787 --logfile `"$log`"" -WindowStyle Hidden
+# 2. Funnel — the serve config persists across reboots, so re-apply only if it is off.
+#    Tailscale may need a few seconds after logon to connect, hence the retries.
+for ($i = 0; $i -lt 10; $i++) {
+  $status = & $ts funnel status 2>&1
+  if ($status -match 'Funnel on') { break }
+  & $ts funnel --bg 8787 | Out-Null
+  Start-Sleep -Seconds 5
 }
 
-# 3. Wait for the public URL to appear, then save it.
-for ($i = 0; $i -lt 20; $i++) {
-  Start-Sleep -Seconds 2
-  $m = Select-String -Path $log -Pattern 'https://[a-z0-9-]+\.trycloudflare\.com' -AllMatches -ErrorAction SilentlyContinue
-  if ($m) {
-    $url = ($m.Matches | Select-Object -First 1).Value
-    Set-Content -Path (Join-Path $dir 'url.txt') -Value $url -Encoding utf8
-    break
-  }
-}
+Set-Content -Path (Join-Path $dir 'url.txt') -Value 'https://valencia-marathon.tail098b53.ts.net' -Encoding utf8
