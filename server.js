@@ -270,7 +270,11 @@ function clearSessionCookie(res) {
 const handleRequest = (req, res, trustTailnet) => {
   const session = validSession(getCookie(req, COOKIE_NAME)) || tailnetSession(req, trustTailnet);
 
-  if (req.url === '/login' && req.method === 'GET') {
+  // HEAD come GET: i controlli di stato (il siteMonitor di Homepage) usano HEAD.
+  // Senza questo ramo un HEAD /login cadeva nel redirect qui sotto, che rimanda
+  // a /login: un ciclo infinito, e il pallino del riquadro restava rosso.
+  // Node scarta da solo il corpo di una risposta a HEAD.
+  if (req.url === '/login' && (req.method === 'GET' || req.method === 'HEAD')) {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(LOGIN_PAGE);
     return;
