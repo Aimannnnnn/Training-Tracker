@@ -145,6 +145,13 @@ main{flex:1;padding:2rem;overflow-y:auto;max-width:960px;}
 .rt-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);}
 .rt-val{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);}
 .run-desc{font-size:11px;color:var(--text-sec);line-height:1.5;margin-bottom:10px;}
+.run-fuel{background:rgba(240,160,48,0.07);border:1px solid rgba(240,160,48,0.22);border-radius:6px;padding:8px 10px;margin-bottom:10px;}
+.run-fuel-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:5px;}
+.run-fuel-title{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:#F0A030;}
+.run-fuel-dur{font-family:'DM Mono',monospace;font-size:10px;color:var(--text-muted);}
+.run-fuel-recipe{font-family:'DM Mono',monospace;font-size:11px;color:var(--text-sec);line-height:1.65;}
+.run-fuel-recipe b{color:var(--text);font-weight:500;}
+.run-fuel-tip{font-size:11px;color:var(--text-muted);line-height:1.5;margin-top:6px;}
 .run-actual{background:rgba(200,240,96,0.08);border:1px solid rgba(200,240,96,0.2);border-radius:6px;padding:8px 10px;margin-top:8px;}
 .run-actual-title{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:6px;opacity:0.8;}
 .run-actual-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
@@ -567,17 +574,26 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
       <div class="guide-card">
         <h4 data-i18n="gf.c2.h">Durante (corse &gt;75–90')</h4>
         <ul data-i18n="gf.c2.ul">
-          <li><strong>30–60 g carbo/ora</strong> = 1 gel ogni 30–40'</li>
+          <li><strong>30–60 g carbo/ora</strong> = un sorso di miscela ogni 20–30'</li>
           <li><strong>Inizia presto</strong> (entro km 8–10), non quando sei già vuoto</li>
           <li>Sempre con un sorso d'acqua per assorbirlo</li>
+        </ul>
+      </div>
+      <div class="guide-card">
+        <h4 data-i18n="gf.mix.h">La tua miscela — malto + fruttosio</h4>
+        <ul data-i18n="gf.mix.ul">
+          <li><strong>2 parti maltodestrina : 1 parte fruttosio</strong> — es. 40 g + 20 g = 60 g di carbo</li>
+          <li>I due zuccheri usano <strong>trasportatori intestinali diversi</strong>: insieme superi il tetto di ~60 g/h della sola maltodestrina</li>
+          <li>In borraccia <strong>max 8 g ogni 100 ml</strong>. Più concentrato di così va in flask, con acqua naturale a parte</li>
+          <li>Aggiungi <strong>0,5 g di sale per ora</strong> di corsa. Sciogli il malto in acqua tiepida, poi lascia raffreddare</li>
         </ul>
       </div>
       <div class="guide-card">
         <h4 data-i18n="gf.c3.h">Idratazione &amp; intestino</h4>
         <ul data-i18n="gf.c3.ul">
           <li>Bevi <strong>a sete</strong>; nei lunghi/caldo aggiungi <strong>elettroliti</strong> (sodio)</li>
-          <li><strong>Allena l'intestino</strong>: prova gel e quantità nei lunghi (il piano lo prevede)</li>
-          <li>Trova la marca che digerisci. <strong>Mai nulla di nuovo il giorno gara</strong></li>
+          <li><strong>Allena l'intestino</strong>: le dosi salgono lungo dopo lungo, è voluto. Se gonfia, diluisci di più</li>
+          <li>Fissa la ricetta che digerisci. <strong>Mai nulla di nuovo il giorno gara</strong></li>
         </ul>
       </div>
       <div class="guide-card">
@@ -585,7 +601,7 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
         <ul data-i18n="gf.c4.ul">
           <li>Carico carbo nei <strong>2–3 giorni prima</strong> (carbo alti, meno fibre/grassi)</li>
           <li>Colazione <strong>2.5–3h prima</strong>: 100–150 g carbo (pane+marmellata, banana, caffè)</li>
-          <li>Gel <strong>ogni 30–35' da km 10</strong> (≈5–6 gel totali) + acqua/sport drink ai ristori</li>
+          <li><strong>Ogni 30–35' dal 45'</strong>: 2 flask da 400 ml (70 g malto + 35 g fruttosio l'una) + isotonica ai ristori → ~60 g/h</li>
         </ul>
       </div>
       <div class="guide-card wide">
@@ -786,10 +802,10 @@ const TD_PAIRS_RUNS = [
 [`Leggerissimo, 6 km di attivazione. Niente Gambe pesanti questa settimana.`,`Very light, 6 km to switch the legs on. No heavy leg day this week.`],
 [`4 km facilissimi + mobilità/stretching. Riposa le gambe.`,`4 km very easy + mobility/stretching. Rest your legs.`],
 [`Shakeout 3–4 km + 3 allunghi brevi. Solo per sciogliere. Riposo totale sabato.`,`3–4 km shakeout + 3 short strides. Just to loosen up. Complete rest on Saturday.`],
-[`MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Gel ogni 35'. Annota passo, FC, sensazioni a km 15+.`,`HALF MARATHON TEST — the GO/NO-GO call on the 5:30 cutoff. Run hard but controlled. Rule of thumb: marathon pace ≈ half pace +20–30 sec/km. To stay under 5:30 (7:49/km) you need a half around 7:20 or better; for the 5:15 target (7:28/km) a half around 7:05. If the half is ≥7:30 → as of today you will NOT make the cutoff: you'll need a plan B (more volume, or a marathon with a longer time limit). Gel every 35'. Note your pace, HR and how you feel from km 15 on.`],
+[`MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Rifornimento: la miscela qui sotto, un sorso ogni 30'. Annota passo, FC, sensazioni a km 15+.`,`HALF MARATHON TEST — the GO/NO-GO call on the 5:30 cutoff. Run hard but controlled. Rule of thumb: marathon pace ≈ half pace +20–30 sec/km. To stay under 5:30 (7:49/km) you need a half around 7:20 or better; for the 5:15 target (7:28/km) a half around 7:05. If the half is ≥7:30 → as of today you will NOT make the cutoff: you'll need a plan B (more volume, or a marathon with a longer time limit). Fuelling: the mix below, a sip every 30'. Note your pace, HR and how you feel from km 15 on.`],
 [`Facile Z2, gambe che si rimettono dalla mezza. Da qui RIDUCI le gambe in palestra (~40%).`,`Easy Z2, legs recovering from the half. From here cut back leg day at the gym (~40%).`],
 [`RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 4 defat. Allunga il blocco.`,`RACE PACE: 3 warm-up, 8 km at race pace (7:25–7:35), 4 cool-down. The block gets longer.`],
-[`24 km! 4 gel. Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.`,`24 km! 4 gels. Eat plenty the day before. ~3h20–3h40 on your feet. After: stretching.`],
+[`24 km! Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.`,`24 km! Eat plenty the day before. ~3h20–3h40 on your feet. After: stretching.`],
 [`RITMO GARA: ripeti S17. Tieni il ritmo per tutti gli 8 km senza cedere.`,`RACE PACE: repeat W17. Hold the pace for all 8 km without fading.`],
 [`26 km, oltre la mezza — passo psicologico. Nutrizione ogni 35'. Dopo: stretching.`,`26 km, past the halfway distance — a psychological step. Fuel every 35'. After: stretching.`],
 [`RITMO GARA: 2 risc., 9 km a ritmo gara, 3 defat.`,`RACE PACE: 2 warm-up, 9 km at race pace, 3 cool-down.`],
@@ -799,7 +815,7 @@ const TD_PAIRS_RUNS = [
 [`Facile, 8 km — settimana di volume massimo. Tieni le gambe in palestra al minimo.`,`Easy, 8 km — maximum volume week. Keep leg work at the gym to a minimum.`],
 [`RITMO GARA: 14 km con 9 km a ritmo gara. Picco qualitativo.`,`RACE PACE: 14 km with 9 km at race pace. The peak quality session.`],
 [`45' tapis Z2, social — riposo attivo prima del lungo da 30. Dopo: stretching.`,`45' treadmill Z2, social — active rest before the 30 km long run. After: stretching.`],
-[`30 km — il lungo massimo! ~4h10–4h20 in piedi. 4–5 gel + acqua. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.`,`30 km — the longest long run! ~4h10–4h20 on your feet. 4–5 gels + water. For a first marathon, 30 km is enough: better healthy than overreaching at 32+. This is the run that gives you confidence for Valencia. After: plenty of stretching.`],
+[`30 km — il lungo massimo! ~4h10–4h20 in piedi. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.`,`30 km — the longest long run! ~4h10–4h20 on your feet. For a first marathon, 30 km is enough: better healthy than overreaching at 32+. This is the run that gives you confidence for Valencia. After: plenty of stretching.`],
 [`Recupero obbligatorio. Il corpo assorbe il picco adesso. Gambe in palestra al minimo.`,`Recovery is mandatory. Your body absorbs the peak now. Keep leg work at the gym to a minimum.`],
 [`9 km facili. Niente fretta, niente qualità questa settimana.`,`9 km easy. No rush, no quality work this week.`],
 [`45' tapis rilassati, social. Dopo: stretching.`,`45' relaxed treadmill, social. After: stretching.`],
@@ -817,13 +833,16 @@ const TD_PAIRS_RUNS = [
 [`5 km di attivazione. Solo per muoverti. Niente palestra gambe.`,`5 km to switch the legs on. Just to move. No leg day.`],
 [`4 km + 4×100m strides al ritmo gara (recupero camminato). Mantieni la reattività muscolare.`,`4 km + 4×100m strides at race pace (walk recovery). Keep your muscles sharp.`],
 [`Shakeout 3 km molto facili (o riposo se viaggi). Mobilità + stretching leggero. Gambe fresche per domenica.`,`3 km very easy shakeout (or rest if you're travelling). Mobility + light stretching. Fresh legs for Sunday.`],
-[`MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Gel ogni 30–35' da km 10. Ce la fai.`,`VALENCIA MARATHON. CUTOFF 5:30 — you have to finish under it, with margin. Target 7:28/km (≈5:15). Start at 7:40–7:45 for the first 10 km, then settle at 7:28. Do NOT chase your heart rate: the first kilometres should feel easy. Watch your splits: at halfway (21 km) you need to be through by ~2:38. Gel every 30–35' from km 10. You've got this.`],
+[`MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Rifornimento ogni 30–35' dal 45' (miscela qui sotto). Ce la fai.`,`VALENCIA MARATHON. CUTOFF 5:30 — you have to finish under it, with margin. Target 7:28/km (≈5:15). Start at 7:40–7:45 for the first 10 km, then settle at 7:28. Do NOT chase your heart rate: the first kilometres should feel easy. Watch your splits: at halfway (21 km) you need to be through by ~2:38. Fuelling every 30–35' from 45' (mix below). You've got this.`],
 ];
 
 const TD_MAP = new Map([...TD_PAIRS, ...TD_PAIRS_RUNS]);
 
 // --- Traduzioni del MARKUP statico e generato (chiave = attributo data-i18n) ---
 const UI_EN = {
+// guida: miscela in polvere
+'gf.mix.h': `Your mix — maltodextrin + fructose`,
+'gf.mix.ul': `<li><strong>2 parts maltodextrin : 1 part fructose</strong> — e.g. 40 g + 20 g = 60 g of carbs</li><li>The two sugars use <strong>different gut transporters</strong>: together they take you past the ~60 g/h ceiling of maltodextrin alone</li><li>In a bottle, <strong>max 8 g per 100 ml</strong>. Anything thicker goes in a flask, with plain water alongside</li><li>Add <strong>0.5 g of salt per hour</strong> of running. Dissolve the maltodextrin in warm water, then let it cool</li>`,
 // header
 'hdr.goal': `target <strong>5:15</strong> · <strong>5:30</strong> cutoff to beat · race pace <strong>7:28</strong>/km · max HR <strong>202</strong>`,
 'cd.days': `days`, 'cd.hours': `hours`, 'cd.mins': `min`,
@@ -892,11 +911,11 @@ const UI_EN = {
 'gf.c1.h': `Before the run`,
 'gf.c1.ul': `<li>Runs <strong>&lt;60'</strong>: fasted or a light snack, both fine</li><li>Long/quality: <strong>1–2h before, 40–60 g carbs</strong> (banana, toast+honey, rusks)</li><li>Coffee is fine if it agrees with you</li>`,
 'gf.c2.h': `During (runs &gt;75–90')`,
-'gf.c2.ul': `<li><strong>30–60 g carbs/hour</strong> = 1 gel every 30–40'</li><li><strong>Start early</strong> (by km 8–10), not once you are already empty</li><li>Always with a sip of water so it absorbs</li>`,
+'gf.c2.ul': `<li><strong>30–60 g carbs/hour</strong> = a sip of your mix every 20–30'</li><li><strong>Start early</strong> (by km 8–10), not once you are already empty</li><li>Always with a sip of water so it absorbs</li>`,
 'gf.c3.h': `Hydration &amp; gut`,
-'gf.c3.ul': `<li>Drink <strong>to thirst</strong>; on long runs and in the heat add <strong>electrolytes</strong> (sodium)</li><li><strong>Train your gut</strong>: practise gels and amounts on long runs (the plan builds this in)</li><li>Find the brand you digest. <strong>Never anything new on race day</strong></li>`,
+'gf.c3.ul': `<li>Drink <strong>to thirst</strong>; on long runs and in the heat add <strong>electrolytes</strong> (sodium)</li><li><strong>Train your gut</strong>: the doses climb long run after long run, on purpose. If it bloats you, dilute more</li><li>Lock in the recipe you digest. <strong>Never anything new on race day</strong></li>`,
 'gf.c4.h': `Race day — Valencia`,
-'gf.c4.ul': `<li>Carb-load over the <strong>2–3 days before</strong> (high carb, less fibre/fat)</li><li>Breakfast <strong>2.5–3h before</strong>: 100–150 g carbs (bread+jam, banana, coffee)</li><li>Gel <strong>every 30–35' from km 10</strong> (≈5–6 gels total) + water/sports drink at the aid stations</li>`,
+'gf.c4.ul': `<li>Carb-load over the <strong>2–3 days before</strong> (high carb, less fibre/fat)</li><li>Breakfast <strong>2.5–3h before</strong>: 100–150 g carbs (bread+jam, banana, coffee)</li><li><strong>Every 30–35' from 45'</strong>: 2 flasks of 400 ml (70 g malto + 35 g fructose each) + isotonic at the aid stations → ~60 g/h</li>`,
 'gf.c5.h': `Pace table — target 5:15 (7:28/km) · cutoff 5:30`,
 'gf.c5.r1': `10 km`, 'gf.c5.r2': `Half (21.1 km)`, 'gf.c5.r3': `30 km`,
 'gf.c5.r4': `Finish (42.2 km) — target`, 'gf.c5.r5': `Finish — limit NOT to exceed`,
@@ -929,7 +948,7 @@ const UI_EN = {
 'wk.ask': `↗ Ask Claude for feedback`,
 'wk.recovery': `recovery`,
 'wk.raceTitle': `Valencia Marathon — 6 December 2026`,
-'wk.raceSub': `Start conservatively. Gel every 30 min from km 10. Enjoy every metre. You have done all the work.`,
+'wk.raceSub': `Start conservatively. Fuelling every 30 min from 45′. Enjoy every metre. You have done all the work.`,
 'ph.weeks': `Weeks`,
 'pl.empty': `No week started yet.`,
 };
@@ -1095,77 +1114,77 @@ const WEEKS = [
   ]},
   {p:2, label:'S13', title:'Introduzione ritmo gara', isRecovery:false, totalKm:49, runs:[
     {day:'Martedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile — gambe fresche per il ritmo gara di domani.'},
-    {day:'Mercoledì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 4 defat. Z2. Prima uscita vera a ritmo gara!'},
+    {day:'Mercoledì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 4 defat. Z2. Prima uscita vera a ritmo gara!',fuel:{h:1.75,c:30,ml:500,fmt:'bottle',tip:'start45'}},
     {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — recupero. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:21,pace:'8:45–9:15',zone:'Z2',desc:'21 km Z2, a passo lento. Distanza di mezza, ma controllata. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:21,pace:'8:45–9:15',zone:'Z2',desc:'21 km Z2, a passo lento. Distanza di mezza, ma controllata. Dopo: stretching.',fuel:{h:3.1,c:120,ml:250,fmt:'flask',tip:'flask'}},
   ]},
   {p:2, label:'S14', title:'Volume massimo fase 2', isRecovery:false, totalKm:52, runs:[
     {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: stessa struttura S13 — 3 risc. + 6 km ritmo gara + 4 defat.'},
+    {day:'Martedì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: stessa struttura S13 — 3 risc. + 6 km ritmo gara + 4 defat.',fuel:{h:1.75,c:35,ml:500,fmt:'bottle',tip:'start45'}},
     {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:23,pace:'8:45–9:10',zone:'Z2',desc:'23 km, il lungo più lungo finora. Parti lento, finisci lento. Non fare l\'eroe. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:23,pace:'8:45–9:10',zone:'Z2',desc:'23 km, il lungo più lungo finora. Parti lento, finisci lento. Non fare l\'eroe. Dopo: stretching.',fuel:{h:3.4,c:140,ml:300,fmt:'flask',tip:'flask'}},
   ]},
   {p:2, label:'S15', title:'Scarico pre-test', isRecovery:true, totalKm:33, runs:[
     {day:'Lunedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Recupero. Gambe fresche per la mezza di domenica prossima. RIDUCI le gambe in palestra.'},
     {day:'Martedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Leggero. 4–5 km se ti senti stanco. Non strafare.'},
     {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis rilassati. Dopo: stretching.'},
-    {day:'Domenica',type:'easy',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km tranquilli, ultima uscita media prima del test. Gambe leggere per settimana prossima.'},
+    {day:'Domenica',type:'easy',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km tranquilli, ultima uscita media prima del test. Gambe leggere per settimana prossima.',fuel:{h:2.2,c:60,ml:750,fmt:'bottle',tip:'sip20'}},
   ]},
   {p:2, label:'S16', title:'TEST — Mezza maratona', isRecovery:false, totalKm:35, runs:[
     {day:'Lunedì',type:'easy',km:6,pace:'9:00+',zone:'Z2',desc:'Leggerissimo, 6 km di attivazione. Niente Gambe pesanti questa settimana.'},
     {day:'Martedì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'4 km facilissimi + mobilità/stretching. Riposa le gambe.'},
     {day:'Venerdì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'Shakeout 3–4 km + 3 allunghi brevi. Solo per sciogliere. Riposo totale sabato.'},
-    {day:'Domenica',type:'test',km:21.1,pace:'obiettivo 7:05–7:15',zone:'Z3–Z4',desc:'MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Gel ogni 35\'. Annota passo, FC, sensazioni a km 15+.'},
+    {day:'Domenica',type:'test',km:21.1,pace:'obiettivo 7:05–7:15',zone:'Z3–Z4',desc:'MEZZA MARATONA TEST — decisione GO/NO-GO per il cutoff di 5:30. Corri forte ma controllato. Regola: passo maratona ≈ passo mezza +20–30 sec/km. Per stare sotto le 5:30 (7:49/km) ti serve una mezza ~7:20 o meglio; per il target 5:15 (7:28/km) una mezza ~7:05. Se la mezza è ≥7:30 → a oggi NON arrivi al cutoff: serve un piano B (più volume, oppure una maratona con tempo limite più ampio). Rifornimento: la miscela qui sotto, un sorso ogni 30\'. Annota passo, FC, sensazioni a km 15+.',fuel:{h:2.5,c:150,ml:300,fmt:'flask',tip:'rehearsal'}},
   ]},
   // FASE 3 — PICCO
   {p:3, label:'S17', title:'Ingresso nel picco', isRecovery:false, totalKm:53, runs:[
     {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile Z2, gambe che si rimettono dalla mezza. Da qui RIDUCI le gambe in palestra (~40%).'},
-    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 4 defat. Allunga il blocco.'},
+    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 4 defat. Allunga il blocco.',fuel:{h:2.0,c:60,ml:750,fmt:'bottle',tip:'sip20'}},
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:24,pace:'8:30–9:00',zone:'Z2',desc:'24 km! 4 gel. Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:24,pace:'8:30–9:00',zone:'Z2',desc:'24 km! Mangia abbondante il giorno prima. ~3h20–3h40 in piedi. Dopo: stretching.',fuel:{h:3.5,c:160,ml:300,fmt:'flask',tip:'flask'}},
   ]},
   {p:3, label:'S18', title:'Volume picco crescente', isRecovery:false, totalKm:56, runs:[
     {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S17. Tieni il ritmo per tutti gli 8 km senza cedere.'},
+    {day:'Martedì',type:'race',km:15,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S17. Tieni il ritmo per tutti gli 8 km senza cedere.',fuel:{h:2.0,c:60,ml:750,fmt:'bottle',tip:'sip20'}},
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:26,pace:'8:30–9:00',zone:'Z2',desc:'26 km, oltre la mezza — passo psicologico. Nutrizione ogni 35\'. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:26,pace:'8:30–9:00',zone:'Z2',desc:'26 km, oltre la mezza — passo psicologico. Nutrizione ogni 35\'. Dopo: stretching.',fuel:{h:3.8,c:190,ml:350,fmt:'flask',tip:'gut'}},
   ]},
   {p:3, label:'S19', title:'Picco intenso', isRecovery:false, totalKm:56, runs:[
     {day:'Lunedì',type:'easy',km:9,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 9 km a ritmo gara, 3 defat.'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 9 km a ritmo gara, 3 defat.',fuel:{h:1.9,c:60,ml:750,fmt:'bottle',tip:'sip20'}},
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'28 km — il lungo più lungo della tua vita. Preparazione nutrizionale il giorno prima fondamentale. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'28 km — il lungo più lungo della tua vita. Preparazione nutrizionale il giorno prima fondamentale. Dopo: stretching.',fuel:{h:4.1,c:200,ml:400,fmt:'flask',tip:'flask'}},
   ]},
   {p:3, label:'S20', title:'Conferma picco', isRecovery:false, totalKm:57, runs:[
     {day:'Lunedì',type:'easy',km:10,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S19. Il ritmo gara deve sembrare "normale".'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: ripeti S19. Il ritmo gara deve sembrare "normale".',fuel:{h:1.9,c:60,ml:750,fmt:'bottle',tip:'sip20'}},
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'Ripeti 28 km. Se la scorsa è andata bene, ultimi 3 km a ritmo gara. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:28,pace:'8:30–9:00',zone:'Z2',desc:'Ripeti 28 km. Se la scorsa è andata bene, ultimi 3 km a ritmo gara. Dopo: stretching.',fuel:{h:4.1,c:220,ml:400,fmt:'flask',tip:'gut'}},
   ]},
   {p:3, label:'S21', title:'Settimana di picco massimo', isRecovery:false, totalKm:58, runs:[
     {day:'Lunedì',type:'easy',km:8,pace:'8:30–9:00',zone:'Z2',desc:'Facile, 8 km — settimana di volume massimo. Tieni le gambe in palestra al minimo.'},
-    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: 14 km con 9 km a ritmo gara. Picco qualitativo.'},
+    {day:'Martedì',type:'race',km:14,pace:'7:25–7:35',zone:'Z3–Z4',desc:'RITMO GARA: 14 km con 9 km a ritmo gara. Picco qualitativo.',fuel:{h:1.9,c:70,ml:800,fmt:'bottle',tip:'gut'}},
     {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social — riposo attivo prima del lungo da 30. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00',zone:'Z2',desc:'30 km — il lungo massimo! ~4h10–4h20 in piedi. 4–5 gel + acqua. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.'},
+    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00',zone:'Z2',desc:'30 km — il lungo massimo! ~4h10–4h20 in piedi. Per una prima maratona 30 km è sufficiente: meglio sani che strafare a 32+. È la corsa che ti dà fiducia per Valencia. Dopo: stretching abbondante.',fuel:{h:4.4,c:260,ml:250,flasks:2,fmt:'flask',tip:'rehearsal'}},
   ]},
   {p:3, label:'S22', title:'Recupero post-picco', isRecovery:true, totalKm:37, runs:[
     {day:'Lunedì',type:'easy',km:7,pace:'9:00–9:30',zone:'Z2',desc:'Recupero obbligatorio. Il corpo assorbe il picco adesso. Gambe in palestra al minimo.'},
     {day:'Martedì',type:'easy',km:9,pace:'9:00–9:20',zone:'Z2',desc:'9 km facili. Niente fretta, niente qualità questa settimana.'},
     {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:20',zone:'Z2',desc:'45\' tapis rilassati, social. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'Lungo ridotto 16 km. Gambe che si rigenerano. Il taper inizia la prossima settimana.'},
+    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'Lungo ridotto 16 km. Gambe che si rigenerano. Il taper inizia la prossima settimana.',fuel:{h:2.5,c:90,ml:200,fmt:'flask',tip:'flask'}},
   ]},
   // FASE 4 — TAPER
   {p:4, label:'S23', title:'Taper — primo scarico', isRecovery:false, totalKm:47, runs:[
     {day:'Lunedì',type:'easy',km:9,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:12,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 4 km a ritmo gara, 5 defat. Volume calato, qualità mantenuta.'},
+    {day:'Martedì',type:'race',km:12,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 4 km a ritmo gara, 5 defat. Volume calato, qualità mantenuta.',fuel:{h:1.6,c:50,ml:500,fmt:'bottle',tip:'start45'}},
     {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:20,pace:'8:45–9:10',zone:'Z2',desc:'20 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:20,pace:'8:45–9:10',zone:'Z2',desc:'20 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.',fuel:{h:3.0,c:180,ml:350,fmt:'flask',tip:'rehearsal'}},
   ]},
   {p:4, label:'S24', title:'Taper progressivo', isRecovery:false, totalKm:36, runs:[
     {day:'Lunedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'Facile 7 km.'},
-    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 3 km a ritmo gara, 5 defat. Mantieni la sensazione del passo gara.'},
+    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 3 km a ritmo gara, 5 defat. Mantieni la sensazione del passo gara.',fuel:{h:1.35,c:40,ml:500,fmt:'bottle',tip:'start45'}},
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2 leggero, social. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.'},
+    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.',fuel:{h:2.2,c:80,ml:200,fmt:'flask',tip:'flask'}},
   ]},
   {p:4, label:'S25', title:'Pre-gara — gambe fresche', isRecovery:false, totalKm:27, runs:[
     {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'6 km leggerissimi. Niente Gambe pesanti in palestra da qui alla gara.'},
@@ -1177,7 +1196,7 @@ const WEEKS = [
     {day:'Lunedì',type:'easy',km:5,pace:'9:00+',zone:'Z2',desc:'5 km di attivazione. Solo per muoverti. Niente palestra gambe.'},
     {day:'Martedì',type:'easy',km:4,pace:'9:00+',zone:'Z2',desc:'4 km + 4×100m strides al ritmo gara (recupero camminato). Mantieni la reattività muscolare.'},
     {day:'Venerdì',type:'easy',km:3,pace:'9:00+',zone:'Z2',desc:'Shakeout 3 km molto facili (o riposo se viaggi). Mobilità + stretching leggero. Gambe fresche per domenica.'},
-    {day:'Domenica',type:'race',km:42.2,pace:'7:28 obiettivo',zone:'Z3–Z4',desc:'MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Gel ogni 30–35\' da km 10. Ce la fai.'},
+    {day:'Domenica',type:'race',km:42.2,pace:'7:28 obiettivo',zone:'Z3–Z4',desc:'MARATONA DI VALENCIA. CUTOFF 5:30 — devi chiudere sotto, con margine. Target 7:28/km (≈5:15). Parti a 7:40–7:45 i primi 10 km, poi assesta a 7:28. NON inseguire la FC: nei primi km deve sembrare facile. Controlla i tempi intermedi: a metà (21 km) devi passare entro ~2:38. Rifornimento ogni 30–35\' dal 45\' (miscela qui sotto). Ce la fai.',fuel:{h:5.25,c:315,carry:210,ml:400,flasks:2,fmt:'flask',tip:'racefuel'}},
   ]},
 ];
 
@@ -1234,6 +1253,77 @@ function formatShortDate(d) {
   return d.toLocaleDateString(LANG==='en'?'en-GB':'it-IT', {day:'numeric', month:'short'});
 }
 
+// ===== RIFORNIMENTO =====
+// Il piano ragiona in polvere, non in gel: maltodestrina e fruttosio in rapporto 2:1.
+// I due zuccheri entrano da trasportatori intestinali diversi, quindi insieme si
+// assorbono oltre il tetto di ~60 g/h della sola maltodestrina.
+// fuel: {h: ore stimate, c: carbo TOTALI in g, ml: acqua per contenitore,
+//        fmt: 'bottle'|'flask', flasks: quanti contenitori, carry: g da portarsi
+//        dietro se diversi dal totale, tip: chiave in FUEL_TIPS}
+const FUEL_TIPS = {
+  start45: {
+    it: `Bevi dal 45' in poi, non prima: nella prima ora le scorte sono ancora piene. Sorsi piccoli e frequenti, mai mezza borraccia in una volta.`,
+    en: `Drink from 45' onwards, not before: in the first hour your stores are still full. Small frequent sips, never half a bottle at once.` },
+  sip20: {
+    it: `2–3 sorsi ogni 15–20' a partire dal 30'. La borraccia deve finire con la corsa, non restarti mezza piena.`,
+    en: `2–3 sips every 15–20' starting at 30'. The bottle should run out when the run does, not stay half full.` },
+  flask: {
+    it: `Un sorso di flask ogni ~30' dal 45' in poi, sempre seguito da acqua naturale: concentrata così, senza acqua resta sullo stomaco.`,
+    en: `One sip of flask every ~30' from 45' onwards, always chased with plain water: this concentrated, without water it just sits in your stomach.` },
+  gut: {
+    it: `Seduta da allenamento dell'intestino: qui sali di dose. Se ti gonfia, <b>aggiungi acqua</b> — non togliere carboidrati.`,
+    en: `Gut-training session: this is where the dose goes up. If it bloats you, <b>add water</b> — don't cut the carbs.` },
+  rehearsal: {
+    it: `Prova generale: stessa polvere, stessa concentrazione, stessi orari che userai a Valencia. Se non funziona oggi, hai ancora tempo per cambiarla.`,
+    en: `Dress rehearsal: same powder, same concentration, same timings you'll use in Valencia. If it doesn't work today, there's still time to change it.` },
+  racefuel: {
+    it: `Le flask coprono ~210 g: il resto arriva dai ristori (isotonica e gel del percorso). Primo sorso al 45', poi ogni 30–35' fino al km 35. Dal km 35 conta solo finire.`,
+    en: `The flasks cover ~210 g: the rest comes from the aid stations (course isotonic and gels). First sip at 45', then every 30–35' up to km 35. From km 35 all that matters is finishing.` },
+};
+
+function fmtNum(n) {
+  const s = (Math.round(n * 10) / 10).toString();
+  return LANG === 'en' ? s : s.replace('.', ',');
+}
+function fmtDur(h) {
+  const m = Math.round(h * 60);
+  return m < 60 ? `${m}'` : `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}`;
+}
+function renderFuel(run) {
+  const f = run.fuel;
+  if (!f) return '';
+  const en = LANG === 'en';
+  const flasks = f.flasks || 1;
+  const carry = (f.carry != null) ? f.carry : f.c;
+  const per = Math.round(carry / flasks);
+  const malto = Math.round(per * 2 / 3), frutt = per - malto;
+  const salt = Math.round((f.h * 0.5 / flasks) * 10) / 10;
+  const gph = Math.round(f.c / f.h);
+
+  const unit = f.fmt === 'flask' ? 'flask' : (en ? 'bottle' : 'borraccia');
+  const cap = unit.charAt(0).toUpperCase() + unit.slice(1);
+  const head = flasks > 1
+    ? (en ? `${flasks} ${unit}s of <b>${f.ml} ml</b>, each`
+          : `${flasks} ${unit} da <b>${f.ml} ml</b>, ognuna`)
+    : (en ? `${cap} of <b>${f.ml} ml</b>` : `${cap} da <b>${f.ml} ml</b>`);
+  const body = en
+    ? `${head}: <b>${malto} g</b> maltodextrin + <b>${frutt} g</b> fructose + ${fmtNum(salt)} g salt`
+    : `${head}: <b>${malto} g</b> maltodestrina + <b>${frutt} g</b> fruttosio + ${fmtNum(salt)} g sale`;
+  const water = f.fmt === 'flask'
+    ? (en ? `<br>Plain water separately, to thirst.` : `<br>Acqua naturale a parte, a sete.`)
+    : '';
+  const tip = FUEL_TIPS[f.tip] ? (en ? FUEL_TIPS[f.tip].en : FUEL_TIPS[f.tip].it) : '';
+
+  return `<div class="run-fuel">
+    <div class="run-fuel-head">
+      <div class="run-fuel-title">${en ? 'Fuelling' : 'Rifornimento'}</div>
+      <div class="run-fuel-dur">~${fmtDur(f.h)} · ${f.c} g · ${gph} g/h</div>
+    </div>
+    <div class="run-fuel-recipe">${body}${water}</div>
+    ${tip ? `<div class="run-fuel-tip">${tip}</div>` : ''}
+  </div>`;
+}
+
 function renderRunCard(weekIdx, runIdx, run) {
   const key = runKey(weekIdx, runIdx);
   const logged = state[key];
@@ -1247,6 +1337,7 @@ function renderRunCard(weekIdx, runIdx, run) {
       <div class="run-target"><div class="rt-label" data-i18n="rc.zone">Zona</div><div class="rt-val mono">${run.zone}</div></div>
     </div>
     <div class="run-desc">${TD(run.desc)}</div>
+    ${renderFuel(run)}
     ${logged && logged.skipped ? `<div class="run-skipped-box">
       <div class="run-skipped-title" data-i18n="rc.skipped">⏸ Saltata</div>
       ${logged.notes ? `<div class="run-skipped-reason">${logged.notes}</div>` : ''}
@@ -1304,7 +1395,7 @@ function renderWeek(weekIdx) {
         <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgPace">Passo medio</div><div class="ws-val mono">${calcWeekAvgPace(weekIdx)}</div></div>
         <div class="ws-stat"><div class="ws-label" data-i18n="wk.avgHr">FC media</div><div class="ws-val mono">${calcWeekAvgHR(weekIdx)}</div></div>
       </div>
-      ${isRaceWeek ? `<div class="race-week-banner"><div class="rwb-icon">🏁</div><div><div class="rwb-title" data-i18n="wk.raceTitle">Maratona di Valencia — 6 Dicembre 2026</div><div class="rwb-sub" data-i18n="wk.raceSub">Parti conservativo. Gel ogni 30 min da km 10. Goditi ogni metro. Hai fatto tutto il lavoro.</div></div></div>` : ''}
+      ${isRaceWeek ? `<div class="race-week-banner"><div class="rwb-icon">🏁</div><div><div class="rwb-title" data-i18n="wk.raceTitle">Maratona di Valencia — 6 Dicembre 2026</div><div class="rwb-sub" data-i18n="wk.raceSub">Parti conservativo. Rifornimento ogni 30 min dal 45′. Goditi ogni metro. Hai fatto tutto il lavoro.</div></div></div>` : ''}
       <div class="runs-grid">${w.runs.map((_,ri)=>renderRunCard(weekIdx,ri,w.runs[ri])).join('')}</div>
       <div class="week-notes-area">
         <div class="week-notes-label" data-i18n="wk.notes">Note settimana</div>
