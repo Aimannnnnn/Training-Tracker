@@ -30,6 +30,18 @@ const CREDENTIALS_OUT = path.join(__dirname, 'CREDENTIALS.txt');
 const PORT  = process.env.PORT ? Number(process.env.PORT) : 8787;
 const COOKIE_NAME = 'vsid';
 
+// I soli file serviti senza sessione: quelli che servono a iOS per trattare il
+// tracker come un'app invece che come un segnalibro. Elenco chiuso e scritto a
+// mano - nessuna cartella statica, quindi nessun modo di risalire il filesystem.
+const ICONS = path.join(__dirname, 'icons');
+const PUBLIC_ASSETS = {
+  '/manifest.webmanifest':        { file: path.join(__dirname, 'manifest.webmanifest'), type: 'application/manifest+json; charset=utf-8' },
+  '/icons/icon-180.png':          { file: path.join(ICONS, 'icon-180.png'),          type: 'image/png' },
+  '/icons/icon-192.png':          { file: path.join(ICONS, 'icon-192.png'),          type: 'image/png' },
+  '/icons/icon-512.png':          { file: path.join(ICONS, 'icon-512.png'),          type: 'image/png' },
+  '/icons/icon-512-maskable.png': { file: path.join(ICONS, 'icon-512-maskable.png'), type: 'image/png' },
+};
+
 // Porta riservata all'accesso dal tailnet. Serve una porta SEPARATA, non un ramo dentro la
 // stessa: la 8787 riceve anche il traffico pubblico via Funnel, e li' un estraneo potrebbe
 // spedire l'header di identita' che si e' inventato. Su questa porta arriva solo cio' che
@@ -200,8 +212,20 @@ window.IS_READONLY = ${readonly ? 'true' : 'false'};
 }
 
 const LOGIN_PAGE = `<!DOCTYPE html>
-<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Login - Valencia Tracker</title>
+<!-- Gli stessi tag PWA di tracker.html, ripetuti qui perche' e' questa la pagina
+     che iOS vede quando si aggiunge l'app alla schermata Home da disconnessi:
+     start_url e' "/", che senza sessione redirige proprio su /login. Senza il
+     manifest anche qui, l'installazione fatta da sloggati nasce come segnalibro. -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<meta name="theme-color" content="#0D0F0E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Valencia">
 <style>
 :root{--bg:#0D0F0E;--surface:#161918;--surface-raised:#1E2220;--accent:#C8F060;--text:#F0EDE6;--text-sec:#7A8078;--border:rgba(255,255,255,0.07);--danger:#E8614A;}
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -278,6 +302,28 @@ const handleRequest = (req, res, trustTailnet) => {
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(LOGIN_PAGE);
     return;
+  }
+
+  // Manifest e icone della PWA: SOPRA il controllo di sessione, di proposito.
+  //
+  // iOS chiede il manifest senza i cookie di sessione. Se cadesse nel redirect
+  // verso /login riceverebbe un 302, e invece di segnalare un errore ripiegherebbe
+  // in silenzio sull'icona-screenshot da segnalibro: la pagina si aprirebbe ancora
+  // dentro Safari, con la barra degli indirizzi, e sembrerebbe che i meta tag non
+  // funzionino. Qui dentro non c'e' nulla di privato - un nome, dei colori e una V.
+  if (req.method === 'GET' || req.method === 'HEAD') {
+    const asset = PUBLIC_ASSETS[req.url.split('?')[0]];
+    if (asset) {
+      fs.readFile(asset.file, (err, data) => {
+        if (err) { res.writeHead(404); res.end(); return; }
+        res.writeHead(200, {
+          'Content-Type': asset.type,
+          'Cache-Control': 'public, max-age=86400',
+        });
+        res.end(data);
+      });
+      return;
+    }
   }
 
   if (req.url === '/api/login' && req.method === 'POST') {

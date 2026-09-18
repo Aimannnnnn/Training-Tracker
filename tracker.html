@@ -2,8 +2,22 @@
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Aiman → Valencia 2026</title>
+
+<!-- PWA: con questi tag iOS tratta la pagina come un'app (finestra propria, niente
+     barra degli indirizzi, scheda a se' nel selettore) invece che come segnalibro.
+     Manifest e icone sono serviti da server.js SENZA sessione: vedi il commento
+     su PUBLIC_ASSETS, e' la trappola che fa fallire l'installazione in silenzio.
+     I tag corrispondenti della pagina di login stanno in server.js, in LOGIN_PAGE. -->
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+<meta name="theme-color" content="#0D0F0E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Valencia">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -317,6 +331,22 @@ body.readonly-mode .week-notes-input{pointer-events:none;opacity:0.6;}
   .cd-num{font-size:15px;}
   .countdown{gap:6px;}
 }
+
+/* --- Safe area: conta solo quando gira come app installata ------------------
+   In standalone sparisce la cornice di Safari e la pagina parte da y=0, quindi
+   l'header sticky finirebbe sotto il notch e il fondo sotto la barra Home. In
+   Safari normale env(...) vale 0 e non cambia niente, percio' queste regole
+   stanno qui in fondo e valgono sempre: vincono per posizione, non per
+   specificita'. L'header cresce invece di spostarsi, cosi' la sua superficie
+   colorata arriva fin sotto l'orologio. */
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);}
+header{padding-top:var(--safe-top);height:calc(56px + var(--safe-top));}
+aside{top:calc(56px + var(--safe-top));}
+.sidebar-backdrop{top:calc(56px + var(--safe-top));}
+main{padding-bottom:calc(2rem + var(--safe-bottom));}
+/* La sidebar desktop e' sticky e alta quanto la finestra meno l'header; su
+   mobile e' fixed con bottom:0, e li' l'altezza non va toccata. */
+@media(min-width:861px){aside{height:calc(100vh - 56px - var(--safe-top));}}
 </style>
 </head>
 <body>
