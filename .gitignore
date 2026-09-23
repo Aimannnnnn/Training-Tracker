@@ -11,3 +11,6 @@ health/
 *.bak
 *.bak-*
 i18n-patch/
+
+# Chiavi e token di Strava
+strava.json

@@ -68,6 +68,26 @@ un'automazione che non fa login: la chiave sta in `auth.json` come `logKey`. **S
 rigenerato, quella chiave cambia e gli Shortcuts smettono di funzionare** — va copiato, non
 ricreato, quando si sposta il server.
 
+## Strava
+
+Le corse arrivano da sole da Strava (`strava.js`, piano letto da `tracker.html` con `plan.js`).
+
+| Endpoint | |
+|---|---|
+| `GET /strava/connect`, `GET /strava/callback` | collegamento OAuth (bottone "Collega Strava"); salva solo i token, non importa |
+| `GET /api/strava/status` | collegato o no, ultimo controllo, corse rimaste senza seduta |
+| `POST /api/strava/sync` | import manuale (bottone "Sincronizza Strava") |
+
+- Configurazione in `strava.json` (non versionato, 0600): `clientId`, `clientSecret`, i token,
+  `syncFrom` (niente prima di quel giorno, né corse né sedute) e `autoSync` (il giro ogni 15 minuti
+  parte solo se è `true`).
+- Ogni corsa va nella seduta del suo giorno; se lì non c'è posto, in quella del giorno prima o dopo.
+  Non tocca mai note, RPE, scarpa o sedute saltate, e non sovrascrive una seduta con la distanza già
+  scritta. Una corsa già registrata a mano (±1 giorno, distanza entro il 3%) viene saltata.
+- Lo stato ha un contatore `_rev`, alzato a ogni import. Un salvataggio da una scheda aperta prima
+  dell'import (con `_rev` più vecchio) non cancella le corse arrivate nel frattempo.
+- Anteprima senza scrivere niente: `node -e "require('./strava.js').sync({readState:()=>require('fs').readFileSync('state.json','utf8'),trackerFile:'tracker.html',dryRun:true}).then(console.log)"`
+
 ## Sicurezza
 
 Uso personale, sessioni in memoria (un riavvio del server le invalida e si rifà il login).

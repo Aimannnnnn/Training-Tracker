@@ -12,11 +12,15 @@
 // - POST /api/log-run  -> auto-imports one run from the iOS Shortcuts automation,
 //                         authenticated by a separate long-lived key (X-Log-Key
 //                         header), not the browser session cookie.
+// - GET  /strava/connect, /strava/callback -> collegamento OAuth a Strava (admin)
+// - GET  /api/strava/status, POST /api/strava/sync -> stato e import manuale;
+//                         l'import gira anche da solo ogni 15 minuti (strava.js).
 const http = require('http');
 const crypto = require('crypto');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const strava = require('./strava.js');
 
 // TRACKER_HTML lets each machine point at its own copy (e.g. a Desktop file that's
 // edited by hand); falls back to the snapshot bundled in this repo so a fresh clone
@@ -201,6 +205,36 @@ window.IS_READONLY = ${readonly ? 'true' : 'false'};
       badge.style.cssText='position:fixed;bottom:14px;right:82px;z-index:2000;padding:7px 12px;background:rgba(240,160,48,0.12);border:1px solid rgba(240,160,48,0.3);border-radius:6px;color:#F0A030;font-size:10px;letter-spacing:0.06em;font-family:Inter,sans-serif;';
       document.body.appendChild(badge);
     }
+    if(!window.IS_READONLY){
+      // Strava: collega la prima volta, poi "sincronizza ora". Dopo un import si
+      // ricarica la pagina, perche' il tracker legge lo stato solo all'avvio.
+      var sv=document.createElement('button');
+      var svCss='position:fixed;bottom:14px;right:82px;z-index:2000;padding:7px 12px;background:#161918;border:1px solid rgba(252,76,2,0.35);border-radius:6px;color:#FC4C02;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;';
+      sv.style.cssText=svCss;
+      sv.textContent='Strava';
+      function toast(msg){var t=document.createElement('div');t.textContent=msg;t.style.cssText='position:fixed;bottom:52px;right:14px;z-index:2001;max-width:320px;padding:9px 12px;background:#1E2220;border:1px solid rgba(255,255,255,0.11);border-radius:6px;color:#F0EDE6;font-size:12px;line-height:1.4;font-family:Inter,sans-serif;';document.body.appendChild(t);setTimeout(function(){t.remove();},7000);}
+      var st=null;
+      fetch('/api/strava/status').then(function(r){return r.json();}).then(function(s){
+        st=s;
+        if(!s.configured){sv.remove();return;}
+        sv.textContent=s.connected?(LG==='en'?'Sync Strava':'Sincronizza Strava'):(LG==='en'?'Connect Strava':'Collega Strava');
+        if(s.connected&&s.lastSyncAt){var d=new Date(s.lastSyncAt);sv.title=(LG==='en'?'Last sync ':'Ultimo controllo ')+d.toLocaleString(LG==='en'?'en-GB':'it-IT');}
+      }).catch(function(){});
+      sv.onclick=function(){
+        if(st&&!st.connected){location.href='/strava/connect';return;}
+        sv.disabled=true;sv.textContent='…';
+        fetch('/api/strava/sync',{method:'POST'}).then(function(r){return r.json();}).then(function(r){
+          if(!r.ok){toast('Strava: '+r.error);sv.disabled=false;sv.textContent='Strava';return;}
+          var extra=r.unmatched.length?(LG==='en'?' · '+r.unmatched.length+' run(s) with no planned session that day':' · '+r.unmatched.length+' corse senza una seduta in quel giorno'):'';
+          if(r.imported.length){sessionStorage.setItem('stravaMsg',(LG==='en'?'Imported ':'Importate ')+r.imported.length+(LG==='en'?' run(s)':' corse')+extra);location.reload();}
+          else{toast((LG==='en'?'Nothing new':'Niente di nuovo')+extra);sv.disabled=false;sv.textContent=(LG==='en'?'Sync Strava':'Sincronizza Strava');}
+        }).catch(function(){toast('Strava: errore di rete');sv.disabled=false;});
+      };
+      document.body.appendChild(sv);
+      var q=new URLSearchParams(location.search).get('strava');
+      if(q){history.replaceState(null,'','/');toast(q==='ok'?(LG==='en'?'Strava connected':'Strava collegato'):'Strava: '+q);}
+      try{var m=sessionStorage.getItem('stravaMsg');if(m){sessionStorage.removeItem('stravaMsg');toast(m);}}catch(e){}
+    }
     var b=document.createElement('button');
     b.textContent=(LG==='en'?'Log out':'Esci');
     b.style.cssText='position:fixed;bottom:14px;right:14px;z-index:2000;padding:7px 12px;background:#161918;border:1px solid rgba(255,255,255,0.11);border-radius:6px;color:#7A8078;font-size:11px;cursor:pointer;font-family:Inter,sans-serif;';
@@ -290,6 +324,69 @@ function setSessionCookie(res, token) {
 function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', `${COOKIE_NAME}=; HttpOnly; SameSite=Lax; Max-Age=0; Path=/`);
 }
+
+// ---- Strava ----
+// L'indirizzo di ritorno dell'OAuth deve essere quello da cui l'utente e' partito:
+// la sessione del tailnet (senza cookie) non esiste sull'URL pubblico, e viceversa.
+// Strava controlla solo il dominio, quindi va bene anche con la porta :8446.
+const PUBLIC_BASE = process.env.PUBLIC_BASE || 'https://homeserver.tail098b53.ts.net';
+function baseUrl(req) {
+  const host = String(req.headers['x-forwarded-host'] || req.headers.host || '');
+  return /^(127\.|localhost)/.test(host) || !host ? PUBLIC_BASE : 'https://' + host;
+}
+const oauthStates = new Map(); // state -> scadenza, contro il CSRF sul callback
+const stravaDeps = { readState, writeState: body => fs.writeFileSync(STATE, body), trackerFile: FILE };
+
+function sendJson(res, code, obj) {
+  res.writeHead(code, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify(obj));
+}
+
+function handleStrava(req, res, session) {
+  const url = new URL(req.url, 'http://x');
+  if (url.pathname === '/api/strava/status' && req.method === 'GET') {
+    return sendJson(res, 200, strava.status());
+  }
+  if (session.role !== 'admin') return sendJson(res, 403, { ok: false, error: 'readonly' });
+
+  if (url.pathname === '/strava/connect' && req.method === 'GET') {
+    if (!strava.isConfigured()) { res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' }); res.end('Manca strava.json con clientId e clientSecret.'); return; }
+    const st = crypto.randomBytes(16).toString('hex');
+    oauthStates.set(st, Date.now() + 10 * 60000);
+    res.writeHead(302, { Location: strava.authorizeUrl(baseUrl(req) + '/strava/callback', st) });
+    res.end();
+    return;
+  }
+  if (url.pathname === '/strava/callback' && req.method === 'GET') {
+    const st = url.searchParams.get('state');
+    const exp = oauthStates.get(st);
+    oauthStates.delete(st);
+    const back = msg => { res.writeHead(302, { Location: '/?strava=' + encodeURIComponent(msg) }); res.end(); };
+    if (!exp || exp < Date.now()) return back('errore: richiesta scaduta, riprova');
+    if (url.searchParams.get('error')) return back('annullato');
+    // Solo il collegamento: il primo import lo lancia il bottone (o il giro dei 15
+    // minuti), cosi' prima si puo' guardare un'anteprima con sync({dryRun:true}).
+    strava.exchangeCode(url.searchParams.get('code'), url.searchParams.get('scope'))
+      .then(() => back('ok'))
+      .catch(e => { console.log('[strava] ' + e.message); back('errore: ' + e.message); });
+    return;
+  }
+  if (url.pathname === '/api/strava/sync' && req.method === 'POST') {
+    strava.sync(stravaDeps)
+      .then(r => sendJson(res, 200, r))
+      .catch(e => sendJson(res, 502, { ok: false, error: e.message }));
+    return;
+  }
+  res.writeHead(404); res.end();
+}
+
+// Controllo periodico: una richiesta ogni 15 minuti, lontanissima dai limiti di Strava.
+setInterval(() => {
+  if (!strava.autoSyncOn()) return;
+  strava.sync(stravaDeps)
+    .then(r => { if (r.imported.length) console.log('[strava] importate: ' + r.imported.map(i => i.day + ' ' + i.km + ' km -> ' + i.slot).join(', ')); })
+    .catch(e => console.log('[strava] sync fallita: ' + e.message));
+}, 15 * 60000).unref();
 
 const handleRequest = (req, res, trustTailnet) => {
   const session = validSession(getCookie(req, COOKIE_NAME)) || tailnetSession(req, trustTailnet);
@@ -478,6 +575,11 @@ const handleRequest = (req, res, trustTailnet) => {
     return;
   }
 
+  if (req.url.startsWith('/strava/') || req.url.startsWith('/api/strava/')) {
+    handleStrava(req, res, session);
+    return;
+  }
+
   if (req.url === '/api/state') {
     if (req.method === 'GET') {
       res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -494,8 +596,9 @@ const handleRequest = (req, res, trustTailnet) => {
       req.on('data', c => { body += c; if (body.length > 5e6) req.destroy(); });
       req.on('end', () => {
         try {
-          JSON.parse(body || '{}');           // validate before writing
-          fs.writeFileSync(STATE, body);
+          const incoming = JSON.parse(body || '{}');   // validate before writing
+          const disk = JSON.parse(readState());
+          fs.writeFileSync(STATE, JSON.stringify(strava.protectImports(incoming, disk)));
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end('{"ok":true}');
         } catch (e) {
