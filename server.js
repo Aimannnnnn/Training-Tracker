@@ -327,9 +327,9 @@ function clearSessionCookie(res) {
 
 // ---- Strava ----
 // L'indirizzo di ritorno dell'OAuth deve essere quello da cui l'utente e' partito:
-// la sessione del tailnet (senza cookie) non esiste sull'URL pubblico, e viceversa.
-// Strava controlla solo il dominio, quindi va bene anche con la porta :8446.
-const PUBLIC_BASE = process.env.PUBLIC_BASE || 'https://homeserver.tail098b53.ts.net';
+// (una sessione esiste solo sul dominio da cui si e' fatto il login).
+// Strava controlla solo il dominio: nell'app Strava va maratona.aimann.duckdns.org.
+const PUBLIC_BASE = process.env.PUBLIC_BASE || 'https://maratona.aimann.duckdns.org';
 function baseUrl(req) {
   const host = String(req.headers['x-forwarded-host'] || req.headers.host || '');
   return /^(127\.|localhost)/.test(host) || !host ? PUBLIC_BASE : 'https://' + host;
