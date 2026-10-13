@@ -901,10 +901,35 @@ const TD_PAIRS_RIENTRO = [
 [`8:30–9:00 + 5 km a 7:28`,`8:30–9:00 + 5 km at 7:28`],
 [`35→50 km/sett`,`35→50 km/wk`],
 [`36→27 km/sett`,`36→27 km/wk`],
-[`Due lunghi da 30 (S21 e S23) al centro, volume settimanale sacrificato per arrivarci sani. Riduci gambe in palestra.`,`Two 30 km long runs (W21 and W23) at the core, weekly volume sacrificed to get there healthy. Cut back leg day at the gym.`],
+[`Due lunghi da 30 (S22 e S23, 8 e 15 novembre) al centro, volume settimanale sacrificato per arrivarci sani. Riduci gambe in palestra.`,`Two 30 km long runs (W22 and W23, 8 and 15 November) at the core, weekly volume sacrificed to get there healthy. Cut back leg day at the gym.`],
 [`Rampa di rientro S10–S12 (28→41), poi piano pieno. Due settimane di stop in Montenegro (S14–S15), ricostruzione in S16, mezza test in S17 saltata per malattia.`,`Comeback ramp W10–W12 (28→41), then the full plan. Two weeks off in Montenegro (W14–W15), rebuild in W16, half-marathon test in W17 skipped through illness.`],
 ];
-const TD_MAP = new Map([...TD_PAIRS, ...TD_PAIRS_RUNS, ...TD_PAIRS_S16, ...TD_PAIRS_RIENTRO]);
+const TD_PAIRS_RIENTRO2 = [
+[`Rientro — lungo 16 km`,`Comeback — 16 km long run`],
+[`La scala dei lunghi — 21 km`,`The long-run ladder — 21 km`],
+[`Taper progressivo — gambe fresche`,`Progressive taper — fresh legs`],
+[`Facile, FC sotto 155.`,`Easy, HR under 155.`],
+[`6–7 km facili con la FC sotto 155. Se sale oltre, rallenta o cammina un minuto. Niente accelerazione finale: domenica gli ultimi 3 km a 7:22–7:42 con FC 175+ ti hanno lasciato le gambe da legday.`,`6–7 easy km with HR under 155. If it goes higher, slow down or walk for a minute. No fast finish: on Sunday the last 3 km at 7:22–7:42 with HR 175+ left you with leg-day legs.`],
+[`45' tapis Z2, FC sotto 155, social. Dopo: stretching 10'.`,`45' treadmill Z2, HR under 155, social. After: 10' stretching.`],
+[`Lungo 16 km, primo gradino verso i due 30 (8 e 15 novembre). Passo da FC, non da orologio: sotto 155 il più a lungo possibile, cammina 1' se supera 160. Mai accelerare nel finale. Dopo: stretching.`,`16 km long run, the first step towards the two 30s (8 and 15 November). Pace by HR, not by the watch: under 155 for as long as possible, walk 1' if it goes over 160. Never speed up at the end. After: stretching.`],
+[`RITMO GARA di rientro: 3 risc., 5 km a ritmo gara (7:25–7:35), 2 defat. Se la FC resta sopra 172, rallenta a 7:45: oggi conta riprendere il ritmo, non dimostrare niente.`,`Comeback RACE PACE: 3 warm-up, 5 km at race pace (7:25–7:35), 2 cool-down. If your HR stays above 172, slow to 7:45: today is about getting the rhythm back, not proving anything.`],
+[`Lungo 21 km. Mangia abbondante il giorno prima. Prova la miscela di gara dal 45'. Dopo: stretching.`,`21 km long run. Eat plenty the day before. Try the race mix from 45'. After: stretching.`],
+[`RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 2 defat. Tieni il ritmo per tutti i 6 km senza cedere.`,`RACE PACE: 3 warm-up, 6 km at race pace (7:25–7:35), 2 cool-down. Hold the pace for all 6 km without fading.`],
+[`26 km, ultimo gradino prima del primo 30. Nutrizione ogni 30–35'. Dopo: stretching.`,`26 km, the last step before the first 30. Fuel every 30–35'. After: stretching.`],
+[`RITMO GARA corto: 2 risc., 5 km a ritmo gara, 2 defat. Volutamente leggero: domenica c'è il 30.`,`Short RACE PACE: 2 warm-up, 5 km at race pace, 2 cool-down. Deliberately light: the 30 is on Sunday.`],
+[`LUNGO 1 — 30 km, tutto Z2. ~4h15–4h30 in piedi. Non conta il passo: conta arrivare in fondo senza crollare e senza dolori. Rifornimento dal 45' ogni 30–35'. Dopo: stretching abbondante. Il secondo 30 di domenica prossima si fa SOLO se questo è andato bene.`,`LONG RUN 1 — 30 km, all Z2. ~4h15–4h30 on your feet. Pace doesn't matter: what matters is finishing without falling apart and without pain. Fuel from 45', every 30–35'. After: plenty of stretching. Next Sunday's second 30 happens ONLY if this one went well.`],
+[`Recupero obbligatorio dal primo 30. Gambe in palestra al minimo.`,`Mandatory recovery from the first 30. Leg day at the gym kept to a minimum.`],
+[`6 km facili, niente qualità. È il giorno del controllo: se le gambe sono ancora pesanti o qualcosa fa male, domenica fai 18–20 km invece del 30.`,`6 easy km, no quality. This is the check day: if your legs are still heavy or something hurts, run 18–20 km on Sunday instead of the 30.`],
+[`30' tapis Z2, riposo attivo. Sabato riposo e mangia come la vigilia della gara.`,`30' treadmill Z2, active rest. Saturday rest and eat like the day before the race.`],
+[`LUNGO 2 — 30 km, la prova generale, SOLO se il primo 30 è andato bene e martedì le gambe erano a posto (altrimenti 18–20 km Z2). 25 km in Z2 a 8:30–9:00, poi gli ULTIMI 5 km a ritmo gara (7:25–7:35). Rifornimento ESATTAMENTE come in gara: stessa miscela, stessi orari (dal 45', ogni 30–35'), stesse scarpe, stessa colazione. Se gli ultimi 5 li tieni sotto 7:35 senza crollare → GO per le 5:15. Se scivoli oltre 7:50 → in gara parti a 7:45 e punta al cutoff con margine. Dopo: stretching abbondante.`,`LONG RUN 2 — 30 km, the dress rehearsal, ONLY if the first 30 went well and your legs were fine on Tuesday (otherwise 18–20 km Z2). 25 km in Z2 at 8:30–9:00, then the LAST 5 km at race pace (7:25–7:35). Fuel EXACTLY as in the race: same mix, same timing (from 45', every 30–35'), same shoes, same breakfast. If you hold the last 5 under 7:35 without fading → GO for 5:15. If you slip past 7:50 → in the race start at 7:45 and aim for the cutoff with a margin. After: plenty of stretching.`],
+[`Facile, recupero dal 30.`,`Easy, recovery from the 30.`],
+[`RITMO GARA: 3 risc., 4 km a ritmo gara, 3 defat. Volume calato, qualità mantenuta.`,`RACE PACE: 3 warm-up, 4 km at race pace, 3 cool-down. Volume down, quality kept.`],
+[`16 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.`,`16 km, the first real drop in the long run. Your legs start to recharge. After: stretching.`],
+[`6 km leggeri. Niente gambe pesanti in palestra da qui alla gara.`,`6 light km. No heavy leg day at the gym from here to the race.`],
+[`RITMO GARA: 2 risc., 3 km a ritmo gara, 4 defat. Mantieni la sensazione del passo gara.`,`RACE PACE: 2 warm-up, 3 km at race pace, 4 cool-down. Keep the feel of race pace.`],
+[`12 km tranquilli, ultima uscita lunga prima di Valencia. Goditi la sensazione di essere pronto.`,`12 easy km, the last long run before Valencia. Enjoy feeling ready.`],
+];
+const TD_MAP = new Map([...TD_PAIRS, ...TD_PAIRS_RUNS, ...TD_PAIRS_S16, ...TD_PAIRS_RIENTRO, ...TD_PAIRS_RIENTRO2]);
 
 // --- Traduzioni del MARKUP statico e generato (chiave = attributo data-i18n) ---
 const UI_EN = {
@@ -1097,7 +1122,7 @@ const PLAN_START = new Date('2026-06-08'); // lunedì 8 giu 2026 — le settiman
 const PHASES = [
   { id:1, name:'Base aerobica', eyebrow:'Fase 1', color:'#4AE89B', weeks:'1–9', kmRange:'27→38 km/sett', desc:'Fondamenta aerobiche. Tutto Z2. Chiusa con lo stop per il ginocchio a fine luglio.' },
   { id:2, name:'Sviluppo + qualità', eyebrow:'Fase 2', color:'#F0A030', weeks:'10–17', kmRange:'28→52 km/sett', desc:'Rampa di rientro S10–S12 (28→41), poi piano pieno. Due settimane di stop in Montenegro (S14–S15), ricostruzione in S16, mezza test in S17 saltata per malattia.' },
-  { id:3, name:'Picco', eyebrow:'Fase 3', color:'#7AB8F0', weeks:'18–23', kmRange:'35→50 km/sett', desc:'Due lunghi da 30 (S21 e S23) al centro, volume settimanale sacrificato per arrivarci sani. Riduci gambe in palestra.' },
+  { id:3, name:'Picco', eyebrow:'Fase 3', color:'#7AB8F0', weeks:'18–23', kmRange:'28→49 km/sett', desc:'Due lunghi da 30 (S22 e S23, 8 e 15 novembre) al centro, volume settimanale sacrificato per arrivarci sani. Riduci gambe in palestra.' },
   { id:4, name:'Taper', eyebrow:'Fase 4', color:'#C8F060', weeks:'24–26', kmRange:'36→27 km/sett', desc:'Scarico verso Valencia. Mantieni qualità, abbassa volume.' },
 ];
 
@@ -1218,54 +1243,51 @@ const WEEKS = [
     {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
     {day:'Domenica',type:'long',km:17,pace:'8:45–9:15',zone:'Z2',desc:'Lungo 16–18 km, primo gradino della scala verso i due 30 (S21 e S23). Fermati a 16 se nell\'ultima parte la FC deriva oltre 160. Dopo: stretching.',fuel:{h:2.6,c:90,ml:200,fmt:'flask',tip:'flask'}},
   ]},
-  {p:3, label:'S19', title:'La scala dei lunghi — 22 km', isRecovery:false, totalKm:44, runs:[
-    {day:'Lunedì',type:'easy',km:7,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA di rientro: 2 risc., 6 km a ritmo gara (7:25–7:35), 2 defat. Se la FC resta sopra 172, rallenta a 7:45: oggi conta riprendere il ritmo, non dimostrare niente.',fuel:{h:1.3,c:35,ml:500,fmt:'bottle',tip:'start45'}},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:22,pace:'8:45–9:10',zone:'Z2',desc:'Lungo 22 km. Mangia abbondante il giorno prima. Prova la miscela di gara dal 45\'. Dopo: stretching.',fuel:{h:3.3,c:150,ml:300,fmt:'flask',tip:'flask'}},
+  // S19–S25 riscritte il 13 ottobre 2026: rientro più lento del previsto (10 km dell'11/10 a FC
+  // media 162, deriva 160→177), scala dei lunghi spostata di una settimana. Tolta anche la
+  // settimana in più che faceva cadere Valencia il 13 dicembre invece del 6.
+  {p:3, label:'S19', title:'Rientro — lungo 16 km', isRecovery:false, totalKm:34, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'9:00+',zone:'Z2',desc:'Facile, FC sotto 155.'},
+    {day:'Martedì',type:'easy',km:7,pace:'9:00+',zone:'Z2',desc:'6–7 km facili con la FC sotto 155. Se sale oltre, rallenta o cammina un minuto. Niente accelerazione finale: domenica gli ultimi 3 km a 7:22–7:42 con FC 175+ ti hanno lasciato le gambe da legday.'},
+    {day:'Venerdì',type:'easy',km:5,pace:'9:00+',zone:'Z2',desc:'45\' tapis Z2, FC sotto 155, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:16,pace:'9:00–9:30',zone:'Z2',desc:'Lungo 16 km, primo gradino verso i due 30 (8 e 15 novembre). Passo da FC, non da orologio: sotto 155 il più a lungo possibile, cammina 1\' se supera 160. Mai accelerare nel finale. Dopo: stretching.',fuel:{h:2.5,c:90,ml:200,fmt:'flask',tip:'flask'}},
   ]},
-  {p:3, label:'S20', title:'La scala dei lunghi — 26 km', isRecovery:false, totalKm:50, runs:[
-    {day:'Lunedì',type:'easy',km:6,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:13,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 8 km a ritmo gara (7:25–7:35), 2 defat. Tieni il ritmo per tutti gli 8 km senza cedere.',fuel:{h:1.7,c:50,ml:600,fmt:'bottle',tip:'sip20'}},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:26,pace:'8:30–9:00',zone:'Z2',desc:'26 km, ultimo gradino prima del primo 30. Nutrizione ogni 35\'. Dopo: stretching.',fuel:{h:3.8,c:190,ml:350,fmt:'flask',tip:'gut'}},
-  ]},
-  {p:3, label:'S21', title:'LUNGO 1 — 30 km', isRecovery:false, totalKm:50, runs:[
-    {day:'Lunedì',type:'easy',km:6,pace:'8:30–9:00',zone:'Z2',desc:'Facile. Gambe in palestra al minimo: la settimana gira tutta intorno a domenica.'},
-    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA corto: 2 risc., 6 km a ritmo gara, 2 defat. Volutamente più leggero del solito: domenica c\'è il 30.',fuel:{h:1.3,c:35,ml:500,fmt:'bottle',tip:'start45'}},
-    {day:'Venerdì',type:'easy',km:4,pace:'8:45–9:15',zone:'Z2',desc:'30–35\' tapis Z2, riposo attivo prima del 30. Sabato riposo e mangia abbondante. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00',zone:'Z2',desc:'LUNGO 1 — 30 km, tutto Z2. ~4h15–4h30 in piedi. Non conta il passo: conta arrivare in fondo senza crollare e senza dolori. Rifornimento dal 45\' ogni 30–35\'. Dopo: stretching abbondante.',fuel:{h:4.4,c:260,ml:250,flasks:2,fmt:'flask',tip:'gut'}},
-  ]},
-  {p:3, label:'S22', title:'Recupero tra i due 30', isRecovery:true, totalKm:34, runs:[
-    {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'Recupero obbligatorio. Il corpo assorbe il primo 30 adesso. Gambe in palestra al minimo.'},
-    {day:'Martedì',type:'easy',km:7,pace:'9:00–9:20',zone:'Z2',desc:'7 km facili. Niente qualità questa settimana.'},
-    {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:20',zone:'Z2',desc:'45\' tapis rilassati, social. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:16,pace:'9:00–9:20',zone:'Z2',desc:'Lungo ridotto 16 km. Gambe che si rigenerano: domenica prossima c\'è il secondo 30.',fuel:{h:2.5,c:90,ml:200,fmt:'flask',tip:'flask'}},
-  ]},
-  {p:3, label:'S23', title:'LUNGO 2 — 30 km, prova generale', isRecovery:false, totalKm:50, runs:[
+  {p:3, label:'S20', title:'La scala dei lunghi — 21 km', isRecovery:false, totalKm:42, runs:[
     {day:'Lunedì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:9,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 5 km a ritmo gara, 2 defat. Leggero: domenica c\'è il secondo 30.',fuel:{h:1.2,c:35,ml:500,fmt:'bottle',tip:'start45'}},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'30–35\' tapis Z2, riposo attivo prima del 30. Sabato riposo e mangia come la vigilia della gara.'},
-    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00 + 5 km a 7:28',zone:'Z2+Z3',desc:'LUNGO 2 — 30 km, la prova generale e il segnale GO che doveva darti la mezza saltata. 25 km in Z2 a 8:30–9:00, poi gli ULTIMI 5 km a ritmo gara (7:25–7:35). Rifornimento ESATTAMENTE come in gara: stessa miscela, stessi orari (dal 45\', ogni 30–35\'), stesse scarpe, stessa colazione. Se gli ultimi 5 li tieni sotto 7:35 senza crollare → GO per le 5:15. Se scivoli oltre 7:50 → in gara parti a 7:45 e punta al cutoff con margine. Dopo: stretching abbondante.',fuel:{h:4.3,c:260,ml:250,flasks:2,fmt:'flask',tip:'rehearsal'}},
+    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA di rientro: 3 risc., 5 km a ritmo gara (7:25–7:35), 2 defat. Se la FC resta sopra 172, rallenta a 7:45: oggi conta riprendere il ritmo, non dimostrare niente.',fuel:{h:1.3,c:35,ml:500,fmt:'bottle',tip:'start45'}},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:21,pace:'8:45–9:15',zone:'Z2',desc:'Lungo 21 km. Mangia abbondante il giorno prima. Prova la miscela di gara dal 45\'. Dopo: stretching.',fuel:{h:3.2,c:150,ml:300,fmt:'flask',tip:'flask'}},
   ]},
-  // FASE 4 — TAPER
-  {p:4, label:'S23', title:'Taper — primo scarico', isRecovery:false, totalKm:47, runs:[
-    {day:'Lunedì',type:'easy',km:9,pace:'8:45–9:15',zone:'Z2',desc:'Facile.'},
-    {day:'Martedì',type:'race',km:12,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 4 km a ritmo gara, 5 defat. Volume calato, qualità mantenuta.',fuel:{h:1.6,c:50,ml:500,fmt:'bottle',tip:'start45'}},
-    {day:'Venerdì',type:'easy',km:6,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
-    {day:'Domenica',type:'long',km:20,pace:'8:45–9:10',zone:'Z2',desc:'20 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.',fuel:{h:3.0,c:180,ml:350,fmt:'flask',tip:'rehearsal'}},
+  {p:3, label:'S21', title:'La scala dei lunghi — 26 km', isRecovery:false, totalKm:48, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'8:30–9:00',zone:'Z2',desc:'Facile.'},
+    {day:'Martedì',type:'race',km:11,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 6 km a ritmo gara (7:25–7:35), 2 defat. Tieni il ritmo per tutti i 6 km senza cedere.',fuel:{h:1.4,c:40,ml:500,fmt:'bottle',tip:'start45'}},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:26,pace:'8:30–9:00',zone:'Z2',desc:'26 km, ultimo gradino prima del primo 30. Nutrizione ogni 30–35\'. Dopo: stretching.',fuel:{h:3.8,c:190,ml:350,fmt:'flask',tip:'gut'}},
   ]},
-  {p:4, label:'S24', title:'Taper progressivo', isRecovery:false, totalKm:36, runs:[
-    {day:'Lunedì',type:'easy',km:7,pace:'8:45–9:15',zone:'Z2',desc:'Facile 7 km.'},
-    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 3 km a ritmo gara, 5 defat. Mantieni la sensazione del passo gara.',fuel:{h:1.35,c:40,ml:500,fmt:'bottle',tip:'start45'}},
-    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2 leggero, social. Dopo: stretching.'},
-    {day:'Domenica',type:'long',km:14,pace:'9:00–9:20',zone:'Z2',desc:'14 km, lungo breve. Le gambe devono sentirsi sempre più fresche.',fuel:{h:2.2,c:80,ml:200,fmt:'flask',tip:'flask'}},
+  {p:3, label:'S22', title:'LUNGO 1 — 30 km', isRecovery:false, totalKm:49, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'8:30–9:00',zone:'Z2',desc:'Facile. Gambe in palestra al minimo: la settimana gira tutta intorno a domenica.'},
+    {day:'Martedì',type:'race',km:9,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA corto: 2 risc., 5 km a ritmo gara, 2 defat. Volutamente leggero: domenica c\'è il 30.',fuel:{h:1.2,c:35,ml:500,fmt:'bottle',tip:'start45'}},
+    {day:'Venerdì',type:'easy',km:4,pace:'8:45–9:15',zone:'Z2',desc:'30–35\' tapis Z2, riposo attivo prima del 30. Sabato riposo e mangia abbondante. Dopo: stretching.'},
+    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00',zone:'Z2',desc:'LUNGO 1 — 30 km, tutto Z2. ~4h15–4h30 in piedi. Non conta il passo: conta arrivare in fondo senza crollare e senza dolori. Rifornimento dal 45\' ogni 30–35\'. Dopo: stretching abbondante. Il secondo 30 di domenica prossima si fa SOLO se questo è andato bene.',fuel:{h:4.4,c:260,ml:250,flasks:2,fmt:'flask',tip:'gut'}},
   ]},
-  {p:4, label:'S25', title:'Pre-gara — gambe fresche', isRecovery:false, totalKm:27, runs:[
-    {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'6 km leggerissimi. Niente Gambe pesanti in palestra da qui alla gara.'},
-    {day:'Martedì',type:'race',km:7,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA breve: 2 risc., 2 km a ritmo gara (solo per sentirlo), 3 defat. Niente stress.'},
+  {p:3, label:'S23', title:'LUNGO 2 — 30 km, prova generale', isRecovery:false, totalKm:45, runs:[
+    {day:'Lunedì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'Recupero obbligatorio dal primo 30. Gambe in palestra al minimo.'},
+    {day:'Martedì',type:'easy',km:6,pace:'9:00–9:20',zone:'Z2',desc:'6 km facili, niente qualità. È il giorno del controllo: se le gambe sono ancora pesanti o qualcosa fa male, domenica fai 18–20 km invece del 30.'},
+    {day:'Venerdì',type:'easy',km:4,pace:'8:45–9:15',zone:'Z2',desc:'30\' tapis Z2, riposo attivo. Sabato riposo e mangia come la vigilia della gara.'},
+    {day:'Domenica',type:'long',km:30,pace:'8:30–9:00 + 5 km a 7:28',zone:'Z2+Z3',desc:'LUNGO 2 — 30 km, la prova generale, SOLO se il primo 30 è andato bene e martedì le gambe erano a posto (altrimenti 18–20 km Z2). 25 km in Z2 a 8:30–9:00, poi gli ULTIMI 5 km a ritmo gara (7:25–7:35). Rifornimento ESATTAMENTE come in gara: stessa miscela, stessi orari (dal 45\', ogni 30–35\'), stesse scarpe, stessa colazione. Se gli ultimi 5 li tieni sotto 7:35 senza crollare → GO per le 5:15. Se scivoli oltre 7:50 → in gara parti a 7:45 e punta al cutoff con margine. Dopo: stretching abbondante.',fuel:{h:4.3,c:260,ml:250,flasks:2,fmt:'flask',tip:'rehearsal'}},
+  ]},
+  // FASE 4 — TAPER (3 settimane dall'ultimo 30)
+  {p:4, label:'S24', title:'Taper — primo scarico', isRecovery:false, totalKm:37, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'Facile, recupero dal 30.'},
+    {day:'Martedì',type:'race',km:10,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 3 risc., 4 km a ritmo gara, 3 defat. Volume calato, qualità mantenuta.',fuel:{h:1.3,c:35,ml:500,fmt:'bottle',tip:'start45'}},
+    {day:'Venerdì',type:'easy',km:5,pace:'8:45–9:15',zone:'Z2',desc:'45\' tapis Z2, social. Dopo: stretching 10\'.'},
+    {day:'Domenica',type:'long',km:16,pace:'8:45–9:15',zone:'Z2',desc:'16 km, primo vero calo del lungo. Le gambe iniziano a ricaricarsi. Dopo: stretching.',fuel:{h:2.4,c:90,ml:200,fmt:'flask',tip:'flask'}},
+  ]},
+  {p:4, label:'S25', title:'Taper progressivo — gambe fresche', isRecovery:false, totalKm:32, runs:[
+    {day:'Lunedì',type:'easy',km:6,pace:'9:00–9:30',zone:'Z2',desc:'6 km leggeri. Niente gambe pesanti in palestra da qui alla gara.'},
+    {day:'Martedì',type:'race',km:9,pace:'7:25–7:35 (parte)',zone:'Z3–Z4',desc:'RITMO GARA: 2 risc., 3 km a ritmo gara, 4 defat. Mantieni la sensazione del passo gara.',fuel:{h:1.2,c:35,ml:500,fmt:'bottle',tip:'start45'}},
     {day:'Venerdì',type:'easy',km:5,pace:'9:00–9:30',zone:'Z2',desc:'30–40\' tapis rilassati + 4 allunghi. Dopo: stretching.'},
-    {day:'Domenica',type:'easy',km:9,pace:'9:00–9:30',zone:'Z2',desc:'9 km tranquilli, ultima uscita lunga prima di Valencia. Goditi la sensazione di essere pronto.'},
+    {day:'Domenica',type:'long',km:12,pace:'9:00–9:20',zone:'Z2',desc:'12 km tranquilli, ultima uscita lunga prima di Valencia. Goditi la sensazione di essere pronto.',fuel:{h:1.8,c:60,ml:200,fmt:'flask',tip:'flask'}},
   ]},
   {p:4, label:'S26', title:'Race week — Valencia!', isRecovery:false, totalKm:0, runs:[
     {day:'Lunedì',type:'easy',km:5,pace:'9:00+',zone:'Z2',desc:'5 km di attivazione. Solo per muoverti. Niente palestra gambe.'},
